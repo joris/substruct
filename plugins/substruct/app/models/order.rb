@@ -119,8 +119,21 @@ class Order < ActiveRecord::Base
     end
   end
   
+  # Finds all completed orders 
+  # and allows for passing standard "find" arguments in.
+  def self.find_completed(args={}, options={})
+    orders = []
+    with_scope(:find => { 
+      :conditions => [
+        "(order_status_code_id = 5 OR order_status_code_id = 6 OR order_status_code_id = 7)"
+      ] 
+    }) do
+      orders = find(args, options)
+    end
+    return orders
+  end
+  
   # Finds orders by country
-  #
   def self.find_by_country(country_id, count=false, limit_sql=nil)
     if (count == true) then
       sql = "SELECT COUNT(*) "
@@ -215,12 +228,16 @@ class Order < ActiveRecord::Base
         else
           ship_code = ''
         end
+        
+        bill_country = bill.country.name rescue ''
+        ship_country = ship.country.name rescue ''
+        
         order_arr = [
           order.order_number, '', ship_code, pretty_date,
           bill.last_name, bill.first_name, bill.address, bill.city,
-          bill.state, bill.zip, bill.country.name, bill.telephone,
+          bill.state, bill.zip, bill_country, bill.telephone,
           ship.last_name, ship.first_name, ship.address, ship.city,
-          ship.state, ship.zip, ship.country.name, ship.telephone 
+          ship.state, ship.zip, ship_country, ship.telephone 
         ]
         item_arr = []
         # Generate spaces for items up to 16 deep
