@@ -192,7 +192,7 @@ namespace :substruct do
       Dir.chdir(tmp_dir)
       
       puts "Making Substruct #{version} release here: #{tmp_dir}"
-      `rails .`
+      `rails _#{RAILS_GEM_VERSION}_ .`
       
       
       puts "Exporting Substruct release from svn (#{tag})...\nThis might take a minute..."
