@@ -63,14 +63,12 @@
     <colgroup>
       <col style="width:150px;"/>
       <col />
-      <col style="width:120px;"/>
       <col />
 			<col />
     </colgroup>
     <tr>
       <th>URL</th>
       <th>Title</th>
-      <th>Content&nbsp;Length</th>
       <th>Display&nbsp;Date</th>
 			<th>Type</th>
     </tr>
@@ -89,7 +87,6 @@
       <td>
         <%= content_node.title %>
       </td>
-      <td><%= number_with_delimiter(content_node.content.length, ',') %> characters</td>
       <td><%= content_node.display_on.strftime("%m/%d/%y") %></td>
 			<td><%= content_node.class.to_s %></td>
     </tr>
