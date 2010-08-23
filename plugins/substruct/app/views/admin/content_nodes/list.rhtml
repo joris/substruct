@@ -1,32 +1,25 @@
 <div id="left">
-  <h1>
-    <%
-      i=1
-      ContentNode::TYPES.each do |type| 
-    %>
-				<%= 
-					link_to_unless(
-					  (@viewing_by == type),
-						type,
-						:action => 'list',
-						:key => type
-					)
-				%>
-				<%
-				  if i != ContentNode::TYPES.size
-				%>
-				  <span style="color: #ccc;">/</span>
-				<%
-			    end
-				  i += 1
-				%>
-		<% end %>
-  </h1>
 	<% if @aname != 'list' && @aname != 'index' %>
+	  <h1><%= @title %></h1>
 		<ul class="navigation secondary">
 	    <li><a href="/admin/content_nodes/list_sections/">Back to Content Section List</a></li>
 	  </ul>
 	<% else %>
+  	<ul class="navigation primary">
+      <% ContentNode::TYPES.each do |type| %>
+        <li class="<%= active_li_css(@viewing_by, type) %>">
+  				<%= 
+  					link_to_unless(
+  					  (@viewing_by == type),
+  						type.pluralize,
+  						:action => 'list',
+  						:key => type
+  					)
+  				%>
+  			</li>
+  		<% end %>
+    </ul>
+    <div class="clear"></div>
 	  <ul class="navigation secondary">
 	    <li>
   			<%=
@@ -58,15 +51,15 @@
 
   <table class="list" cellspacing="0" cellpadding="0">
     <colgroup>
+      <col />
       <col style="width:150px;"/>
-      <col />
-      <col />
-			<col />
+      <col style="width:100px;"/>
+			<col style="width:70px;"/>
     </colgroup>
     <tr>
-      <th>URL</th>
       <th>Title</th>
-      <th>Display&nbsp;Date</th>
+      <th>Sections</th>
+      <th>Publish On</th>
 			<th>Type</th>
     </tr>
 
@@ -74,7 +67,7 @@
     <% for content_node in @content_nodes %>
     <tr class="<%= alternate %>">
       <td>
-        <%= link_to truncate(content_node.name, 20), {:action => 'edit', :id => content_node} %>
+        <%= link_to content_node.title, {:action => 'edit', :id => content_node} %>
         <br/>
         <br/>
         <span class="info"><%= link_to 'Show here', {:action => 'show', :id => content_node}, :class=> 'normal' %></span>
@@ -82,7 +75,7 @@
         <span class="info"><a href="/<%= content_node.name %>" class="normal">Show on the site</a></span>
       </td>
       <td>
-        <%= content_node.title %>
+        <%= content_node.sections.collect{|s| s.name}.join(', ') %>
       </td>
       <td><%= content_node.display_on.strftime("%m/%d/%y") %></td>
 			<td><%= content_node.class.to_s %></td>

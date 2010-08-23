@@ -59,6 +59,23 @@ ul li {
 	list-style-type: square;
 }
 
+ul.sortable {
+	margin-left: 0px !important;
+	padding-left: 0px !important;
+}
+
+ul.sortable li {
+	cursor: pointer;
+	cursor: hand;
+	list-style-type: none;
+	border-bottom: 1px dotted #ccc;
+	margin-bottom: 5px;
+	margin-left: 0px !important;
+}
+
+ul.sortable li p {
+	margin-bottom: 5px;
+}
 
 a {
 	font-weight: bold;
@@ -88,7 +105,6 @@ h1 {
 	font-weight:100;
 	font-size: 1.5em;
 	padding-bottom:5px;
-	border-bottom: 1px solid #B5B5B5 !important;
 	margin-bottom: 10px;
 	margin-top: 25px;
 	text-transform: capitalize;
@@ -293,43 +309,38 @@ ul.navigation li.active {
 	font-size: 1.2em;
 	font-style: italic;
 }
+
+/* navigation primary ------------------------------------------------------ */
+ul.navigation.primary li {
+	font-weight:100;
+	font-size: 1.3em;
+	padding: 5px;
+	margin-bottom: 5px;
+	margin-top: -5px;
+	text-transform: capitalize;
+}
+
+ul.navigation.primary li.active {
+  font-style: normal;
+  font-weight: bold;
+  border: 2px solid #D4DCF7;
+  color: #5272E0;
+  background-color: #EBEEFA;
+  border-radius:3px;
+  -moz-border-radius:3px;	
+  -webkit-border-radius:3px;
+}
+
+/* navigation secondary ---------------------------------------------------- */
+
 ul.navigation.secondary {
 	float:right;
 	margin-top: -30px;
 	margin-right: 0px;
 }
 
-ul.sortable {
-	margin-left: 0px !important;
-	padding-left: 0px !important;
-}
+/* navigation tertiary ----------------------------------------------------- */
 
-ul.sortable li {
-	cursor: pointer;
-	cursor: hand;
-	list-style-type: none;
-	border-bottom: 1px dotted #ccc;
-	margin-bottom: 5px;
-	margin-left: 0px !important;
-}
-
-ul.sortable li p {
-	margin-bottom: 5px;
-}
-
-/* in-page tab navigation */
-.navigation a, .navigation a:link, .navigation a:visited {
-	color: #ffffff;
-}
-
-.navigation.secondary a, .navigation.secondary a:link, .navigation.secondary a:visited {
-	color: #5272E0;
-}
-
-.navigation.tertiary a, .navigation.tertiary a:link, .navigation.tertiary a:visited {
-	color: #000;
-	padding: 4px;
-}
 .navigation.tertiary li {
 	background-color: #ccc;
 	padding-left: 4px;
@@ -346,6 +357,20 @@ ul.sortable li p {
 	height: 18px;
 }
 
+/* nav link colors --------------------------------------------------------- */
+
+.navigation a, .navigation a:link, .navigation a:visited {
+	color: #ffffff;
+}
+
+.navigation.primary a, .navigation.primary a:link, .navigation.primary a:visited, .navigation.secondary a, .navigation.secondary a:link, .navigation.secondary a:visited {
+	color: #5272E0;
+}
+
+.navigation.tertiary a, .navigation.tertiary a:link, .navigation.tertiary a:visited {
+	color: #000;
+	padding: 4px;
+}
 
 /* END NAVIGATION */
 
@@ -497,6 +522,11 @@ div.listContainer .list {
 .hlt, tr.hlt td, tr.selected td {
 	background-color: #FFBC6C !important;
 	font-style:italic;
+}
+
+p.hlt {
+  padding: 10px;
+  color: #80684D;
 }
 
 .notes {

@@ -81,22 +81,24 @@ LOOKING INTO OTHER OPTIONS!!!
       return "/store/checkout"
     end
 	end
-
-  # Generates a navigation string from an array list
-  def generate_navigation(options, currently_viewing=nil, action='list')
-    list = "<ul class=\"navigation secondary\">\n"
-
-    options.each do |item|
-      if currently_viewing == item then
-        list << "<li class=\"active\">#{item}</li>"
-      else
-        list << "<li>"
-        list << link_to(item, :action => action, :key => item)
-        list << "</li>"
+  
+  # Returns active css class if we're on the action passed in.
+	# Used all over the place for generating navigation
+	#
+	# Can take multiple action names for cases where we alias list / index
+	# or show / items and things like that.
+	#
+	# comparison_name is the thing we're comparing to, usually a controller
+	# or action name.
+	def active_li_css(comparison_name, *names)
+	  # Make sure we can pass in an array or multiple strings
+	  names.flatten!
+	  for name in names
+  	  if name == comparison_name
+        return 'active'
       end
     end
-
-    return list << "</ul>"
+    return ''
   end
 
   # Truncates to the nearest word
