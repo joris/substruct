@@ -5,7 +5,7 @@ class Admin::FilesController < Admin::BaseController
 
   # Lists all assets / file uploads in the system.
   def index
-    @title = "List of user uploaded files"
+    @title = "User uploaded files"
     
     if params[:sort] == 'name' then
       sort = "filename ASC"
