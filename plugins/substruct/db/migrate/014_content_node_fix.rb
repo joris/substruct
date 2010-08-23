@@ -1,6 +1,10 @@
 # Removes ContentNodeTypes table, because that was a weird fucking
 # hack that was put in before I knew about SingleTableInheritance.
-#
+
+class ContentNodeType < ActiveRecord::Base
+  has_many :content_nodes
+end
+
 class ContentNodeFix < ActiveRecord::Migration
   def self.up		
     # Add type column
