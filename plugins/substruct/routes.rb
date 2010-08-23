@@ -35,9 +35,14 @@ connect '/contact',
   :controller => 'questions',
   :action     => 'ask'
 
+connect '/store/s/*tags',
+  :controller => 'store',
+  :action     => 'show_by_tags'
+  
 connect '/store/show_by_tags/*tags',
   :controller => 'store',
   :action     => 'show_by_tags'
+
 
 # Install the default route as the lowest priority.
 connect ':controller/:action/:id.:format'
