@@ -2,13 +2,13 @@
 	<input type="hidden" name="variation[][id]" value="<%= variation.id %>" />
 	<div class="float">
 		<%= make_label('Name', true) %>
-		<%= text_field_tag('variation[][name]', variation.short_name, :size => 30, :class => 'textInput') %>
+		<%= text_field_tag('variation[][name]', variation.short_name, :size => 35, :class => 'textInput') %>
 		<br/>
 		<span class="info">ie: Red XXL</span>
 	</div>
 	<div class="float">
 		<%= make_label('Product Code', true) %>
-		<%= text_field_tag('variation[][code]', variation.code, :size => 10, :class => 'textInput') %>
+		<%= text_field_tag('variation[][code]', variation.code, :size => 20, :class => 'textInput') %>
 	</div>
 	<div class="float">
 		<%= make_label('Price') %>
