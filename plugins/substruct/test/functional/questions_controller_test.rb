@@ -41,9 +41,8 @@ class QuestionsControllerTest < ActionController::TestCase
       :email_address => "curious@nowhere.com"
     }
 
-    # If accepted should just respond with success.
-    assert_response :success
-    assert_template 'send_question'
+    assert_redirected_to '/'
+    assert_equal "Message sent successfully.", flash[:notice]
   end
 
 
@@ -60,16 +59,8 @@ class QuestionsControllerTest < ActionController::TestCase
       :email_address => ""
     }
 
-    # If not saved we will NOT receive a HTTP error status. As we will not be
-    # redirected to edit action too. The same page will be rendered again with
-    # error explanations.
     assert_response :success
-    assert_template 'ask'
-    
-    # Here we assert that an error explanation was given and that the proper
-    # fields was marked.
-    assert_select "div.fieldWithErrors input#question_email_address"
-    assert_select "div.fieldWithErrors textarea#question_long_question"
+    assert_equal "Please enter an email address and message", flash[:notice]
   end
   
   
