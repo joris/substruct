@@ -1,6 +1,14 @@
 class OrdersMailer < ActionMailer::Base
   helper :application
 
+  def inquiry(addy_from, email_text)
+    setup_defaults()
+    @subject  = "Inquiry from the site"
+    @body     = {:from => addy_from, :email_text => email_text}
+    @recipients = Preference.find_by_name('mail_copy_to').value.split(',')
+    @from = addy_from
+  end
+
   def receipt(order, email_text)
     @subject = "Thank you for your order! (\##{order.order_number})"
     @body       = {:order => order, :email_text => email_text}
