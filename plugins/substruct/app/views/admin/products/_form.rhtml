@@ -17,7 +17,7 @@
 		</div>
 		<div class="float">
 			<%= make_label('Price') %>
-			<%= text_field 'product', 'price', :class => 'textInput numeric', :size => 6, :disabled => @product.variations.size > 0  %>
+			<%= text_field 'product', 'price', :class => 'textInput numeric', :size => 6, :original_value => @product.price  %>
 		</div>
 		<div class="float">
 			<%= make_label('Quantity') %>
@@ -25,8 +25,8 @@
 		</div>
 		<div class="clear"></div>
 		<% if @product.variations.size > 0 %>
-			<div class="hlt" style="padding:10px; text-align: center;">
-				When using product variations the price and quantity<br/>for the "standard product" will not be visible on the main site.
+			<div class="hlt" style="padding:10px; text-align:center;">
+				Variations will use price set for the base product by default unless otherwise specified.
 			</div>
 		<% end %>
 
@@ -49,7 +49,7 @@
 		    	{
 						:url => { :action => "add_variation_ajax" },
 						:loading => "$('add_variation_link').hide(); $('add_variation_indicator').show();",
-		    		:complete => "$('add_variation_link').show(); $('add_variation_indicator').hide();",
+		    		:complete => "PRODUCT.set_and_color_boxes(); $('add_variation_link').show(); $('add_variation_indicator').hide();",
 					},
 					:class => 'action',
 					:id => 'add_variation_link'
@@ -141,3 +141,67 @@
 
 <br/>
 <div class="line">&nbsp;</div>
+
+<script type="text/javascript">
+  var PRODUCT = {
+    variation_boxes: null,
+    original_price: 0,
+    set_variation_boxes: function() {
+      PRODUCT.variation_boxes = $$("input[name='variation[][price]']");
+    },
+    // Watches product price box.
+    // When value of price changes, it changes price of all variations 
+    // that equal the original value.
+    change_price: function() {
+      var p_input = $('product_price')
+      var price = p_input.value;
+      PRODUCT.variation_boxes.each(function(box){
+        box_price = box.value;
+        box_orig = parseFloat(box.getAttribute('original_value'), 10);
+        if (box_orig == parseFloat(PRODUCT.original_price,10) || box_orig == 0.0) {
+          box.value = price;
+        };
+      });
+      PRODUCT.color_variation_boxes;
+    },
+    // Marks variation boxes with same price as original,
+    // and ones that differ.
+    color_variation_boxes: function() {
+      var p_input = $('product_price')
+      var price = parseFloat(p_input.value,10);
+      PRODUCT.variation_boxes.each(function(box){
+        box_price = parseFloat(box.value, 10);
+        if (price == box_price) {
+          box.style.color = '#999999';
+          box.style.backgroundColor = '#eee';
+        } else {
+          box.style.color = '';
+          box.style.backgroundColor = '';
+        }
+      });
+    },
+    // Shortcut
+    set_and_color_boxes: function() {
+      PRODUCT.set_variation_boxes();
+      PRODUCT.change_price();
+      PRODUCT.color_variation_boxes();
+      PRODUCT.observe_boxes();
+    },
+    // Observes variations and recolors them if they differ from the norm.
+    // Kind of inefficient scripting wise, but we probably aren't
+    // dealing with products that have 100's of variations.
+    observe_boxes: function() {
+      PRODUCT.variation_boxes.each(function(box){
+        Event.observe(box, 'keyup', PRODUCT.color_variation_boxes);
+      });
+    },
+    // Adds event handlers to variation boxes
+    init: function() {
+      PRODUCT.original_price = $('product_price').getAttribute('original_value');
+      Event.observe($('product_price'), 'keyup', PRODUCT.change_price);
+      PRODUCT.set_and_color_boxes();
+      PRODUCT.observe_boxes();
+    }
+  };
+  PRODUCT.init();
+</script>

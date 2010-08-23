@@ -9,7 +9,20 @@ class Variation < Item
   
   after_save :update_parent_quantity
   def update_parent_quantity
-    self.product.update_attribute('variation_quantity', self.product.variations.sum('quantity'))
+    if self.product
+      self.product.update_attribute(
+        'variation_quantity', 
+        self.product.variations.sum('quantity')
+      )
+    end
+  end
+  
+  before_save :check_base_product_price
+  def check_base_product_price
+    if self.product && self.product.price == self[:price]
+      self.price = nil
+    end
+    return true
   end
   
   #############################################################################
@@ -25,14 +38,27 @@ class Variation < Item
   # Display name...includes product name as well
   def name
     if self.product
-      return "#{self.product.name} - #{self.attributes['name']}"
+      return "#{self.product.name} - #{self[:name]}"
     else
-      return self.attributes['name']
+      return self[:name]
     end
   end
   
   def short_name
-    self.attributes['name']
+    self[:name]
+  end
+  
+  # Setting price on a variation to nil or 0 assumes we want to use
+  # the base product's price. This allows us to set price for multiple variations
+  # in one easy place.
+  def price
+    price = 0.0
+    if self.product && (self[:price].nil? || self[:price] == 0)
+      price = self.product.price
+    else
+      price = self[:price]
+    end
+    return price || 0.0
   end
   
 end
