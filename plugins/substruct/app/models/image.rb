@@ -11,7 +11,6 @@ class Image < UserUpload
                  :storage => :file_system,
                  :max_size => MAX_SIZE,
                  :thumbnails => { :thumb => '50x50>', :small => '200x200' },
-                 :processor => 'MiniMagick',
                  :path_prefix => 'public/system/'
 
   validates_as_attachment
