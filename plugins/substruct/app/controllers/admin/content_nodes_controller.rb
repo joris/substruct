@@ -17,6 +17,8 @@ class Admin::ContentNodesController < Admin::BaseController
     # Set currently viewing by key
     if params[:key] then
       @viewing_by = params[:key]
+    else
+      @viewing_by = ContentNode::TYPES[0]
     end
     
     if params[:sort] == 'name' then
@@ -24,22 +26,14 @@ class Admin::ContentNodesController < Admin::BaseController
     else
       sort = "created_on DESC"
     end
-    
-    if @viewing_by
-      @title << " - #{@viewing_by}"
-      @content_nodes = ContentNode.paginate(
-        :order => sort,
-        :page => params[:page],
-        :conditions => ["type = ?", @viewing_by],
-        :per_page => 10
-      )
-    else
-      @content_nodes = ContentNode.paginate(
-        :order => sort,
-        :page => params[:page],
-        :per_page => 10
-      )
-    end
+
+    @title << " - #{@viewing_by}"
+    @content_nodes = ContentNode.paginate(
+      :order => sort,
+      :page => params[:page],
+      :conditions => ["type = ?", @viewing_by],
+      :per_page => 10
+    )
     session[:last_content_list_view] = @viewing_by
   end
   
