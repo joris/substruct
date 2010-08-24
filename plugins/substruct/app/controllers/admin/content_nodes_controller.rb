@@ -1,6 +1,11 @@
 class Admin::ContentNodesController < Admin::BaseController
   include Pagination
   before_filter :set_sections
+
+  verify :method => :post, 
+    :only => [:create, :update, :destroy], 
+    :redirect_to => {:action => :index}
+
   
   def index
     list
@@ -78,34 +83,36 @@ class Admin::ContentNodesController < Admin::BaseController
     render :action => 'list'
   end
 
-  # Shows a content node
-  def show
-    @content_node = ContentNode.find(params[:id])
-    @title = "Viewing '#{@content_node.title}'  "
-  end
-
   # Creates a content node
   def new
-    @title = "Creating New Content"
     @content_node = ContentNode.new
+    if params[:type] && ContentNode::TYPES.include?(params[:type])
+      @content_node.type = params[:type]
+    else
+      @content_node.type = 'Blog'
+    end
+    @title = "Creating New #{@content_node.type}"
+
     set_recent_uploads()
   end
   
   def edit
-    @title = "Editing Content"
     @content_node = ContentNode.find(params[:id])
+    @title = "Editing #{@content_node.type}"
     set_recent_uploads()
   end
 
   def create
     @title = "Creating a content node"
     @content_node = ContentNode.new(params[:content_node])
-    @content_node.type = params[:content_node][:type]
+    if params[:content_node]
+      @content_node.type = params[:content_node][:type]
+    end
 
     if @content_node.save
       save_uploads_and_replace_paths()
       flash[:notice] = 'ContentNode was successfully created.'
-      redirect_to :action => 'list'
+      redirect_to :action => 'list', :type => @content_node.type
     else
       set_recent_uploads
       render :action => 'new'
@@ -114,21 +121,16 @@ class Admin::ContentNodesController < Admin::BaseController
 
   def update
     @content_node = ContentNode.find(params[:id])
-    @content_node.type = params[:content_node][:type]    
     if @content_node.update_attributes(params[:content_node])
       save_uploads_and_replace_paths()
-      flash.now[:notice] = 'ContentNode was successfully updated.'
+      flash.now[:notice] = 'Content was successfully updated.'
     else
-      flash.now[:notice] = 'ContentNode was NOT updated. Please check the form below.'
+      flash.now[:notice] = 'Content was NOT updated. Please check the form below.'
     end
     set_recent_uploads
+    @title = "Editing #{@content_node.type}"
     render :action => 'edit'
   end
-
-	# Shows a preview of our content from the edit / create pages
-	def preview
-		render :layout => false
-	end
 
   def destroy
     ContentNode.find(params[:id]).destroy

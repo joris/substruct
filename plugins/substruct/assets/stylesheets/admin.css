@@ -810,11 +810,12 @@ body {
 
 
 #right h1, #right h2 {
-	border-bottom: 1px solid #ffffff !important;
 	color: #464440;
+	border-bottom: 1px solid #B9B4AC !important;
 }
 #right h2 {
 	font-weight: normal;
+	padding-bottom: 5px;
 }
 
 #right a {
@@ -862,4 +863,5 @@ body {
 .textAreaCode {
   font-family:'Andale Mono', 'Courier New', Courier, monospace !important;
   font-size: 11px;
+  padding: 4px;
 }

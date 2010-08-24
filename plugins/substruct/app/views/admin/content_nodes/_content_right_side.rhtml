@@ -1,7 +1,16 @@
 <!-- RIGHT -->
 <div id="right">
   <br/>
-  <%= link_to 'Create New Content', {:action => 'new'}, :class => 'button hundredfifty' %>
+  <%= 
+    link_to(
+      "Create New #{@viewing_by}", 
+      {
+        :action => 'new',
+        :type => @viewing_by
+      }, 
+      :class => 'button hundredfifty'
+    )
+  %>
 
   <h1>Sections</h1>
 	<p>

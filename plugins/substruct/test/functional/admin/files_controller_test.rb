@@ -12,7 +12,7 @@ class Admin::FilesControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     assert_template 'index'
-    assert_equal assigns(:title), "List of user uploaded files"
+    assert_equal assigns(:title), "User uploaded files"
     assert_not_nil assigns(:files)
   end
 
@@ -24,19 +24,19 @@ class Admin::FilesControllerTest < ActionController::TestCase
     get :index, :key => "Image"
     assert_response :success
     assert_template 'index'
-    assert_equal assigns(:title), "List of user uploaded files - #{assigns(:viewing_by).pluralize}"
+    assert_equal assigns(:title), "User uploaded files - #{assigns(:viewing_by).pluralize}"
     assert_not_nil assigns(:files)
 
     get :index, :key => "Asset"
     assert_response :success
     assert_template 'index'
-    assert_equal assigns(:title), "List of user uploaded files - #{assigns(:viewing_by).pluralize}"
+    assert_equal assigns(:title), "User uploaded files - #{assigns(:viewing_by).pluralize}"
     assert_not_nil assigns(:files)
 
     get :index, :sort => "name"
     assert_response :success
     assert_template 'index'
-    assert_equal assigns(:title), "List of user uploaded files"
+    assert_equal assigns(:title), "User uploaded files"
     assert_not_nil assigns(:files)
   end
   

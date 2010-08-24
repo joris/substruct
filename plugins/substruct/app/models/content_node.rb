@@ -5,32 +5,27 @@ class ContentNode < ActiveRecord::Base
   has_and_belongs_to_many :sections
   
   TYPES = ['Blog', 'Page', 'Snippet']
+
+  # 'name' is really used as the content node's URL.
+  alias_attribute :url, :name
   
   #############################################################################
   # VALIDATION
   #############################################################################
+
+  before_validation :clean_url
+  before_validation :check_type
   
+  validates_inclusion_of :type, :in => TYPES
   validates_presence_of :name, :title, :content
+  validates_uniqueness_of :name, 
+    :message => 'This URL has already been taken. Create a unique URL please.'
+
   
-  validates_uniqueness_of :name, :message => 'This URL has already been taken. Create a unique URL please.'
-
-  before_validation :normalize
-
-  def normalize
-    self.name.downcase!
-    # replace quotes by nothing 
-    self.name.gsub!(/['"]/, '') 
-    # strip all non word chars 
-    self.name.gsub!(/\W/, ' ') 
- 	 
-    # replace all white space sections with an underscore 
-    self.name.gsub!(/\ +/, '_') 
-    # trim underscores
-    self.name.gsub!(/(_)$/, '') 
-    self.name.gsub!(/^(_)/, '') 
-    self.name.strip!
-    self.name
-	end
+  # Simply sets display date if we don't do it.
+  def before_save
+    self.display_on = Date.today unless self.display_on
+  end
 
   #############################################################################
   # INSTANCE METHODS
@@ -44,13 +39,26 @@ class ContentNode < ActiveRecord::Base
 		end
 	end
 
-  # URL is just a synonym for name
-  def url
-    self.name
-  end
-
   # Lets us know if this is a blog post or not
   def is_blog_post?
     self.type == 'Blog'
   end
+  
+  private
+    # Inserts URL from content name, and makes it save for URL usage.
+    def clean_url
+      self.url = self.title if self.url.blank?
+      
+      self.url.downcase!
+      self.url = self.url.gsub(/[^[:alnum:]]/,'-').gsub(/-{2,}/,'-')
+      self.url = self.url.gsub(/^[-]/,'').gsub(/[-]$/,'')
+      self.url.strip!
+
+      return true
+  	end
+  	
+  	# Ensures we have a proper type before saving.
+  	def check_type
+  	  self.type = TYPES[0] if !TYPES.include?(self.type)
+	  end
 end
