@@ -24,15 +24,71 @@ class ContentNodeTest < ActiveSupport::TestCase
   end
 
 
+  # VALIDATIONS ---------------------------------------------------------------
+
   # Test if a content node will have its name cleaned before being validated.
   def test_should_have_a_clean_name_before_validated
     a_content_node = ContentNode.new
     
     a_content_node.name = "Prophecies for!'2008'?"
     a_content_node.valid?
-    assert_equal a_content_node.name, "prophecies_for_2008"
+    assert_equal a_content_node.name, "prophecies-for-2008"
   end
 
+
+  # Test if an invalid content node really will NOT be created.
+  def test_should_not_create_invalid_content_node
+    a_content_node = ContentNode.new
+    assert !a_content_node.valid?
+    assert a_content_node.errors.invalid?(:name)
+    assert a_content_node.errors.invalid?(:title)
+    assert a_content_node.errors.invalid?(:content)
+    # A content node must have a name, a title and a content.
+    assert_equal "can't be blank", a_content_node.errors.on(:name)
+    assert_equal "can't be blank", a_content_node.errors.on(:title)
+    assert_equal "can't be blank", a_content_node.errors.on(:content)
+  end
+  
+  def test_node_validates_unique_url
+    dupe_node = content_nodes(:silent_birth)
+    assert dupe_node.update_attribute(:url, 'unique-url')
+    
+    node = ContentNode.new
+    node.attributes = content_nodes(:silent_birth).attributes
+
+    assert !node.save
+    assert_equal(
+      "This URL has already been taken. Create a unique URL please.", 
+      node.errors.on(:name)
+    )
+  end
+  
+  def test_saves_with_valid_types
+    n = ContentNode.new(
+      :title => 'My title',
+      :content => 'Good content'
+    )
+    ContentNode::TYPES.each do |type|
+      n.type = type
+      assert n.save
+      assert_equal type, n.type
+    end
+  end
+  
+  def test_doesnt_save_with_invalid_types
+    n = ContentNode.new(
+      :title => 'My title',
+      :content => 'Good content'
+    )
+    invalid_types = ['some', 'invalid', 'types']
+    invalid_types.each do |type|
+      n.type = type
+      assert n.save
+      assert_equal 'Blog', n.type
+    end
+  end
+
+  # INSTANCE METHODS ----------------------------------------------------------
 
   # Test if a content node can be found with success.
   def test_should_find_content_node
@@ -60,25 +116,39 @@ class ContentNodeTest < ActiveSupport::TestCase
   end
 
 
-  # Test if an invalid content node really will NOT be created.
-  def test_should_not_create_invalid_content_node
-    a_content_node = ContentNode.new
-    assert !a_content_node.valid?
-    assert a_content_node.errors.invalid?(:name)
-    assert a_content_node.errors.invalid?(:title)
-    assert a_content_node.errors.invalid?(:content)
-    # A content node must have a name, a title and a content.
-    assert_equal "can't be blank", a_content_node.errors.on(:name)
-    assert_equal "can't be blank", a_content_node.errors.on(:title)
-    assert_equal "can't be blank", a_content_node.errors.on(:content)
-
-    a_content_node.name = "silent_birth"
-    assert !a_content_node.valid?
-    assert a_content_node.errors.invalid?(:name)
-    # A content node must have an unique name.
-    assert_equal "This URL has already been taken. Create a unique URL please.", a_content_node.errors.on(:name)
-
-    assert !a_content_node.save
+  
+  def test_node_saves_generates_url
+    node = ContentNode.new(
+      :title => "Some wonderful piece of content",
+      :content => "Blah blah blah"
+    )
+    assert node.save
+    assert_equal(
+      'some-wonderful-piece-of-content',
+      node.url
+    )
+  end
+  
+  def test_node_generates_display_date_when_null
+    node = ContentNode.new(
+      :title => "Some wonderful piece of content",
+      :content => "Blah blah blah"
+    )
+    assert_nil node.display_on
+    
+    assert node.save
+    assert_equal(
+      Date.today,
+      node.display_on
+    )
+  end
+  
+  def test_node_doesnt_overwrite_date
+    node = content_nodes(:silent_birth)
+    node_publish_date = node.display_on
+    assert_not_equal Date.today, node_publish_date
+    assert node.save
+    assert_equal node_publish_date, node.display_on
   end
 
   # TODO: Get rid of this method if it will not be used.
@@ -86,7 +156,6 @@ class ContentNodeTest < ActiveSupport::TestCase
   def test_should_discover_if_content_node_is_a_blog_post
     assert content_nodes(:silent_birth).is_blog_post?
   end
-
 
   # Test if we can associate a section.
   def test_should_associate_sections
@@ -105,9 +174,7 @@ class ContentNodeTest < ActiveSupport::TestCase
   # Test if the name will be returned when we ask for its url.
   def test_should_return_name_on_url
     a_content_node = content_nodes(:tinkerbel_pregnant)
-    
     assert_equal a_content_node.url, a_content_node.name
   end
-  
 
 end

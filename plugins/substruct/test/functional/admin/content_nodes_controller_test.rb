@@ -4,33 +4,26 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
   fixtures :rights, :roles, :users
   fixtures :content_nodes, :sections
 
-
-  # Test the index action.
-  def test_should_show_index
+  def setup
     login_as :admin
+    @cn = content_nodes(:silent_birth)
+  end
 
+  def test_index_success
     get :index
     assert_response :success
     assert_template 'list'
   end
 
-
-  # Test the list action.
-  def test_should_show_list
-    login_as :admin
-
+  def test_list_success
     get :list
     assert_response :success
     assert_template 'list'
-    assert_equal assigns(:title), "Content List"
+    assert_equal assigns(:title), "Content List - Blog"
     assert_not_nil assigns(:content_nodes)
   end
 
-
-  # Test the list action passing keys.
-  def test_should_show_list_using_keys
-    login_as :admin
-
+  def test_list_with_keys_success
     get :list, :key => "Blog"
     assert_response :success
     assert_template 'list'
@@ -55,32 +48,24 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
     assert_template 'list'
     assert_equal assigns(:title), "Content List - #{assigns(:viewing_by)}"
     assert_not_nil assigns(:content_nodes)
-
   end
   
-  
-  # Test the list_sections action.
-  def test_should_list_sections
-    login_as :admin
-
+  def test_list_sections_success
     get :list_sections
     assert_response :success
     assert_template 'list_sections'
   end
 
-  
-  # Test the list_by_sections action using keys.
-  def test_should_list_by_sections
-    login_as :admin
-
-    # Call it first without a key, it will use the first by name.
+  # Call it first without a key, it will use the first by name.  
+  def test_list_by_sections_no_key
     get :list_by_sections
     assert_response :success
     assert_template 'list'
     assert_equal assigns(:title), "Content List For Section - '#{Section.find_alpha[0].name}'"
     assert_not_nil assigns(:content_nodes)
+  end
 
-    
+  def test_list_by_sections_with_key_remembers
     # Now call it again with a key.
     a_section = sections(:junk_food_news)
     
@@ -97,106 +82,101 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
     assert_template 'list'
     assert_equal assigns(:title), "Content List For Section - '#{a_section.name}'"
     assert_not_nil assigns(:content_nodes)
-
-
+  end
+  
+  def test_list_by_sections_invalid
+    a_section = sections(:junk_food_news)
+    
     # Now delete this section making it invalid.
     a_section.destroy
-    
     get :list_by_sections, :key => a_section.id
     # If invalid we should be redirected to list. 
     assert_response :redirect
     assert_redirected_to :action => :list
   end
   
-  
-  # Test the show action.
-  def test_should_show_show
-    login_as :admin
-
-    a_content_node = content_nodes(:silent_birth)
-    
-    get :show, :id => a_content_node.id
+  def test_get_new_no_type_specified
+    get :new
     assert_response :success
-    assert_template 'show'
-    assert_not_nil assigns(:content_node)
-    assert_equal assigns(:title), "Viewing '#{assigns(:content_node).title}'  "
+    assert_template 'new'
+    assert_equal 'Blog', assigns(:content_node).type
   end
   
-  
-  # TODO: Get rid of this method if it will not be used.
-  # Test the preview action.
-  def test_should_show_preview
-    login_as :admin
-
-    get :preview
-    assert_response :success
-    assert_template 'preview'
+  def test_get_new_valid_content_types
+    ContentNode::TYPES.each do |type|
+      get :new, :type => type
+      assert_response :success
+      assert_equal type, assigns(:content_node).type
+      # Ensures hidden input set with proper value
+      assert_select "input#content_node_type[value=#{type}]"
+    end
   end
   
+  def test_get_new_invalid_content_type
+    ['invalid', 'content', 'types'].each do |type|
+      get :new, :type => type
+      assert_response :success
+      assert_equal 'Blog', assigns(:content_node).type
+    end
+  end
   
-  # Test the create action. Here we test if a new valid content node will be saved.
-  def test_should_save_new_content_node
-    login_as :admin
-
+  def test_create_success_blog
+    assert_create_success('Blog')
+  end
+  
+  def test_create_success_page
+    assert_create_success('Page')
+  end
+  
+  def test_create_success_snippet
+    assert_create_success('Snippet')
+  end
+  
+  def assert_create_success(node_type)
     # A file to upload with the content node.
     shrub1 = fixture_file_upload("/files/shrub1.jpg", 'image/jpeg')
-
-    # Call the new form.
-    get :new
-    assert_response :success
-    assert_template 'new'
     
-    # Post to it a content node.
-    post :create,
-    :content_node => {
-      :title => "Prophecies for 2008",
-      :name => "prophecies",
-      :display_on => 1.minute.ago.to_s(:db),
-      :content => "According to the Church of Who Knows Where:
-    1. The Lord say there would be some scientific breakthrough this year.
-    2. There would be some major medical breakthrough this year.
-    3. We must pray against destructive hurricane.
-    4. To be fore warned is to be fore armed, the flood in this year will be more than last year.
-    ",
-      :type => "Blog",
-      :sections => ["", sections(:prophecies).id.to_s]
-    },
-    :file => [ {
-      :file_data => shrub1,
-      :file_data_temp => ""
-    }, {
-      :file_data => "",
-      :file_data_temp => ""
-    } ]
+    post(
+      :create,
+      :content_node => {
+        :title => "Prophecies for 2008",
+        :name => 'prophecies',
+        :display_on => 1.minute.ago.to_s(:db),
+        :content => "According to the Church of Who Knows Where:
+      1. The Lord say there would be some scientific breakthrough this year.
+      2. There would be some major medical breakthrough this year.
+      3. We must pray against destructive hurricane.
+      4. To be fore warned is to be fore armed, the flood in this year will be more than last year.
+      ",
+        :type => node_type,
+        :sections => ["", sections(:prophecies).id.to_s]
+      },
+      :file => [ {
+        :file_data => shrub1,
+        :file_data_temp => ""
+      }, {
+        :file_data => "",
+        :file_data_temp => ""
+      } ]
+    )
     
-    # If saved we should be redirected to list. 
     assert_response :redirect
-    assert_redirected_to :action => :list
+    assert_redirected_to :action => :list, :type => node_type
     
     # Verify that the blog post really is there.
-    a_blog_post = ContentNode.find_by_name('prophecies')
-    assert_not_nil a_blog_post
+    some_content = ContentNode.find_by_name('prophecies')
+    assert_not_nil some_content
 
     # Verify that the file is there.
-    an_user_upload = UserUpload.find_by_filename('shrub1.jpg')
-    assert_not_nil an_user_upload 
+    user_upload = UserUpload.find_by_filename('shrub1.jpg')
+    assert_not_nil user_upload 
 
     # We must erase the record and its files by hand, just calling destroy.
-    assert an_user_upload.destroy
+    assert user_upload.destroy
   end
 
 
-  # Test the create action. Here we test if a new invalid content node will NOT be
-  # saved.
-  def test_should_not_save_new_content_node
-    login_as :admin
-
-    # Call the new form.
-    get :new
-    assert_response :success
-    assert_template 'new'
-    
-    # Post to it a content node.
+  def test_create_failure
     post :create,
     :content_node => {
       :title => "",
@@ -220,26 +200,22 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
   end
 
 
-  # Change attributes from a content node.
-  def test_should_save_existing_question
-    login_as :admin
-    
-    a_content_node = content_nodes(:silent_birth)
-
+  def test_get_edit_success
     # Call the edit form.
-    get :edit, :id => a_content_node.id
+    get :edit, :id => @cn.id
     assert_response :success
     assert_template 'edit'
-
+  end
+  
+  def test_update_success
     # Post to it a content node.
     post :update,
-    :id => a_content_node.id,
+    :id => @cn.id,
     :content_node => {
       :title => "Silent",
       :name => "silent_birth",
       :display_on => 1.minute.ago.to_s(:db),
       :content => "According to the creator of scientology: Stemming from his belief that birth is a trauma that may induce engrams, he stated that the delivery room should be as silent as possible and that words should be avoided because any words used during birth might be reassociated by adults with their earlier traumatic birth experience. And bla bla bla bla bla ...",
-      :type => "Blog",
       :sections => [""]
     },
     :file => [ {
@@ -254,25 +230,14 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
     assert_response :success
     
     # Verify that the change was made.
-    a_content_node.reload
-    assert_equal a_content_node.title, "Silent"
+    @cn.reload
+    assert_equal @cn.title, "Silent"
   end
 
-
   # Change attributes from a content node making it invalid, it should NOT be saved.
-  def test_should_not_save_existing_content_node
-    login_as :admin
-    
-    a_content_node = content_nodes(:silent_birth)
-
-    # Call the edit form.
-    get :edit, :id => a_content_node.id
-    assert_response :success
-    assert_template 'edit'
-
-    # Post to it a content node.
+  def test_edit_failure
     post :update,
-    :id => a_content_node.id,
+    :id => @cn.id,
     :content_node => {
       :title => "",
       :name => "",
@@ -300,20 +265,20 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
     assert_select "div.fieldWithErrors input#content_node_name"
   end
 
-
   # Test if we can remove content nodes.
-  def test_should_remove_content_node
-    login_as :admin
-
-    a_content_node = content_nodes(:silent_birth)
-
-    # Post to it a content_node.
-    post :destroy, :id => a_content_node.id
-
-    assert_raise(ActiveRecord::RecordNotFound) {
-      ContentNode.find(a_content_node.id)
-    }
+  def test_destroy_success
+    assert ContentNode.exists?(@cn)
+    assert_difference "ContentNode.count", -1 do
+      post :destroy, :id => @cn.id
+    end
+    assert !ContentNode.exists?(@cn)
   end
-
+  
+  def test_destroy_get_failure
+    assert_no_difference "ContentNode.count" do
+      get :destroy, :id => @cn.id
+    end
+    assert_redirected_to :action => 'index'
+  end
 
 end

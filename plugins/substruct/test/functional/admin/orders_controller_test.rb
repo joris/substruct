@@ -70,7 +70,7 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     get :search, :term => a_term
     assert_response :success
     assert_equal assigns(:title), "Search Results"
-    assert_select "h2", :text => "You Searched For '#{a_term}'"
+    assert_select "h1", :text => "You Searched For '#{a_term}'"
     assert_equal assigns(:search_count), 9
     assert assigns(:orders)
     assert_template 'list'
@@ -78,7 +78,7 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     # Now without a term, it should remember the last.
     get :search
     assert_response :success
-    assert_select "h2", :text => "You Searched For '#{a_term}'"
+    assert_select "h1", :text => "You Searched For '#{a_term}'"
   end
 
 
@@ -92,7 +92,7 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     get :search_by_email, :term => a_term
     assert_response :success
     assert_equal assigns(:title), "Search Results"
-    assert_select "h2", :text => "You Searched For '#{a_term}'"
+    assert_select "h1", :text => "You Searched For '#{a_term}'"
     assert_select "a", :count => 9, :text => /Santa Claus/
     assert assigns(:orders)
     assert_template 'list'
@@ -100,7 +100,7 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     # Now without a term, it should remember the last.
     get :search_by_email
     assert_response :success
-    assert_select "h2", :text => "You Searched For '#{a_term}'"
+    assert_select "h1", :text => "You Searched For '#{a_term}'"
   end
 
 
@@ -114,7 +114,7 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     get :search_by_notes, :term => a_term
     assert_response :success
     assert_equal assigns(:title), "Search Results"
-    assert_select "h2", :text => "You Searched For '#{a_term}'"
+    assert_select "h1", :text => "You Searched For '#{a_term}'"
     assert_select "a", :count => 1, :text => /Santa Claus/
     assert assigns(:orders)
     assert_template 'list'
@@ -122,7 +122,7 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     # Now without a term, it should remember the last.
     get :search_by_notes
     assert_response :success
-    assert_select "h2", :text => "You Searched For '#{a_term}'"
+    assert_select "h1", :text => "You Searched For '#{a_term}'"
   end
 
 

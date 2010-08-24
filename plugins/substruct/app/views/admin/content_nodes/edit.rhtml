@@ -5,29 +5,33 @@
 	    <li><a href="/admin/content_nodes/list/">Back to Content List</a></li>
 	  </ul>
 
-	  <div class="warning">
-	    Please remember <b>not</b> to change URL unless you absolutely need to or you created the page.
-	  </div>
-	  <br/>
-
-
-	    <%= render_partial 'form' %>
-	    <div class="line">&nbsp;</div>
-	    <%= submit_tag 'Save This Content', :class => 'button hundredthirty' %>
-
-
-		<div style="float:right;">
-			<%= link_to 'Show', :action => 'show', :id => @content_node %> |
-		  <%= link_to 'Delete This Content', {:action => 'destroy', :id => @content_node}, :confirm => 'Are you sure?', :class => 'action' %>
-		</div>
+    <%= render_partial 'form' %>
 	
 	  <div class="clear">&nbsp;</div>
-	  <br/>
 	</div>
 
 
 	<!-- RIGHT -->
 	<div id="right">
+	  <%= submit_tag "Save #{@content_node.type}", :class => 'button' %>
+
+		<div style="float:right;margin-top:-30px;">
+		  <%= 
+		    link_to(
+		      "Delete", 
+		      {
+		        :action => 'destroy', 
+		        :id => @content_node
+		      },
+		      {
+		        :confirm => 'Are you sure?',
+		        :method => :post,
+		        :class => 'action'
+		      }
+		    )
+		  %>
+		</div>
+	  
 		<%= render :partial => 'crud_sidebar' %>
 	</div>
 	<div class="clear">&nbsp;</div>
