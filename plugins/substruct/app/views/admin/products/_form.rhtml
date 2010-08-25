@@ -82,7 +82,7 @@
 	
   		<p>
   			<%= make_label('Date available') %>
-  			<%= date_select 'product', 'date_available'  %>
+  			<%= date_select 'product', 'date_available', {:order => [:month, :day, :year]}   %>
   		</p>
 		</div>
     <div class="floatHalf">
