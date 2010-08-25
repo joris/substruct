@@ -82,29 +82,6 @@
 <div class="clear"></div>
 
 <!-- content edit -->
-<div id="content_edit">
-  <%= text_area 'content_node', 'content', :cols => 85, :rows => 25, :class => 'textAreaCode', :style => "width:670px;", :tabindex => 2  %>
-  <br/>
-  <span class="info">
-    HTML and <a href="http://hobix.com/textile/" target="_blank">Textile</a> markup is allowed here.
-  </span>
+<div id="content_edit" style="margin-bottom:20px;">
+  <%= text_area 'content_node', 'content', :cols => 85, :rows => 25, :class => 'textAreaCode', :style => "width:680px;", :tabindex => 2  %>
 </div>
-
-
-<!-- LATEST UPLOADS & UPLOAD FILE FORM -->
-<h3>Upload files with this content</h3>
-<%= 
-	render :partial => '/shared/multiple_upload',
-		:locals => {
-			:name => 'file',
-			:input_size => '30'
-		}
-%>
-<p class="info">
-	The files uploaded here can be inserted into your content automatically.
-	<br/>
-	If you place the text '[file1]' into your document, the path of the first file 
-	<br/>will be placed into your content when this is saved.
-	<br/>
-	You may upload and place as many files as you wish.
-</p>

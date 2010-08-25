@@ -1,17 +1,12 @@
 <%= form_tag({:action => 'create'}, :multipart => true) %>
 	<div id="left">
 	  <h1><%= @title %></h1>
-	  <ul class="navigation secondary">
-	    <li><a href="/admin/content_nodes/list/">Back to Content List</a></li>
-	  </ul>
-
     <%= render_partial 'form' %>
+	  <%= submit_tag "Save New #{@content_node.type}", :class=> 'button' %>
 	</div>
 
 	<!-- RIGHT -->
 	<div id="right">
-	  <%= submit_tag "Save New #{@content_node.type}", :class=> 'button' %>
-	  
 		<%= render :partial => 'crud_sidebar' %>
 	</div>
 	<div class="clear">&nbsp;</div>
