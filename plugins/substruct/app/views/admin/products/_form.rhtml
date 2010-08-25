@@ -68,68 +68,61 @@
 <h1>Details</h1>
 
 <div class="padLeft">
-	<div class="float" style="width:230px;">
+	<div>
+	  <div class="floatHalf">
+  		<p>
+  			<label>
+  				<%= check_box('product', 'is_discontinued', :class => 'inline') %> 
+  				Product is discontinued
+  			</label>
+  			<span class="info">
+  				Discontinued products will continue to show on the site until there are no more in stock.
+  			</span>
+  		</p>
 	
-		<p>
-			<label>
-				<%= check_box('product', 'is_discontinued', :class => 'inline') %> 
-				Product is discontinued
-			</label>
-			<span class="info">
-				Discontinued products will continue to show on the site until there are no more in stock.
-			</span>
-		</p>
-	
-		<p>
-			<%= make_label('Date available') %>
-			<%= date_select 'product', 'date_available'  %>
-		</p>
-
-		<div class="float">
-			<p>
-				<%= make_label('Width') %>
-				<%= text_field 'product', 'size_width', :size => '10', :class => 'textInput'  %>
-				<br/>
-				<span class="info">(inches)</span>
-			</p>
-			<p>
-				<%= make_label('Depth') %>
-				<%= text_field 'product', 'size_depth', :size => '10', :class => 'textInput'  %>
-				<br/>
-				<span class="info">(inches)</span>
-			</p>
+  		<p>
+  			<%= make_label('Date available') %>
+  			<%= date_select 'product', 'date_available'  %>
+  		</p>
 		</div>
+    <div class="floatHalf">
+  		<div class="float">
+  			<p>
+  				<%= make_label('Width') %>
+  				<%= text_field 'product', 'size_width', :size => '10', :class => 'textInput'  %>
+  				<br/>
+  				<span class="info">(inches)</span>
+  			</p>
+  			<p>
+  				<%= make_label('Depth') %>
+  				<%= text_field 'product', 'size_depth', :size => '10', :class => 'textInput'  %>
+  				<br/>
+  				<span class="info">(inches)</span>
+  			</p>
+  		</div>
 
-		<div class="float">
-			<p>
-				<%= make_label('Height') %>
-				<%= text_field 'product', 'size_height', :size => '10', :class => 'textInput'  %>
-				<br/>
-				<span class="info">(inches)</span>
-			</p>
-			<p>
-				<%= make_label('Weight') %>
-				<%= text_field 'product', 'weight', :size => '10', :class => 'textInput'  %>
-				<br/>
-				<span class="info">(pounds)</span>
-			</p>
-		</div>
-		<div class="clear">&nbsp;</div>
-	
+  		<div class="float">
+  			<p>
+  				<%= make_label('Height') %>
+  				<%= text_field 'product', 'size_height', :size => '10', :class => 'textInput'  %>
+  				<br/>
+  				<span class="info">(inches)</span>
+  			</p>
+  			<p>
+  				<%= make_label('Weight') %>
+  				<%= text_field 'product', 'weight', :size => '10', :class => 'textInput'  %>
+  				<br/>
+  				<span class="info">(pounds)</span>
+  			</p>
+  		</div>
+  		<div class="clear">&nbsp;</div>
+	  </div>
+	  <div class="clear"></div>
 	</div>
+</div>
 
-	<div class="float">
-		<p>
-			<label for="product_description">Description</label>
-			<span class="info">
-		    HTML and <a href="http://hobix.com/textile/" target="_blank">Textile</a> markup is allowed here.
-		  </span>
-			<br/>
-			<%= text_area 'product', 'description', :rows => 14, :class => 'textArea'  %>
-		</p>
-	</div>
-
-	<div class="clear">&nbsp;</div>
+<div class="padLeft">
+	<%= text_area 'product', 'description', :rows => 10, :class => 'textArea', :style => 'width:670px;'  %>
 </div>
 
 <%= render :partial => 'image_upload' %>
