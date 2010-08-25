@@ -1,7 +1,7 @@
 /**
  * Handles files area code on the admin UI.
  */
-var SubFiles = {
+var S_FILES = {
   status: function(file_id) {
 		$('trash_'+file_id).hide();
 		$('spin_'+file_id).show();
