@@ -132,10 +132,7 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
     assert_create_success('Snippet')
   end
   
-  def assert_create_success(node_type)
-    # A file to upload with the content node.
-    shrub1 = fixture_file_upload("/files/shrub1.jpg", 'image/jpeg')
-    
+  def assert_create_success(node_type)    
     post(
       :create,
       :content_node => {
@@ -150,14 +147,7 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
       ",
         :type => node_type,
         :sections => ["", sections(:prophecies).id.to_s]
-      },
-      :file => [ {
-        :file_data => shrub1,
-        :file_data_temp => ""
-      }, {
-        :file_data => "",
-        :file_data_temp => ""
-      } ]
+      }
     )
     
     assert_response :redirect
@@ -166,13 +156,6 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
     # Verify that the blog post really is there.
     some_content = ContentNode.find_by_name('prophecies')
     assert_not_nil some_content
-
-    # Verify that the file is there.
-    user_upload = UserUpload.find_by_filename('shrub1.jpg')
-    assert_not_nil user_upload 
-
-    # We must erase the record and its files by hand, just calling destroy.
-    assert user_upload.destroy
   end
 
 

@@ -6,36 +6,19 @@ class Admin::FilesController < Admin::BaseController
   # Lists all assets / file uploads in the system.
   def index
     @title = "User uploaded files"
-    
-    if params[:sort] == 'name' then
-      sort = "filename ASC"
-    else
-      sort = "created_on DESC"
-    end
-    
-    # Set currently viewing by key
-    if params[:key] then
-      @viewing_by = params[:key]
-      @title << " - #{@viewing_by.pluralize}"    
-      @files = UserUpload.paginate(
-        :order => sort,
-        :page => params[:page],
-        :conditions => ["type = ? and thumbnail is NULL", @viewing_by],
-        :per_page => 30
-      )
-    else
-      @files = UserUpload.paginate(
-        :order => sort,
-        :page => params[:page],
-        :conditions => "thumbnail is NULL",
-        :per_page => 30
-      )
-    end
-
+    get_files(params)
+  end
+  
+  # Shows a screen where we can pick images to insert into our
+  # TinyMCE editors - for ContentNode editing.
+  def image_library
+    @title = "Insert image"
+    # Only interested in images
+    get_files(params.merge({:key => 'Image'}))
+    render :layout => 'modal'
   end
   
   # Removes a file via AJAX
-  #
   def destroy
     @file = UserUpload.find(params[:id])
     if @file
@@ -45,8 +28,7 @@ class Admin::FilesController < Admin::BaseController
     render :text => "" and return
   end
   
-  # Uploads files.
-  #
+  # Uploads files from main files screen
   def upload
     files_saved = 0
     # Build product images from upload
@@ -62,4 +44,33 @@ class Admin::FilesController < Admin::BaseController
     redirect_to :action => 'index' and return
   end
   
+  
+  private
+    # Gets file list for index and tinymce_library
+    def get_files(params)
+      if params[:sort] == 'name' then
+        sort = "filename ASC"
+      else
+        sort = "created_on DESC"
+      end
+
+      # Set currently viewing by key
+      if params[:key] then
+        @viewing_by = params[:key]
+        @title << " - #{@viewing_by.pluralize}"    
+        @files = UserUpload.paginate(
+          :order => sort,
+          :page => params[:page],
+          :conditions => ["type = ? and thumbnail is NULL", @viewing_by],
+          :per_page => 30
+        )
+      else
+        @files = UserUpload.paginate(
+          :order => sort,
+          :page => params[:page],
+          :conditions => "thumbnail is NULL",
+          :per_page => 30
+        )
+      end
+    end
 end

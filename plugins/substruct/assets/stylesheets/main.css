@@ -279,7 +279,6 @@ div.price {
 /* This is used on anchors as well as button objects, so some css trickery is needed */
 .button, .buttonWarning {
 	background-color: #046c82;
-	background-image: url(/plugin_assets/substruct/images/public-ui/buttons/bg.gif) !important;
 	background-repeat: repeat-x;
 	border: 2px solid #000;
 	font-size: 15px;
@@ -295,6 +294,9 @@ div.price {
 	text-align: center;
 	display:block;
 }
+.button {
+  background-image: url(/plugin_assets/substruct/images/public-ui/buttons/bg.gif) !important;
+}
 
 #right a.button, a.button {
 	text-decoration: none;
@@ -303,8 +305,8 @@ div.price {
 }
 
 .buttonWarning {
-	background-color: #FF0000;
-	border-color:#B00000;
+  background-color: #6B2E2E;
+	border-color: #5E0000;
 	color:#eeeeee;
 }
 

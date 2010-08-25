@@ -1,4 +1,4 @@
-<div style="margin-top:30px;">
+<div>
   <% if @content_node.is_blog_post? %>
     <h2>Place Content in Section</h2>
 
@@ -39,25 +39,4 @@
     </p>
   <% end %>
 
-  <!--
-  	LATEST UPLOADS ============================================================
-  -->
-  <h2>Latest File Uploads</h2>
-  <% for @file in @recent_uploads do %>
-  	<div id="recent_upload_<%= @file.id %>" 
-  		style="float:left; height: 50px; width: 50px; overflow: hidden; margin: 5px;"
-  	>
-  		<div class="image">
-  			<% if @file.read_attribute(:type) == "Image" %>
-  				<!-- this is an image -->
-          <a href="<%= @file.public_filename %>" class="submodal-400-400"><%= image_tag @file.public_filename(:thumb) %></a>
-  			<% else %>
-  				<div style="background-color:#eee; padding:5px; width:40px; height:40px; font-size: 1.2em; text-align: center;">
-            <a href="<%= @file.public_filename %>"><%= @file.extension.upcase %></a>
-  				</div>
-  			<% end %>
-  		</div>
-  	</div>
-  <% end %>
-  <div class="clear">&nbsp;</div>
 </div>

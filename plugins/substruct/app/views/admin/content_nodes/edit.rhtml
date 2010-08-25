@@ -2,20 +2,21 @@
 	<div id="left">
 	  <h1><%= @title %></h1>
 	  <ul class="navigation secondary">
-	    <li><a href="/admin/content_nodes/list/">Back to Content List</a></li>
+	    <li>
+	      <%= 
+	        link_to(
+	          "&laquo; Back to #{@content_node.type.to_s.pluralize}",
+	          :controller => 'content_nodes',
+	          :action => 'list',
+	          :key => @content_node.type
+	        )
+	      %>
+	    </li>
 	  </ul>
 
     <%= render_partial 'form' %>
-	
-	  <div class="clear">&nbsp;</div>
-	</div>
-
-
-	<!-- RIGHT -->
-	<div id="right">
-	  <%= submit_tag "Save #{@content_node.type}", :class => 'button' %>
-
-		<div style="float:right;margin-top:-30px;">
+    
+	  <div style="float:right;">
 		  <%= 
 		    link_to(
 		      "Delete", 
@@ -31,7 +32,12 @@
 		    )
 		  %>
 		</div>
-	  
+	  <%= submit_tag "Save #{@content_node.type}", :class => 'button' %>
+	</div>
+
+
+	<!-- RIGHT -->
+	<div id="right">	  
 		<%= render :partial => 'crud_sidebar' %>
 	</div>
 	<div class="clear">&nbsp;</div>
