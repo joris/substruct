@@ -1,5 +1,5 @@
 /**
- * SUBMODAL v1.5
+ * SUBMODAL v1.51
  * Used for displaying DHTML only popups instead of using buggy modal windows.
  *
  * By Seth Banks (webmaster at subimage dot com)
@@ -62,7 +62,8 @@ function initPopUp() {
 		'</div>';
 	theBody.appendChild(popmask);
 	theBody.appendChild(popcont);
-	
+	addEvent(popmask, "click", hidePopWin);
+  
 	gPopupMask = document.getElementById("popupMask");
 	gPopupContainer = document.getElementById("popupContainer");
 	gPopFrame = document.getElementById("popupFrame");	
@@ -155,11 +156,7 @@ function centerPopWin(width, height) {
 			height = gPopupContainer.offsetHeight;
 		}
 		
-		//var theBody = document.documentElement;
 		var theBody = document.getElementsByTagName("BODY")[0];
-		//theBody.style.overflow = "hidden";
-		var scTop = parseInt(getScrollTop(),10);
-		var scLeft = parseInt(theBody.scrollLeft,10);
 	
 		setMaskSize();
 		
@@ -170,15 +167,12 @@ function centerPopWin(width, height) {
 		var fullHeight = getViewportHeight();
 		var fullWidth = getViewportWidth();
 		
-		gPopupContainer.style.top = (scTop + ((fullHeight - (height+titleBarHeight)) / 2)) + "px";
-		gPopupContainer.style.left =  (scLeft + ((fullWidth - width) / 2)) + "px";
+		gPopupContainer.style.top = (((fullHeight - (height+titleBarHeight)) / 2)) + "px";
+		gPopupContainer.style.left =  (((fullWidth - width) / 2)) + "px";
 		//alert(fullWidth + " " + width + " " + gPopupContainer.style.left);
 	}
 }
 addEvent(window, "resize", centerPopWin);
-addEvent(window, "scroll", centerPopWin);
-window.onscroll = centerPopWin;
-
 
 /**
  * Sets the size of the popup mask.
@@ -188,8 +182,7 @@ function setMaskSize() {
 	var theBody = document.getElementsByTagName("BODY")[0];
 			
 	var fullHeight = getViewportHeight();
-	var fullWidth = getViewportWidth();
-	
+
 	// Determine what's bigger, scrollHeight or fullHeight / width
 	if (fullHeight > theBody.scrollHeight) {
 		popHeight = fullHeight;
@@ -197,14 +190,8 @@ function setMaskSize() {
 		popHeight = theBody.scrollHeight;
 	}
 	
-	if (fullWidth > theBody.scrollWidth) {
-		popWidth = fullWidth;
-	} else {
-		popWidth = theBody.scrollWidth;
-	}
-	
 	gPopupMask.style.height = popHeight + "px";
-	gPopupMask.style.width = popWidth + "px";
+	gPopupMask.style.width = "100%";
 }
 
 /**
