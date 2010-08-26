@@ -5,7 +5,7 @@
 	<% @countries.each_with_index do |country, index| %>
 		<%= 
 			link_to(
-				"#{country.name} - #{number_with_delimiter(country.number_of_orders, ',')}",
+				"#{country.name} - #{number_with_delimiter(country.number_of_orders, :delimiter => ',')}",
 				:controller => 'orders', :action => 'for_country', :id => country.id
 			) 
 		%>

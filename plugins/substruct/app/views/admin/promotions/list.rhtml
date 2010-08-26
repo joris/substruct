@@ -58,7 +58,7 @@
 							Buy <%= promo.discount_amount.to_i %>, get 1 free
 						<% end %>
 					</td>
-					<td class="numeric"><%= link_to(number_with_delimiter(promo.orders.size, ','), :action => 'show_orders', :id => promo) %></td>
+					<td class="numeric"><%= link_to(number_with_delimiter(promo.orders.size, :delimiter => ','), :action => 'show_orders', :id => promo) %></td>
 				</tr>
 			<% end %>
 		</table>

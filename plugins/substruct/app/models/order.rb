@@ -385,10 +385,7 @@ class Order < ActiveRecord::Base
     
     # Clear any previous promotions & items
     self.remove_promotion()
-        
-    # Assign proper promotion
-    self.promotion = promo
-    
+            
     # Add any line items necessary from promotion.
     oli = OrderLineItem.new
     logger.info "CREATED OLI"
@@ -420,6 +417,12 @@ class Order < ActiveRecord::Base
     
     if self.promotion_line_item.nil? && !self.order_line_items.include?(oli)
       self.order_line_items << oli
+    end
+    
+    # Assign proper promotion
+    self.promotion = promo
+    unless self.new_record?
+      Order.update(self.id, {:promotion_id => promo.id})
     end
   end
 

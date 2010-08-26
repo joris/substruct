@@ -63,32 +63,32 @@ module Substruct
 
     def assert_response_xml
       assert_response :success
-      assert_equal 'application/xml; charset=utf-8', @response.headers['type']
+      assert_equal 'application/xml; charset=utf-8', @response.headers['Content-Type']
     end
     
     def assert_response_rss
       assert_response :success
-      assert_equal 'application/rss+xml; charset=utf-8', @response.headers['type']
+      assert_equal 'application/rss+xml; charset=utf-8', @response.headers['Content-Type']
     end
     
     def assert_response_js
       assert_response :success
-      assert_equal 'text/javascript; charset=utf-8', @response.headers['type']
+      assert_equal 'text/javascript; charset=utf-8', @response.headers['Content-Type']
     end
     
     def assert_response_pdf
       assert_response :success
-      assert_equal 'application/pdf', @response.headers['type']
+      assert_equal 'application/pdf', @response.headers['Content-Type']
     end
     
     def assert_response_json
       assert_response :success
-      assert_equal 'application/json; charset=utf-8', @response.headers['type']
+      assert_equal 'application/json; charset=utf-8', @response.headers['Content-Type']
     end
   
     def assert_response_csv
       assert_response :success
-      assert_equal 'text/csv', @response.headers['type']
+      assert_equal 'text/csv', @response.headers['Content-Type']
     end
     
   end

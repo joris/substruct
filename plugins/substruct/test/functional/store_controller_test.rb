@@ -56,10 +56,7 @@ class StoreControllerTest < ActionController::TestCase
   def test_affiliate_code_cookie
     # Setup - write cookie
     affil = affiliates(:joes_marketing)
-    # TODO: uncomment when moving to Rails 2.3
-    # @request.cookies[:affiliate] = affil.code
-    # Necessary for Rails < 2.3
-    @request.cookies['affiliate'] = CGI::Cookie.new('affiliate', affil.code)
+    @request.cookies['affiliate'] = affil.code
     # Exercise
     get :index
     assert_response :success
@@ -86,7 +83,7 @@ class StoreControllerTest < ActionController::TestCase
     # Now with a term, that returns only one result.
     a_term = "lightsaber"
     get :search, :search_term => a_term
-    assert_redirected_to :action => :show
+    assert_redirected_to :action => :show, :id => assigns(:products)[0].code
     assert assigns(:products)
     assert_equal 1, assigns(:products).size
   end

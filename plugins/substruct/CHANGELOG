@@ -1,6 +1,68 @@
 Substruct Version Changelog and Update Notes
 ===============================================================================
 
+VERSION 1.3 - 08/25/2010
+---------------------------------------
+Upgraded to Rails 2.3.8, which has been long overdue.
+
+Besides upgrading Rails, I took the time in this release to clean up the 
+content editing features and make Substruct a solid blogging and CMS.
+
+There are many subtle UI tweaks which improve the workflow of 
+generating content.
+
+Added:
+  1. TinyMCE content editor for blogging and product descriptions.
+     - Provides much more non-tech friendly way to enter information.
+  2. Slick image selector / uploader when editing content from TinyMCE
+     - There's an image button that links to an image selection modal, 
+       and you may also upload multiple images, then insert one.
+  3. Vendored many required gems to simplify installation process.
+     - This requires you to run rake gems:build now when deploying.
+
+Updated:
+  1. Upgraded to Rails 2.3.8
+  2. Refactored the SubModal code and bumped version to 2.0
+  3. Many UI tweaks
+
+Removed:
+  1. Support for textile in ContentNodes and Product descriptions 
+     is out the window. Since we're using a rich content editor it makes
+     no sense to support this format any longer. Migrations are included
+     to render the textile content, then save back to the database as HTML.
+
+!!! GOTCHAS !!!
+
+Migrations:
+  Migration support for Engines (which Substruct requires) has been removed
+  completely in Rails 2.3 / Engines 2.3.
+  
+  We're handling migrations by copying them into the db/migrations directory from
+  Substruct. This means you need to use the old-style NUMBERED migrations, 
+  not the new timestamped ones.
+
+Code Mixing:
+  Automatic "code mixing" for controllers was removed with Rails/Engines 2.3
+  This is basically a short cut for requiring a controller/helper from the 
+  plugin before reopening the class again in the application.
+  
+  If you're overriding any controller code from Substruct 
+  you will need to include the file like so...
+  
+  require_dependency RAILS_ROOT + "/vendor/plugins/substruct/app/controllers/store_controller"
+  class StoreController < ApplicationController
+    ...your custom code here...
+  end
+  
+Upgrade steps:
+  0. Edit your config/environment.rb file,
+     * Ensure RAILS_GEM_VERSION is set to 2.3.8
+  1. rake gems:build
+  2. rake substruct:upgrade:v1_3
+     - This preps your app for Rails 2.3.8 by editing some files.
+  3. rake rails:update
+
+
 VERSION 1.1 - 02/10/2010
 ---------------------------------------
 Added:

@@ -90,10 +90,11 @@ class ContentNodesControllerTest < ActionController::TestCase
     get :list_by_section, :section_name => a_section.name
     assert_response :success
     assert_equal assigns(:title), "Blog entries for #{a_section.name}"
-    assert_template 'index'
+    assert_template 'index.rhtml'
     assert_not_nil assigns(:content_nodes)
     
     # Assert the blog posts are being shown.
+    assert assigns(:sections).size > 0
     assert_select "a", :count => 1, :text => content_nodes(:pigasus_awards).title
     assert_select "a", :count => 1, :text => content_nodes(:silent_birth).title
 

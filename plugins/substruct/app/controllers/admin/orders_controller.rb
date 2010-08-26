@@ -263,15 +263,16 @@ class Admin::OrdersController < Admin::BaseController
   end
   
   # Processes orders passed in, packages as XML or CSV and downloads
-  #
   def download
     @orders = Order.find(params[:ids])
-    
+
     case params[:format]
       when 'xml'
         content = Order.get_xml_for(@orders)
+        content_type = 'application/xml; charset=utf-8'
       when 'csv'
         content = Order.get_csv_for(@orders)
+        content_type = 'text/csv'
     end
     
     directory = File.join(RAILS_ROOT, "public/system/order_files")
@@ -287,7 +288,7 @@ class Admin::OrdersController < Admin::BaseController
     # write the file
     File.open(save_to, "w") { |f| f.write(content)  }
     
-    send_file(save_to, :type => "text/#{params[:format]}")
+    send_file(save_to, :type => content_type)
   end
   
   # PRIVATE METHODS ===========================================================

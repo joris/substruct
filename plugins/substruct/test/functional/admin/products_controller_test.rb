@@ -152,7 +152,7 @@ class Admin::ProductsControllerTest < ActionController::TestCase
     
     # If saved we should be redirected to edit form. 
     assert_response :redirect
-    assert_redirected_to :action => :edit
+    assert_redirected_to :action => :edit, :id => assigns(:product).id
     
     # Verify that the product really is there and it doesn't have images.
     a_product = Product.find_by_code('SHRUBBERY')
@@ -202,7 +202,7 @@ class Admin::ProductsControllerTest < ActionController::TestCase
     
     # If saved we should be redirected to edit form. 
     assert_response :redirect
-    assert_redirected_to :action => :edit
+    assert_redirected_to :action => :edit, :id => assigns(:product).id
     
     # Verify that the product really is there and it doesn't have images.
     a_product = Product.find_by_code('SHRUBBERY')
@@ -328,12 +328,12 @@ class Admin::ProductsControllerTest < ActionController::TestCase
     
     # If saved we should be redirected to edit form. 
     assert_response :redirect
-    assert_redirected_to :action => :edit
+    assert_redirected_to :action => :edit, :id => assigns(:product).id
     
     # Verify that the product and everything else are there.
     a_product = Product.find_by_code('SHRUBBERY')
     assert_not_nil a_product 
-    assert_equal a_product.related_products, [a_coat, a_towel]
+    assert_same_elements a_product.related_products, [a_coat, a_towel]
     assert_equal a_product.tags.count, 1, "Wrong tag count."
     assert_equal a_product.variations.count, 2, "Wrong variation count."
     assert_equal a_product.images.count, 2, "Wrong image count."
@@ -403,7 +403,7 @@ class Admin::ProductsControllerTest < ActionController::TestCase
     
     # If saved we should be redirected to edit form. 
     assert_response :redirect
-    assert_redirected_to :action => :edit
+    assert_redirected_to :action => :edit, :id => assigns(:product).id
     
     # Verify that the product and everything else are there.
     a_product = Product.find_by_code('SHRUBBERY')
@@ -473,7 +473,7 @@ class Admin::ProductsControllerTest < ActionController::TestCase
     
     # If saved we should be redirected to edit form. 
     assert_response :redirect
-    assert_redirected_to :action => :edit
+    assert_redirected_to :action => :edit, :id => assigns(:product).id
     
     # Verify that the product and everything else are there.
     a_product.reload
@@ -808,7 +808,7 @@ class Admin::ProductsControllerTest < ActionController::TestCase
     
     # If saved we should be redirected to edit form. 
     assert_response :redirect
-    assert_redirected_to :action => :edit
+    assert_redirected_to :action => :edit, :id => assigns(:product).id
     
     # Verify that the product and everything else are there.
     a_product = Product.find_by_code('SHRUBBERY')

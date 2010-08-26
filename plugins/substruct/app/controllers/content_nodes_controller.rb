@@ -74,7 +74,7 @@ class ContentNodesController < ApplicationController
       :page => params[:page],
       :per_page => 5
     )
-    render :action => 'index' and return
+    render :action => 'index.rhtml' and return
   end
 
   private

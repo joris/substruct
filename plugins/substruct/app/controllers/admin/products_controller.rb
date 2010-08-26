@@ -117,7 +117,7 @@ class Admin::ProductsController < Admin::BaseController
           
             new_download.uploaded_data = i[:download_data]
             if new_download.save
-              new_download.product = @product
+              @product.downloads << new_download
             else
               download_errors.push(new_download.filename)
             end
@@ -221,7 +221,9 @@ class Admin::ProductsController < Admin::BaseController
 	  @variation = Variation.new
 	  # Set random ID so that we can reference things from JS...
 	  @variation.id = Time.now.to_i
-	  render(:update) { |page| page.insert_html :bottom, 'variation_container', :partial => 'variation' }
+	  render(:update) do |page| 
+	    page.insert_html :bottom, 'variation_container', :partial => 'variation', :locals => {:variation => @variation}
+	  end
   end
 	
 	# Called for actually removing a variation if found, or just returns
@@ -257,13 +259,13 @@ class Admin::ProductsController < Admin::BaseController
   # Removes an image from the system
   def remove_image_ajax
     Image.find_by_id(params[:id]).destroy()
-    render :nothing => true
+    render :text => "", :layout => false
   end
   
   # Removes a download
   def remove_download_ajax
     Download.find_by_id(params[:id]).destroy()
-    render :nothing => true
+    render :text => "", :layout => false
   end
 end
 
