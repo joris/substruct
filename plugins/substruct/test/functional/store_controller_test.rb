@@ -13,7 +13,7 @@ class StoreControllerTest < ActionController::TestCase
   #
   # Anyway a DOM node pointed by it is never manipulated, always an 
   # entire show_cart view inside the modal window is shown or reloaded,
-  # using showPopWin() or window.location.reload() on complete. 
+  # using SUBMODAL.show() or window.location.reload() on complete. 
   
   def setup
     @santa_address = OrderAddress.find(order_addresses(:santa_address).id)
@@ -225,14 +225,14 @@ class StoreControllerTest < ActionController::TestCase
     # Try adding a product.
     a_product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => a_product.id)
-    # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+    # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
 
     # Try adding a variation.
     a_variation = items(:red_lightsaber)
     xhr(:post, :add_to_cart_ajax, :variation => a_variation.id, :quantity => "2")
-    # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+    # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 2, cart.items.length
 
@@ -240,7 +240,7 @@ class StoreControllerTest < ActionController::TestCase
     a_product = items(:holy_grenade)
     xhr(:post, :add_to_cart_ajax, :id => a_product.id, :quantity => "2")
     assert_response 400
-    # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+    # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     # It should not have added anything.
     assert_equal 2, cart.items.length
@@ -276,7 +276,7 @@ class StoreControllerTest < ActionController::TestCase
     # Try adding a product.
     a_product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => a_product.id)
-    # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+    # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
 
@@ -299,7 +299,7 @@ class StoreControllerTest < ActionController::TestCase
     # Try adding a product.
     a_product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => a_product.id)
-    # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+    # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
 
@@ -316,7 +316,7 @@ class StoreControllerTest < ActionController::TestCase
     # Try adding a product.
     a_product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => a_product.id)
-    # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+    # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
 
@@ -350,7 +350,7 @@ class StoreControllerTest < ActionController::TestCase
     # Add a product to the cart.
     a_product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => a_product.id)
-    # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+    # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
 
@@ -453,7 +453,7 @@ class StoreControllerTest < ActionController::TestCase
     # Add a product to the cart.
     a_product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => a_product.id)
-    # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+    # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
 
@@ -491,7 +491,7 @@ class StoreControllerTest < ActionController::TestCase
     # Add a product to the cart.
     a_product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => a_product.id)
-    # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+    # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
 
@@ -545,7 +545,7 @@ class StoreControllerTest < ActionController::TestCase
     # Add a product to the cart.
     a_product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => a_product.id)
-    # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+    # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
 

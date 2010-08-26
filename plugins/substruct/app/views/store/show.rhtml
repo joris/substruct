@@ -63,7 +63,7 @@
 			form_remote_tag(
 				:url=> { :controller=>'store', :action=>'add_to_cart_ajax', :id => @product.id },
 				:html => {:name => 'add_product_form', :id => 'add_to_cart_form'},
-				:complete => "showPopWin('/store/show_cart', 600, 400, null, true)",
+				:complete => "SUBMODAL.show('/store/show_cart', 600, 400, null, true)",
 				:failure => 'alert("That item appears to have gone out of stock before you were able to add it to your cart.\n\nPlease refresh this page.")',
 				:update => 'items'
 			)

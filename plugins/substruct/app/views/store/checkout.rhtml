@@ -40,7 +40,7 @@
 				 * Shows login window when dupe email address is encountered.
 				 */
 				function showLoginWin(email_address) {
-					showPopWin("<%= login_url %>&login="+email_address, 600, 400, returnRefresh);
+					SUBMODAL.show("<%= login_url %>&login="+email_address, 600, 400, returnRefresh);
 				}
 			</script>
 			<%=

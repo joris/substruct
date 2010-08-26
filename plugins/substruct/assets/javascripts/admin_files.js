@@ -85,9 +85,7 @@ var S_FILE_SELECT = {
 			ed.dom.setAttrib('__mce_tmp', 'id', '');
 			ed.undoManager.add();
 		}
-
-	  //editor.execCommand('mceInsertContent', false, S_FILE_SELECT.selected['image'].src);
-	  window.top.hidePopWin();
+	  window.top.SUBMODAL.hide();
 	},
 	// Initializes event handlers for clicking on images.
 	init: function() {

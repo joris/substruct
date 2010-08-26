@@ -13,5 +13,9 @@ tinyMCE.init({
   elements: "content_node_content,product_description",
   plugins : "safari,paste,pagebreak,fullscreen,substruct_browser",
   pagebreak_separator: "<!--more-->",
-  relative_urls: false
+  relative_urls: false,
+  // Allow iFrames
+  extended_valid_elements: "iframe[align<bottom?left?middle?right?top|class|frameborder|height|id"
+    +"|longdesc|marginheight|marginwidth|allowTransparency|name|scrolling<auto?no?yes|src|style"
+    +"|title|width]"
 });

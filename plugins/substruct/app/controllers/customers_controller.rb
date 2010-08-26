@@ -202,7 +202,7 @@ class CustomersController < ApplicationController
 	    render(:update) { |page| page.call('showLoginWin', user.email_address) }
 	    return
     else
-      render(:update) { |page| page.call('hidePopWin') }
+      render(:update) { |page| page.call('SUBMODAL.hide') }
       return
     end
   end
