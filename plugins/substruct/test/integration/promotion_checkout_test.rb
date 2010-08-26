@@ -13,8 +13,8 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
 
   def test_promo_minimum_cart_value    
     assert @promo.minimum_cart_value > @inexpensive_item.price
-    post 'store/add_to_cart', :id => @inexpensive_item.id
-    assert_redirected_to 'store/checkout'
+    post '/store/add_to_cart', :id => @inexpensive_item.id
+    assert_redirected_to '/store/checkout'
     assert_equal assigns(:order).items.length, 1
     
     perform_successful_checkout()
@@ -34,7 +34,7 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
     assert (@expensive_item.price + @inexpensive_item.price) >= @promo.minimum_cart_value
     assert @promo.minimum_cart_value > @inexpensive_item.price
     
-    get 'store'
+    get '/store'
     assert_response :success
     
     # ADD ITEMS TO CART
@@ -48,11 +48,11 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
     assert_equal @promo, assigns(:order).promotion
     
     # REMOVE EXPENSIVE ITEM FROM CART
-    xml_http_request(:post, 'store/remove_from_cart_ajax', {:id => @expensive_item.id})
+    xml_http_request(:post, '/store/remove_from_cart_ajax', {:id => @expensive_item.id})
     assert_response :success
     
     # HIT SHIPPING METHOD PAGE
-    get 'store/select_shipping_method'
+    get '/store/select_shipping_method'
     assert_response :success
     
     # VERIFY PROMO NOT APPLIED
@@ -64,13 +64,13 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
     @promo.update_attribute(:minimum_cart_value, @expensive_item.price-1)
     
     # ADD ITEMS TO CART
-    xml_http_request(:post, 'store/add_to_cart_ajax', {:id => @expensive_item.id})
+    xml_http_request(:post, '/store/add_to_cart_ajax', {:id => @expensive_item.id})
     assert_response :success
     
     # FILL OUT FORM UNSUCCESSFULLY WITH PROMO APPLIED
     perform_unsuccessful_checkout()
     assert_equal @promo, assigns(:order).promotion
-    
+
     # FILL OUT FORM UNSUCCESSFULLY WITH PROMO APPLIED
     perform_unsuccessful_checkout()
     assert_equal @promo, assigns(:order).promotion
@@ -85,7 +85,7 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
     # Check out with a promo code.
     def perform_unsuccessful_checkout
       post(
-        'store/checkout', 
+        '/store/checkout', 
         {
           :order_account => {
             :cc_number => "4007000000027",
@@ -103,13 +103,14 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
         }
       )
       assert_response :success
+      assert_template 'checkout'
       assert !flash.now[:notice].blank?
     end
   
     # Check out with a promo code.
     def perform_successful_checkout
       post(
-        'store/checkout', 
+        '/store/checkout', 
         {
           :order_account => {
             :cc_number => "4007000000027",
@@ -133,10 +134,10 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
     # the promotion we're testing.
     def add_items_to_cart
       # Using both methods (ajax, non ajax) just to test legacy support.
-      xml_http_request(:post, 'store/add_to_cart_ajax', {:id => @expensive_item.id})
+      xml_http_request(:post, '/store/add_to_cart_ajax', {:id => @expensive_item.id})
       assert_response :success
-      post 'store/add_to_cart', :id => @inexpensive_item.id
-      assert_redirected_to 'store/checkout'
+      post '/store/add_to_cart', :id => @inexpensive_item.id
+      assert_redirected_to '/store/checkout'
       assert_equal assigns(:order).items.length, 2   
     end
 end

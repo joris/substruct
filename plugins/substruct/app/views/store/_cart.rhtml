@@ -33,7 +33,7 @@
 					<span class="title" title="<%=h item.name %>">
 						<%= 
 							link_to(
-								truncate(item.name, 10), 
+								truncate(item.name, :length => 10), 
 								:controller => 'store', 
 								:action => 'show', 
 								:id => item.product_id

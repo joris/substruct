@@ -185,7 +185,7 @@ class CustomersControllerTest < ActionController::TestCase
     
     # If done should redirect to login. 
     assert_response :redirect
-    assert_redirected_to :action => :login
+    assert_redirected_to :action => :login, :modal => '', :login => @customer.email_address
 
     # We need to follow the redirect.
     assert_equal "Your password has been reset and emailed to you.", flash[:notice]

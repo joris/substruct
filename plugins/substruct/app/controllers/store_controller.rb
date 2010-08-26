@@ -65,7 +65,10 @@ class StoreController < ApplicationController
     @title = "Search Results for: #{@search_term}"
     @products = Product.paginate(
       :order => 'name ASC',
-      :conditions => ["(name LIKE ? OR code = ?) AND #{Product::CONDITIONS_AVAILABLE}", "%#{@search_term}%", @search_term],
+      :conditions => [
+        "(name LIKE ? OR code = ?) AND #{Product::CONDITIONS_AVAILABLE}", 
+        "%#{@search_term}%", @search_term
+      ],
       :page => params[:page],
       :per_page => 10
     )
@@ -73,7 +76,7 @@ class StoreController < ApplicationController
     if @products.size == 1
       redirect_to :action => 'show', :id => @products[0].code and return
     else
-      render :action => 'index'
+      render :action => 'index.rhtml'
     end
   end
 
@@ -84,7 +87,7 @@ class StoreController < ApplicationController
     # Tags are passed in as an array.
     # Passed into this controller like this:
     # /store/show_by_tags/tag_one/tag_two/tag_three/...
-    @tag_names = params[:tags]
+    @tag_names = params[:tags] || []
     # Generate tag ID list from names
     tag_ids_array = Array.new
     for name in @tag_names
@@ -114,7 +117,7 @@ class StoreController < ApplicationController
       p.replace list[pager.current.offset, pager.items_per_page]
     end
     
-    render :action => 'index'
+    render :action => 'index.rhtml'
   end
 
   # This is a component...
@@ -471,7 +474,6 @@ class StoreController < ApplicationController
       # All went well?
       logger.info("\n\nTRYING TO REDIRECT...")
       redirect_to_shipping and return
-      #
     rescue
       logger.error "\n\nSomething went bad when trying to checkout..."
       stack_trace = $@.join("\n")

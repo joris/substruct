@@ -117,21 +117,23 @@ class Admin::QuestionsControllerTest < ActionController::TestCase
     assert_template 'edit'
 
     # Post to it a question.
-    post :update,
-    :id => a_question.id,
-    :question => {
-      :short_question => "About The Stuff",
-      :long_question => "I bought a cup of The Stuff and I'm feeling weird, what's happening? I'm feeling like there's something inside me.",
-      :answer => "",
-      :email_address => "somebody@somewhere.com",
-      :featured => "0",
-      :rank => "",
-      :times_viewed => "0"
-    }
+    post(
+      :update,
+      :id => a_question.id,
+      :question => {
+        :short_question => "About The Stuff",
+        :long_question => "I bought a cup of The Stuff and I'm feeling weird, what's happening? I'm feeling like there's something inside me.",
+        :answer => "",
+        :email_address => "somebody@somewhere.com",
+        :featured => "0",
+        :rank => "",
+        :times_viewed => "0"
+      }
+    )
     
     # If saved we should be redirected to list. 
     assert_response :redirect
-    assert_redirected_to :action => :show
+    assert_redirected_to :action => :show, :id => assigns(:question).id
     
     # Verify that the change was made.
     a_question.reload
