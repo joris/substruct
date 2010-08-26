@@ -95,6 +95,12 @@ var S_FILE_SELECT = {
 	  image_select_links.each(function(link){
 	    Event.observe(link, 'click', S_FILE_SELECT.fillPanel);
 	  });
+	  // For tab switching
+	  gPanes = new Array(
+  	  'image_library', 
+  	  'image_upload'
+  	);
 	}
 }
+var gPanes = null;
 Event.observe(window, 'load', S_FILE_SELECT.init);

@@ -8,7 +8,7 @@ class Image < UserUpload
   MAX_SIZE = 10.megabyte
   
   SIZES = {
-    :thumb => '50x50>', 
+    :thumb => '75x75>', 
     :small => '200x200'
   }
 
