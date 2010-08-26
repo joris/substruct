@@ -50,7 +50,7 @@ class BuyerTest < ActionController::IntegrationTest
     # Try adding a product.
     a_product = items(:towel)
     post 'store/add_to_cart_ajax', :id => a_product.id
-    # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+    # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     a_cart = assigns(:order)
     assert_equal a_cart.items.length, 1
     
@@ -112,7 +112,7 @@ class BuyerTest < ActionController::IntegrationTest
     # Try adding a product.
     a_product = items(:towel)
     post 'store/add_to_cart_ajax', :id => a_product.id
-    # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+    # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     a_cart = assigns(:order)
     assert_equal a_cart.items.length, 1
     
@@ -201,7 +201,7 @@ class BuyerTest < ActionController::IntegrationTest
     a_cart = nil
     [:holy_grenade, :uranium_portion].each do |sym|
       post '/store/add_to_cart_ajax', :id => items(sym).id
-      # Here nothing is rendered directly, but a showPopWin() javascript function is executed.
+      # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
       a_cart = assigns(:order)
     end
     assert_equal a_cart.items.length, 2

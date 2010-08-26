@@ -25,7 +25,7 @@
 			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceExample');
 			ed.addCommand('substructBrowser', function() {
 			  window.top.gMceEditor = ed;
-			  window.top.showPopWin('/admin/files/image_library', 650, 450);
+			  window.top.SUBMODAL.show('/admin/files/image_library', 650, 450);
 			});
 
 			// Register example button

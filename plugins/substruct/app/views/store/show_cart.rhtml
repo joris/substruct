@@ -4,7 +4,7 @@
 <h1>Your Cart</h1>
 
 <p>
-<a href="#" onclick="window.top.hidePopWin();return false;" class="action">Continue Shopping</a>
+<a href="#" onclick="window.top.SUBMODAL.hide();return false;" class="action">Continue Shopping</a>
 </p>
 
 <% if @order.empty? then %>
@@ -96,7 +96,7 @@
 			<a href="<%= get_link_to_checkout %>" class="button" style="width:150px;" target="_top">Checkout Now</a>
 		</div>
 		<p>
-			<a href="#" onclick="window.top.hidePopWin();return false;" class="action">Continue Shopping</a>
+			<a href="#" onclick="window.top.SUBMODAL.hide();return false;" class="action">Continue Shopping</a>
 		</p>
 	</div>
 <% end #products  %>

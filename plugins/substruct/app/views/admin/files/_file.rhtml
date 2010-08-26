@@ -35,7 +35,7 @@
         image_thumb_path = file.public_filename(:thumb)
     %>
       <!-- this is an image -->
-      <a href="<%= file.public_filename %>" class="submodal-400-400"><%= image_tag image_thumb_path %></a>
+      <a href="<%= file.public_filename %>" class="submodal-resize"><%= image_tag image_thumb_path %></a>
     <% else %>
       <span style="background-color:#eee; padding:5px; font-size: 1.2em;">
         <%= file.extension.upcase %>
