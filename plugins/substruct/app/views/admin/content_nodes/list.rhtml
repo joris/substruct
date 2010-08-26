@@ -5,21 +5,7 @@
 	    <li><a href="/admin/content_nodes/list_sections/">Back to Content Section List</a></li>
 	  </ul>
 	<% else %>
-  	<ul class="navigation primary">
-      <% ContentNode::TYPES.each do |type| %>
-        <li class="<%= active_li_css(@viewing_by, type) %>">
-  				<%= 
-  					link_to_unless(
-  					  (@viewing_by == type),
-  						type.pluralize,
-  						:action => 'list',
-  						:key => type
-  					)
-  				%>
-  			</li>
-  		<% end %>
-    </ul>
-    <div class="clear"></div>
+    <%= render :partial => 'subnav' %>
 	  <ul class="navigation secondary">
 	    <li>
   			<%=
