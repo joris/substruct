@@ -343,8 +343,13 @@ ul.navigation.secondary {
 
 .navigation.tertiary li {
 	background-color: #ccc;
-	padding-left: 4px;
-	padding-right: 4px;
+  padding: 5px;
+  -moz-border-radius-topleft: 5px;
+  -moz-border-radius-topright: 5px;
+  -webkit-border-top-left-radius: 5px;
+  -webkit-border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 .navigation.tertiary li.active {
 	background-color: #fff;
@@ -354,7 +359,7 @@ ul.navigation.secondary {
 #subnav {
 	border-bottom: 1px solid #ccc !important;
 	border-bottom: 0px;
-	height: 18px;
+	height: 28px;
 }
 
 /* nav link colors --------------------------------------------------------- */

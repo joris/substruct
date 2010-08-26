@@ -3,6 +3,11 @@
 #
 class Admin::FilesController < Admin::BaseController
 
+  verify :method => :post, 
+    :only => [:upload], 
+    :render => {:text => "Uploading files can happen from a HTTP post only."}
+
+
   # Lists all assets / file uploads in the system.
   def index
     @title = "User uploaded files"
@@ -40,8 +45,14 @@ class Admin::FilesController < Admin::BaseController
         end
       end
     end
+    
     flash[:notice] = "#{files_saved} file(s) uploaded."
-    redirect_to :action => 'index' and return
+    
+    if params[:modal]
+      redirect_to :action => 'image_library' and return
+    else
+      redirect_to :action => 'index' and return
+    end
   end
   
   

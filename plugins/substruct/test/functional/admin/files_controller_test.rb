@@ -4,11 +4,12 @@ class Admin::FilesControllerTest < ActionController::TestCase
   fixtures :rights, :roles, :users
   fixtures :user_uploads
 
+  def setup
+    login_as :admin
+  end
 
   # Test the index action.
-  def test_should_show_index
-    login_as :admin
-
+  def test_index_success
     get :index
     assert_response :success
     assert_template 'index'
@@ -18,33 +19,38 @@ class Admin::FilesControllerTest < ActionController::TestCase
 
 
   # Test the list action passing keys.
-  def test_should_show_index_using_keys
-    login_as :admin
-
+  def test_index_images
     get :index, :key => "Image"
     assert_response :success
     assert_template 'index'
     assert_equal assigns(:title), "User uploaded files - #{assigns(:viewing_by).pluralize}"
     assert_not_nil assigns(:files)
+  end
 
+  def test_index_assets
     get :index, :key => "Asset"
     assert_response :success
     assert_template 'index'
     assert_equal assigns(:title), "User uploaded files - #{assigns(:viewing_by).pluralize}"
     assert_not_nil assigns(:files)
+  end
 
+  def test_index_sorted_by_name
     get :index, :sort => "name"
     assert_response :success
     assert_template 'index'
     assert_equal assigns(:title), "User uploaded files"
-    assert_not_nil assigns(:files)
+    assert assigns(:files).size > 1
+    # Ensure order of files
+    last_filename = ''
+    assigns(:files).each do |f|
+      assert f.filename > last_filename
+      last_filename = f.filename
+    end
   end
   
-  
-  # Test if we can remove files.
-  def test_should_remove_file
-    login_as :admin
 
+  def test_destroy_success
     an_user_upload = user_uploads(:lightsaber_blue_upload)
 
     # Post to it a content_node.
@@ -55,37 +61,55 @@ class Admin::FilesControllerTest < ActionController::TestCase
     }
   end
 
+  def test_image_library
+    get :image_library
+    assert_response :success
+    assert_layout 'modal'
+  end
+  
+  def test_cant_get_upload
+    get :upload
+    assert_response :success
+    assert_equal "Uploading files can happen from a HTTP post only.", @response.body
+  end
 
-  def test_should_upload_file
-    login_as :admin
-    
+  def test_upload_success
     lightsabers_image = fixture_file_upload("/files/lightsabers.jpg", 'image/jpeg')
 
-    # Go to the index.
-    get :index
-    assert_response :success
-    assert_template 'index'
+    post(
+      :upload,
+      :file => [
+        { :file_data_temp => "", :file_data => lightsabers_image }, 
+        { :file_data_temp => "", :file_data => "" }
+      ]
+    )
 
-    # Post an image.
-    post :upload,
-    :file => [ {
-        :file_data_temp => "",
-        :file_data => lightsabers_image
-      }, {
-        :file_data_temp => "",
-        :file_data => ""
-    } ]
-
-    # If saved we should be redirected to index. 
-    assert_response :redirect
     assert_redirected_to :action => :index
-    
-    # Verify that the file is there.
-    an_user_upload = UserUpload.find_by_filename('lightsabers.jpg')
-    assert_not_nil an_user_upload 
+    user_upload = UserUpload.find_by_filename('lightsabers.jpg')
+    assert_kind_of UserUpload, user_upload
 
     # We must erase the record and its files by hand, just calling destroy.
-    assert an_user_upload.destroy
+    assert user_upload.destroy
+  end
+  
+  def test_upload_succes_modal
+    lightsabers_image = fixture_file_upload("/files/lightsabers.jpg", 'image/jpeg')
+
+    post(
+      :upload,
+      :modal => true,
+      :file => [
+        { :file_data_temp => "", :file_data => lightsabers_image }, 
+        { :file_data_temp => "", :file_data => "" }
+      ]
+    )
+
+    assert_redirected_to :action => :image_library
+    user_upload = UserUpload.find_by_filename('lightsabers.jpg')
+    assert_kind_of UserUpload, user_upload
+
+    # We must erase the record and its files by hand, just calling destroy.
+    assert user_upload.destroy
   end
 
 end
