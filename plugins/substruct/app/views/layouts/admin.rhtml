@@ -75,6 +75,10 @@
 		  <li class="<%= (@cname == 'users' || @cname == 'customers') ? 'active' : '' %>">
 				<%= link_to_section "Users", :controller=>"/admin/users" rescue nil %>
 			</li>
+			
+			<li class="<%= (['preferences', 'tags', 'sections', 'roles'].include?(@cname)) ? 'active' : '' %>">
+				<%= link_to_section "Prefs", :controller=>"/admin/preferences" rescue nil %>
+			</li>
 		</ul>
 	</div>
 
@@ -86,7 +90,6 @@
 			  <span class="user_id"><%=h User.find(session[:user]).login %> - <%=h request.env["SERVER_NAME"] %></span>
 			</div>
 			<a href="/">Public site</a> -
-			<a href="/admin/preferences/">Preferences</a> - 
 			<a href="http://code.google.com/p/substruct/wiki/HelpOverview" class="submodal-800-600">Online Help</a> -
 			<a href="http://dev.subimage.com/projects/substruct/">About Substruct</a>
 		</div>
