@@ -1,4 +1,5 @@
-#  Copyright (c) 2006 Subimage Interactive - http://www.subimage.com
+# Copyright (c) 2010 Subimage LLC
+# http://www.subimage.com
 require_dependency 'substruct/login_system.rb'
 
 require 'patch_attachment_fu'

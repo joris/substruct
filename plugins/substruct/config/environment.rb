@@ -15,12 +15,13 @@ Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here
   config.load_paths += %W( #{RAILS_ROOT}/vendor/plugins/substruct )
   config.action_controller.session_store = :active_record_store
+  
+  config.gem 'RedCloth'
+  config.gem 'fastercsv'
+  config.gem 'mime-types', :lib => 'mime/types'
+  config.gem 'mini_magick', :version => '1.3.3'
+  config.gem 'ezcrypto'
 end
-
-# Include your application configuration below
-require 'rubygems'
-gem 'RedCloth'
-gem 'fastercsv'
 
 begin
   Preference.init_mail_settings()
