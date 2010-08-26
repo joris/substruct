@@ -1,16 +1,5 @@
 <div id="left">
-  <h1><%= @title %></h1>
-  
-  <ul class="navigation secondary">
-    <li>
-      <%=
-        link_to(
-          'All Payments List',
-          :action => 'list_payments'
-        )
-      %>
-    </li>
-  </ul>
+  <%= render :partial => 'subnav_list' %>
   
 	<% if @affiliates.length == 0 then %>
 		<h4>No affiliates have been created.</h4>
