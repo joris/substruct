@@ -55,8 +55,6 @@ Code Mixing:
   end
   
 Upgrade steps:
-  0. Edit your config/environment.rb file,
-     * Ensure RAILS_GEM_VERSION is set to 2.3.8
   1. rake gems:build
   2. rake substruct:upgrade:v1_3
      - This preps your app for Rails 2.3.8 by editing some files.
