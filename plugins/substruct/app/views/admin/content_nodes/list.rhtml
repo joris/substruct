@@ -62,7 +62,7 @@
         <%= content_node.sections.collect{|s| s.name}.join(', ') %>
       </td>
       <td><%= content_node.display_on.strftime("%m/%d/%y") %></td>
-			<td><%= content_node.user.login %></td>
+			<td><%= content_node.created_by %></td>
     </tr>
     <% end %>
   <% else %>
