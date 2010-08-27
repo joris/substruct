@@ -205,10 +205,10 @@ namespace :substruct do
       FileUtils.cp(File.join(ss_dir, 'config', 'environment.rb'), config_dir)
       FileUtils.cp(File.join(ss_dir, 'config', 'database.yml'), config_dir)
       
-      # application.rb
+      # application_controller.rb
       # necessary to include substruct engine before filters
       app_rb = File.join(ss_dir, 'config', 'application.rb.example')
-      FileUtils.cp(app_rb, File.join(tmp_dir, 'app', 'controllers', 'application.rb'))
+      FileUtils.cp(app_rb, File.join(tmp_dir, 'app', 'controllers', 'application_controller.rb'))
       
       # touch loading.html - necessary for submodal
       FileUtils.touch(File.join(tmp_dir, 'public', 'loading.html'))
