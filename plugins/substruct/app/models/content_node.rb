@@ -72,9 +72,9 @@ class ContentNode < ActiveRecord::Base
   end
   
   private
-    # Inserts URL from content name, and makes it save for URL usage.
+    # Inserts URL from content name, and makes it safe for URL usage.
     def clean_url
-      self.url = self.title if self.url.blank?
+      self.url = self.title.clone if self.url.blank?
       
       self.url.downcase!
       self.url = self.url.gsub(/[^[:alnum:]]/,'-').gsub(/-{2,}/,'-')
