@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
     t.datetime "display_on",                                :null => false
     t.datetime "created_on",                                :null => false
     t.string   "type",       :limit => 50,  :default => "", :null => false
+    t.integer  "user_id"
   end
 
   add_index "content_nodes", ["name"], :name => "name"
@@ -81,10 +82,10 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
     t.integer  "variation_quantity",                :default => 0,     :null => false
   end
 
-  add_index "items", ["quantity", "is_discontinued", "variation_quantity"], :name => "published"
-  add_index "items", ["product_id", "type"], :name => "variation"
   add_index "items", ["date_available", "is_discontinued", "quantity", "variation_quantity", "type"], :name => "tag_view"
   add_index "items", ["name", "code", "is_discontinued", "date_available", "quantity", "variation_quantity", "type"], :name => "search"
+  add_index "items", ["product_id", "type"], :name => "variation"
+  add_index "items", ["quantity", "is_discontinued", "variation_quantity"], :name => "published"
 
   create_table "order_account_types", :force => true do |t|
     t.string "name", :limit => 30, :default => "", :null => false
@@ -116,8 +117,8 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
     t.integer "country_id",                  :default => 0,  :null => false
   end
 
-  add_index "order_addresses", ["first_name", "last_name"], :name => "name"
   add_index "order_addresses", ["country_id", "order_user_id"], :name => "countries"
+  add_index "order_addresses", ["first_name", "last_name"], :name => "name"
 
   create_table "order_line_items", :force => true do |t|
     t.integer "item_id"
@@ -179,12 +180,12 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
   end
 
   add_index "orders", ["order_number"], :name => "order_number"
-  add_index "orders", ["order_user_id"], :name => "order_user_id"
   add_index "orders", ["order_status_code_id"], :name => "status"
+  add_index "orders", ["order_user_id"], :name => "order_user_id"
 
-  create_table "plugin_schema_migrations", :id => false, :force => true do |t|
-    t.string "plugin_name"
-    t.string "version"
+  create_table "plugin_schema_info", :id => false, :force => true do |t|
+    t.string  "plugin_name"
+    t.integer "version"
   end
 
   create_table "preferences", :force => true do |t|
@@ -200,8 +201,8 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
     t.integer "rank"
   end
 
-  add_index "product_downloads", ["product_id"], :name => "pid"
   add_index "product_downloads", ["download_id"], :name => "did"
+  add_index "product_downloads", ["product_id"], :name => "pid"
 
   create_table "product_images", :force => true do |t|
     t.integer "image_id",   :default => 0, :null => false
@@ -319,7 +320,7 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
     t.datetime "created_on"
   end
 
-  add_index "wishlist_items", ["order_user_id"], :name => "user"
   add_index "wishlist_items", ["item_id"], :name => "item"
+  add_index "wishlist_items", ["order_user_id"], :name => "user"
 
 end

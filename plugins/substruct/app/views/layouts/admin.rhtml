@@ -84,7 +84,7 @@
 			<div style="margin-bottom:10px;">
 			  <span style="text-transform:capitalize;"><%= current_user_notice rescue nil %></span>
 			  <br/>
-			  <span class="user_id"><%=h User.find(session[:user]).login %> - <%=h request.env["SERVER_NAME"] %></span>
+			  <span class="user_id"><%=h @logged_in_user.login %> - <%=h request.env["SERVER_NAME"] %></span>
 			</div>
 			<a href="/">Public site</a> -
 			<a href="http://code.google.com/p/substruct/wiki/HelpOverview" class="submodal-800-600">Online Help</a> -
