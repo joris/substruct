@@ -4,69 +4,58 @@
 
 == Introduction ==
 
-This software package is developed using the Engines plugin. To find out more about how to use engines in general, go to http://rails-engines.org
+_Substruct is not meant for end users or novices to install_.
+
+This is a software program made for professional web developers.
+If you don't have experience developing software you could be extremely frustrated by this process.
 
 *These directions assume you already have a working Rails hosting environment. This means...*
- * A web server such as
+ * A way to run Rails
    * Webrick (included with Rails)
-   * Apache
-   * Lighttpd
- * A rails app server
-   * Mongrel
-   * FastCGI
- * MySQL / PGSql
+   * Apache / Mod_rails
+ * MySQL
  * Ruby
  * Rails
  * Rubygems
 
 These directions _also_ assume you have some familiarity with developing Rails applications in general and a working knowledge of your file system.
 
+
+
 == Installation ==
 
-=== 0. Install the following gems...Substruct needs them to function properly. ===
- * RedCloth
- * fastercsv
- * mime-types
- * mini_magick
- * ezcrypto
+=== 1. Install Imagemagick ===
 
-{{{
+Imagemagick is required to resize image files that are uploaded for your products and content.
 
-gem install RedCloth
-gem install fastercsv
-gem install mime-types
-gem install mini_magick
-gem install ezcrypto
+There are various ways to install it, depending on the operating system you're running.
 
-}}}
+[http://www.imagemagick.org/script/install-source.php Here's a link on how to compile ImageMagick from source]
 
-!! NOTE !! Be sure openssl is also installed. For Debian linux boxes this is _not_ included in the default Ruby installer. If you are running on debian it's as easy as typing 'apt-get install libopenssl-ruby1.8'
+This example probably doesn't cover every scenario. If you're confused, please google "how to install imagemagick (your operating system here)"
 
 
-
-=== 1. Download & extract the latest release ===
+=== 2. Download & extract the latest release ===
 
 All releases are stored as tar / gzipped files here:
 http://code.google.com/p/substruct/downloads/list
 
-They are marked with version numbers. Grab the latest one and extract it.
+They are marked with version numbers. Grab the latest one and extract it using TAR or a similar utility.
 
-For instance, if you were working with release 0.97, you'd type the following on OS X and Linux
-
-{{{
-
-tar -xzvf substruct_rel_0-97.tar.gz
-
-}}}
+If you don't know how to extract tarred/gzipped files [http://lmgtfy.com/?q=how+do+i+extract+tar+gz+file please go google that].
 
 [GettingTheCode If you'd rather use SVN to download the latest code click here.]
 
 
-=== 2. Set up your databases and edit your database.yml file ===
+=== 3. Edit your database.yml file ===
 
-You'll need to have a running MySQL or PGSql instance, and create the proper databases for use.
+You'll need to have a running database to use Substruct.
 
-We recommend the following:
+  * We develop against MySQL v5.x
+    * MySQL v6 is not tested or supported at the current time
+  * PostgreSQL has been rumored to work, but nobody on the core team tests against it.
+
+We recommend the following database setup:
 
  * substruct_development
  * substruct_test
@@ -75,12 +64,26 @@ We recommend the following:
 Edit your database.yml file to make sure that Rails can access your database properly.
 For more information on the database.yml file, visit this url: http://wiki.rubyonrails.org/rails/pages/database.yml
 
-=== 3. Initialize your database ===
+=== 4. Compile vendored gems ===
+
+Substruct stores required gem files in the vendor/gems folder for ease of installation.
+This means you don't have to require the gems, but you still have to build them for your native platform.
+
+Run the following command.
+
+{{{
+
+rake gems:build
+
+}}}
+
+=== 4. Initialize your database ===
 
 Run this command from inside the substruct directory you extracted previously
 
 {{{
 
+rake db:create
 rake substruct:db:bootstrap
 
 }}}
@@ -99,6 +102,6 @@ Try to login to http://localhost:3000/admin as ''admin'' / ''admin''
 
 === Misc ===
 
-If you're going to be doing credit card transactions you need a processor account. [wiki:AuthorizeNet Check out how to get one.]
+If you're going to be doing credit card transactions you need a processor account. [AuthorizeNet Check out how to get one.]
 
 Make sure you check out [MaintainingSubstruct how to maintain Substruct via cron] as well.
