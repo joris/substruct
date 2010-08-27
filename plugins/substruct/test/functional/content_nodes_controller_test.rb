@@ -55,9 +55,8 @@ class ContentNodesControllerTest < ActionController::TestCase
     
     get :show_snippet, :name => a_content_node.name
     assert_response :success
-    assert_template 'show_snippet'
-    assert_not_nil assigns(:content_node)
-    
+
+    assert_not_nil assigns(:content_node)    
     # Assert the content node is being shown.
     assert_select "p", :count => 1, :text => /You will be billed via credit card./
   end
