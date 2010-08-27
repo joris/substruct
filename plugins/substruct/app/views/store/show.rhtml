@@ -19,10 +19,12 @@
 			<% if @images.size > 1 %>
 				<h4>Other product images</h4>
 				<% for @p_image in @images do %>
-					<!-- product image for reordering -->
+				  <% next if @p_image == @default_image %>
 					<div class="float" style="margin:5px;">
 					  <% if @p_image.public_filename(:thumb) then %>
-              <a href="<%= @p_image.public_filename %>" rel="lightbox[product_image]"><%= image_tag @p_image.public_filename(:thumb) %></a>
+              <a href="<%= @p_image.public_filename %>" 
+                rel="lightbox[product_image]"
+              ><%= image_tag @p_image.public_filename(:thumb) %></a>
             <% end %>
 					</div>
 				<% end %>
