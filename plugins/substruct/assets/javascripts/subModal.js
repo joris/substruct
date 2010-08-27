@@ -67,6 +67,39 @@ function removeEvent(obj, evType, fn, useCapture){
   }
 }
 
+/**
+ * Gets the real scroll top
+ */
+function getScrollTop() {
+  if (self.pageYOffset) // all except Explorer
+  {
+    return self.pageYOffset;
+  }
+  else if (document.documentElement && document.documentElement.scrollTop)
+    // Explorer 6 Strict
+  {
+    return document.documentElement.scrollTop;
+  }
+  else if (document.body) // all other Explorers
+  {
+    return document.body.scrollTop;
+  }
+}
+function getScrollLeft() {
+  if (self.pageXOffset) // all except Explorer
+  {
+    return self.pageXOffset;
+  }
+  else if (document.documentElement && document.documentElement.scrollLeft)
+    // Explorer 6 Strict
+  {
+    return document.documentElement.scrollLeft;
+  }
+  else if (document.body) // all other Explorers
+  {
+    return document.body.scrollLeft;
+  }
+}
 
 /**
  * Code below taken from - http://www.evolt.org/article/document_body_doctype_switching_and_more/17/30655/
@@ -101,7 +134,8 @@ var SUBMODAL = {
   _tab_indexes: new Array(),
   
   // Accessible variables -----------------------------------------------------
-  disable_scrolling: true, // disable scrolling of main window on show
+  center_on_scroll: false, // should we center the modal on scroll?
+  disable_scrolling: false, // disable scrolling of main window on show
   hide_selects: false, // should SELECT tags be hidden on show
   close_img: '/plugin_assets/substruct/images/close.gif',
   return_function: null, // called when SUBMODAL.hide is done
@@ -262,7 +296,7 @@ var SUBMODAL = {
       var titleBarHeight = parseInt(document.getElementById("popupTitleBar").offsetHeight, 10);
       var fullHeight = getViewportHeight();
       var fullWidth = getViewportWidth();
-      SUBMODAL._pop_container.style.top = (((fullHeight - (height+titleBarHeight)) / 2)) + "px";
+      SUBMODAL._pop_container.style.top = (((fullHeight - (height+titleBarHeight)) / 2)+getScrollTop()) + "px";
       SUBMODAL._pop_container.style.left =  (((fullWidth - width) / 2)) + "px";
     }
   },
@@ -345,3 +379,6 @@ var SUBMODAL = {
 };
 addEvent(window, "load", SUBMODAL.init);
 addEvent(window, "resize", SUBMODAL.center);
+if (SUBMODAL.center_on_scroll == true) {
+  addEvent(window, "scroll", SUBMODAL.center);
+}
