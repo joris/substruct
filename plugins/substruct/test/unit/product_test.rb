@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ProductTest < ActiveSupport::TestCase
   # If the model was inherited from another model, the fixtures must be the
   # base model, as it will be used as the table name.
-  fixtures :items, :tags
+  fixtures :items, :tags, :preferences
 
 
   # Test if the fixtures are of the proper type.
@@ -259,5 +259,32 @@ class ProductTest < ActiveSupport::TestCase
     assert !a_product.is_new?
   end
 
+  def test_clean_code
+    p = Product.new(
+      :name => 'My new product',
+      :price => 20
+    )
+    assert p.save!
+    assert_equal 'MY-NEW-PRODUCT', p.code
+  end
+  
+  def test_doesnt_replace_existing_code
+    p = Product.new(
+      :name => 'My new product',
+      :code => 'spaces will be replaced',
+      :price => 20
+    )
+    assert p.save!
+    assert_equal 'SPACES-WILL-BE-REPLACED', p.code
+  end
+  
+  def test_clean_code_handles_numbers
+    p = Product.new(
+      :name => 'Hat 7-1/8',
+      :price => 20
+    )
+    assert p.save!
+    assert_equal 'HAT-7-1-8', p.code
+  end
 
 end
