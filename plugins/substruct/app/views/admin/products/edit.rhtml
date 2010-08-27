@@ -9,7 +9,7 @@
 		<div style="float:right;">
 			<%= link_to 'Delete This Product', {:action => 'destroy', :id => @product}, :confirm => 'Are you sure?', :class => 'action' %>
 		</div>
-    <%= submit_tag 'Save This Product', :class => 'button hundredthirty' %>
+    <%= submit_tag 'Save This Product', :disable_with => 'Saving...', :class => 'button hundredthirty' %>
 
 </div>
 

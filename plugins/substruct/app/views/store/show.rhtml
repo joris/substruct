@@ -10,7 +10,7 @@
 	<% if @default_image %>
 		<div style="float:left; margin:20px; width: 200px;">
       <% if @default_image.public_filename(:small) then %>
-        <a href="<%= @default_image.public_filename %>" class="submodal-800-400">
+        <a href="<%= @default_image.public_filename %>" rel="lightbox[product_image]">
           <%= image_tag @default_image.public_filename(:small) %>
         </a>
       <% end %>
@@ -22,7 +22,7 @@
 					<!-- product image for reordering -->
 					<div class="float" style="margin:5px;">
 					  <% if @p_image.public_filename(:thumb) then %>
-              <a href="<%= @p_image.public_filename %>" class="submodal-800-400"><%= image_tag @p_image.public_filename(:thumb) %></a>
+              <a href="<%= @p_image.public_filename %>" rel="lightbox[product_image]"><%= image_tag @p_image.public_filename(:thumb) %></a>
             <% end %>
 					</div>
 				<% end %>
