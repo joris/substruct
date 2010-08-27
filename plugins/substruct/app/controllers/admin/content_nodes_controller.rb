@@ -102,6 +102,8 @@ class Admin::ContentNodesController < Admin::BaseController
   def create
     @title = "Creating a content node"
     @content_node = ContentNode.new(params[:content_node])
+    @content_node.user = @logged_in_user
+    
     if params[:content_node]
       @content_node.type = params[:content_node][:type]
     end

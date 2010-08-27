@@ -155,7 +155,12 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
     
     # Verify that the blog post really is there.
     some_content = ContentNode.find_by_name('prophecies')
-    assert_not_nil some_content
+    assert_kind_of ContentNode, some_content
+    
+    assert_equal(
+      users(:admin), some_content.user,
+      "Logged in user should have been set as content creator"
+    )
   end
 
 

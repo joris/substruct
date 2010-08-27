@@ -34,11 +34,9 @@ Removed:
 !!! GOTCHAS !!!
 
 Migrations:
-  Migration support for Engines (which Substruct requires) has been removed
-  completely in Rails 2.3 / Engines 2.3.
-  
-  We're handling migrations by copying them into the db/migrations directory from
-  Substruct. This means you need to use the old-style NUMBERED migrations, 
+  Migration support for Engines in Rails 2.3 is a bit strange.
+  There are some upgrade steps below. Ensure to follow them properly.
+  Specifically - we need need to use the old-style NUMBERED migrations, 
   not the new timestamped ones.
 
 Code Mixing:
@@ -59,6 +57,15 @@ Upgrade steps:
   2. rake substruct:upgrade:v1_3
      - This preps your app for Rails 2.3.8 by editing some files.
   3. rake rails:update
+  4. rake db:migrate:upgrade_plugin_migrations
+  5. rake db:migrate:plugin NAME=substruct
+  6. Edit your environment.rb file, ensure you see a line like the one below
+     for "timestamped_migrations".
+     
+    Rails::Initializer.run do |config|
+      config.active_record.timestamped_migrations = false
+      # ...rest of your config...
+    end
 
 
 VERSION 1.1 - 02/10/2010

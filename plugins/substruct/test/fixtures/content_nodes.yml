@@ -1,4 +1,5 @@
 silent_birth: 
+  user: admin
   name: silent_birth
   created_on: <%= 1.month.ago.to_s(:db) %>
   title: Silent birth
@@ -8,6 +9,7 @@ silent_birth:
   sections: junk_food_news, pseudoscientific_claims
 
 pigasus_awards:
+  user: admin
   name: pigasus_awards
   created_on: <%= 1.year.ago.to_s(:db) %>
   title: JREF Annual Pigasus Awards
@@ -17,6 +19,7 @@ pigasus_awards:
   sections: junk_food_news, pseudoscientific_claims
 
 tinkerbel_pregnant:
+  user: admin
   name: tinkerbel_pregnant
   created_on: <%= 1.year.ago.to_s(:db) %>
   title: Tinkerbel Pregnant
@@ -25,6 +28,7 @@ tinkerbel_pregnant:
   content: We was informed that Tinkerbel, a very known celebrity (a Chihuahua owned by another not so known person), is pregnant. Yesterday she made an ultrasonography to know if is she or he. Ohh, Tinkerbel, congratulations.
 
 order_receipt:
+  user: admin
   name: OrderReceipt
   created_on: <%= 1.year.ago.to_s(:db) %>
   title: Thank you for your order!
@@ -33,6 +37,7 @@ order_receipt:
   content: You will be billed via credit card.
 
 affiliate_terms: 
+  user: admin
   name: AffiliateTermsAndConditions
   created_on: 2006-02-16 21:56:50 -08:00
   title: Affiliate Terms and Conditions
@@ -48,6 +53,7 @@ affiliate_terms:
     * Payment will be made on all completed orders 90 days after order completion at a rate of 5% total order cost.
 
 home: 
+  user: admin
   name: home
   created_on: <%= 1.year.ago.to_s(:db) %>
   title: Home

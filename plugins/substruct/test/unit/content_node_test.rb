@@ -125,7 +125,7 @@ class ContentNodeTest < ActiveSupport::TestCase
     assert node.save
     assert_equal(
       'some-wonderful-piece-of-content',
-      node.url
+      node.name
     )
   end
   

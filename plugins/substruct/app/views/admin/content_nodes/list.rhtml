@@ -39,14 +39,14 @@
     <colgroup>
       <col />
       <col style="width:150px;"/>
-      <col style="width:100px;"/>
-			<col style="width:70px;"/>
+      <col style="width:90px;"/>
+			<col style="width:110px;"/>
     </colgroup>
     <tr>
       <th>Title</th>
       <th>Sections</th>
       <th>Publish On</th>
-			<th>Type</th>
+			<th>Created By</th>
     </tr>
 
   <% if @content_nodes.length > 0 then %>
@@ -62,7 +62,7 @@
         <%= content_node.sections.collect{|s| s.name}.join(', ') %>
       </td>
       <td><%= content_node.display_on.strftime("%m/%d/%y") %></td>
-			<td><%= content_node.class.to_s %></td>
+			<td><%= content_node.user.login %></td>
     </tr>
     <% end %>
   <% else %>

@@ -94,12 +94,8 @@ namespace :substruct do
       schema_files = Dir.glob(File.join(RAILS_ROOT, 'vendor/plugins/substruct/db/migrate', '*'))
       schema_version = File.basename(schema_files.sort.last).to_i
       ActiveRecord::Base.connection.execute(%Q\
-        INSERT INTO plugin_schema_migrations
-        VALUES('substruct', #{schema_version});
-      \)
-      ActiveRecord::Base.connection.execute(%Q\
-        INSERT INTO plugin_schema_info
-        VALUES('substruct', #{schema_version});
+        INSERT INTO schema_migrations
+        VALUES('#{schema_version}-substruct');
       \)
       
       puts '=' * 80

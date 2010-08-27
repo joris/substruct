@@ -2,11 +2,11 @@
 #
 class ContentNode < ActiveRecord::Base
   belongs_to :content_node_type
+  belongs_to :user
   has_and_belongs_to_many :sections
   
   TYPES = ['Blog', 'Page', 'Snippet']
-
-  # 'name' is really used as the content node's URL.
+  
   alias_attribute :url, :name
   
   #############################################################################
