@@ -12,9 +12,8 @@
 	<% # Have to load javascripts in this order for TinyMCE to work properly :/ %>
 	<%= javascript_include_tag 'prototype' %>
 	<%= javascript_include_tag 'tiny_mce/tiny_mce', :plugin => 'substruct' %>
-	<%= javascript_include_tag 'effects' %>
-	<%= javascript_include_tag 'dragdrop' %>
-	<%= javascript_include_tag 'controls' %>
+	<%= javascript_include_tag 'effects', 'dragdrop', 'controls' %>
+	<%= javascript_include_tag 'lightbox', :plugin => 'substruct' %>
   <%= 
     javascript_include_tag(
       'mce_init', 'substruct', 'subModal', 
@@ -22,7 +21,13 @@
       :cache => 'substruct_cache'
     )
   %>
-	<%= stylesheet_link_tag 'admin', 'subModal', :plugin => 'substruct', :cache => 'substruct_admin' %>
+	<%= 
+	  stylesheet_link_tag(
+	    'admin', 'subModal', 'lightbox', 
+	    :plugin => 'substruct', 
+	    :cache => 'substruct_admin'
+	  )
+	%>
 	<%= yield :header %>
 </head>
 <body>
