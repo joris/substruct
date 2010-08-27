@@ -62,31 +62,26 @@ home:
   content: |
     <div id="fullContent">
     
-    h1. Welcome to Substruct
+    <h1>Welcome to Substruct</h1>
     
     <div class="padLeft">
     If you can see this, you've probably set things up correctly.
     
-    *Substruct is a...*
+    <b>Substruct is a...</b>
     
-    * Content Management System, including Blog capabilities
-    * E-commerce Engine that...
-    ** Processes credit cards through Authorize.net
-    ** Allows for inventory management
-    ** Has hooks to tie into fulfillment houses
-    * Q/A system including FAQ management
+    <ul>
+      <li>Content Management System, including Blog capabilities</li>
+      <li>E-commerce Engine that...</li>
+      <ul>
+        <li>Processes credit cards through Authorize.net and PayPal</li>
+        <li>Allows for inventory management</li>
+        <li>Has hooks to tie into fulfillment houses</li>
+      </ul>
+    </ul>
     
     </div>
-    
-    h2. Templates
-    
-    <div class="padLeft">
-    
-    Substruct ships with a variety of default templates. You'll probably want to use these as a base for your own custom ones.
-    
+        
     <a href="http://dev.subimage.com/projects/substruct/wiki/Customizing">Click here to learn more about customizing Substruct</a>.
     
     </div>
- 
     </div>
-
