@@ -44,6 +44,15 @@ class ContentNode < ActiveRecord::Base
     self.type == 'Blog'
   end
   
+  # Safe way to know who created a piece of content
+  def created_by
+    if self.user
+      return self.user.login
+    else
+      return ''
+    end
+  end
+  
   private
     # Inserts URL from content name, and makes it save for URL usage.
     def clean_url
