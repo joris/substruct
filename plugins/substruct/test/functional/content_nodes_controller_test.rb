@@ -40,13 +40,14 @@ class ContentNodesControllerTest < ActionController::TestCase
     
     # Assert the content node is being shown.
     assert_select "p", :count => 1, :text => /According to the creator of/
-
-    # Now using an invalid name.
+  end
+  
+  def test_show_by_content_invalid_name
     get :show_by_name, :name => "bleargh"
     assert_response :missing
   end
   
-  
+
   # Test the show snippet action.
   def test_snippet
     # Now using a snippet.

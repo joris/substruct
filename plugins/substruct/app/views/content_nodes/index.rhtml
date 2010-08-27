@@ -10,7 +10,9 @@
   <% for node in @content_nodes %>
     <h2 class="cap"><a href="/blog/<%= node.name %>/"><%= node.title %></a></h2>
     <div class="padLeft">
-      <%= get_markdown_snippet(node.content) %>
+      <div>
+        <%= node.short_content %>
+      </div>
       <div class="line">&nbsp;</div>
       <p class="info">
         <a href="/blog/<%= node.name %>/">Read more...</a> |

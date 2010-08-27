@@ -189,5 +189,29 @@ class ContentNodeTest < ActiveSupport::TestCase
     
     assert_equal '', cn.created_by
   end
+  
+  def test_short_content
+    cn = content_nodes(:silent_birth)
+    
+    assert cn.content.include?(ContentNode::PAGEBREAK)
+    assert !cn.short_content.include?(ContentNode::PAGEBREAK)
+    
+    extended_content = 'This line is extended content and should appear after the "jump" on the blog section'
+    assert(
+      !cn.short_content.include?(extended_content),
+      "Extended content should not be included in short content"
+    )
+  end
+  
+  # Ensures output of short_content is cleaned in some way.
+  def test_short_content_doesnt_end_with_open_tag
+    cn = content_nodes(:silent_birth)
+    assert cn.content.include?(ContentNode::PAGEBREAK)
+    assert_not_equal(
+      cn.short_content.rindex("<p>"),
+      cn.short_content.size-3,
+      "Short content shouldn't end with an open paragraph tag."
+    )
+  end
 
 end
