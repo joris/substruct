@@ -48,6 +48,7 @@ class StoreController < ApplicationController
           :page => params[:page],
           :per_page => 10
         )
+        render :action => 'index.rhtml' and return
       end
       format.rss do
         @products = Product.find(

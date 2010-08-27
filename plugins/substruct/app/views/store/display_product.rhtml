@@ -6,7 +6,7 @@
 	<!-- product image -->
 	<%
 		if @image then
-                       image_url = @image.public_filename(:small)
+      image_url = @image.public_filename(:small)
 			if image_url then
 	%>
 			<%= image_tag(image_url, :id => "product_image_#{@product.id}", :align => 'left', :class => 'productImage') %>
@@ -15,7 +15,7 @@
 		end
 	%>
 
-	<%= get_markdown_snippet(@product.description) %>
+	<%= @product.description %>
 
 	<div style="float:right;">
 		<%= 
