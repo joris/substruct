@@ -8,7 +8,7 @@ xml.rss :version => "2.0" do
     @products.each do |item|
       xml.item do
         xml.title item.name
-        xml.description get_markdown(item.description)
+        xml.description item.description
         xml.pubDate item.date_available.to_s(:rfc822)
         xml.link url_for(:controller=>'store', :action=>'show', :id => item.code, :only_path => false)
       end
