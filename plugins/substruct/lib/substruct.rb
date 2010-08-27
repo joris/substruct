@@ -231,4 +231,13 @@ LOOKING INTO OTHER OPTIONS!!!
     "http://#{request.env['SERVER_NAME']}?affiliate=#{affiliate.code}"
   end
 
+  # Scans text for open HTML/XML tags and closes them.
+  def close_tags(text)
+    open_tags = []
+    text.scan(/\<([^\>\s\/]+)[^\>\/]*?\>/).each { |t| open_tags.unshift(t) }
+    text.scan(/\<\/([^\>\s\/]+)[^\>]*?\>/).each { |t| open_tags.slice!(open_tags.index(t)) }
+    open_tags.each {|t| text += "</#{t}>" }
+    text
+  end
+
 end

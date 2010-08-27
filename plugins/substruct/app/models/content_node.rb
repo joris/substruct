@@ -1,11 +1,15 @@
 # ContentNode is the base class for all of our content.
 #
 class ContentNode < ActiveRecord::Base
+  include Substruct
+  
   belongs_to :content_node_type
   belongs_to :user
   has_and_belongs_to_many :sections
   
   TYPES = ['Blog', 'Page', 'Snippet']
+  # Defines a pagebreak in our blog entries
+  PAGEBREAK = "<!--more-->"
   
   alias_attribute :url, :name
   
@@ -51,6 +55,20 @@ class ContentNode < ActiveRecord::Base
     else
       return ''
     end
+  end
+  
+  # Returns an excerpt we can display on the blog index using PAGEBREAK
+  def short_content
+    if self.content.include?(PAGEBREAK)
+      # Also look for pagebreaks wrapped in paragraph tags
+      if self.content.include?("<p>#{PAGEBREAK}</p>")
+        pagebreak_pos = self.content.index("<p>#{PAGEBREAK}</p>")
+      else
+        pagebreak_pos = self.content.index(PAGEBREAK)
+      end
+      c = close_tags(self.content[0, pagebreak_pos])
+    end
+    return c || self.content
   end
   
   private
