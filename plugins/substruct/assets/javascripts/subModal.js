@@ -90,6 +90,7 @@ function getViewportWidth() {
 
 var SUBMODAL = {
   // "Private" variables ------------------------------------------------------
+  _doc_body: null, // reference to document body
   _pop_mask: null,
   _pop_container: null,
   _pop_frame: null,
@@ -120,7 +121,8 @@ var SUBMODAL = {
       document.onkeypress = SUBMODAL.keyDownHandler;
     }
     // Add the HTML to the body
-    theBody = document.getElementsByTagName('BODY')[0];
+    SUBMODAL._doc_body = document.getElementsByTagName('BODY')[0];
+    
     popmask = document.createElement('div');
     popmask.id = 'popupMask';
     popcont = document.createElement('div');
@@ -135,8 +137,8 @@ var SUBMODAL = {
         '</div>' +
         '<iframe src="'+ SUBMODAL._default_page +'" style="width:100%;height:100%;background-color:transparent;" scrolling="auto" frameborder="0" allowtransparency="true" id="popupFrame" name="popupFrame" width="100%" height="100%"></iframe>' +
       '</div>';
-    theBody.appendChild(popmask);
-    theBody.appendChild(popcont);
+    SUBMODAL._doc_body.appendChild(popmask);
+    SUBMODAL._doc_body.appendChild(popcont);
     addEvent(popmask, "click", SUBMODAL.hide);
 
     SUBMODAL._pop_mask = document.getElementById("popupMask");
@@ -177,10 +179,14 @@ var SUBMODAL = {
   // @showCloseBox - show the close box - default true
   show: function(url, width, height, returnFunc, showCloseBox) {
     // show or hide the window close widget
-    if (showCloseBox == null || showCloseBox == true) {
+    showCloseBox = showCloseBox || true;
+    if (showCloseBox == true) {
       document.getElementById("popCloseBox").style.display = "block";
     } else {
       document.getElementById("popCloseBox").style.display = "none";
+    }
+    if (SUBMODAL.disable_scrolling == true) {
+      SUBMODAL._doc_body.style.overflow = "hidden";
     }
     SUBMODAL._is_shown = true;
     SUBMODAL.disableTabIndexes();
@@ -191,7 +197,6 @@ var SUBMODAL = {
 
     var titleBarHeight = parseInt(document.getElementById("popupTitleBar").offsetHeight, 10);
 
-
     SUBMODAL._pop_container.style.width = width + "px";
     SUBMODAL._pop_container.style.height = (height+titleBarHeight) + "px";
 
@@ -199,12 +204,13 @@ var SUBMODAL = {
 
     // need to set the width of the iframe to the title bar width because of the dropshadow
     // some oddness was occuring and causing the frame to poke outside the border in IE6
-    SUBMODAL._pop_frame.style.width = parseInt(document.getElementById("popupTitleBar").offsetWidth, 10) + "px";
+    SUBMODAL._pop_frame.style.width = parseInt(
+      document.getElementById("popupTitleBar").offsetWidth, 10
+    ) + "px";
     SUBMODAL._pop_frame.style.height = (height) + "px";
 
     // set the url
     SUBMODAL._pop_frame.src = url;
-
     SUBMODAL.return_function = returnFunc;
     // for IE
     if (SUBMODAL.hide_selects == true) {
@@ -215,8 +221,8 @@ var SUBMODAL = {
   // @callReturnFunc - bool - determines if we call the return function specified
   hide: function(callReturnFunc) {
     SUBMODAL._is_shown = false;
-    var theBody = document.getElementsByTagName("BODY")[0];
-    theBody.style.overflow = "";
+    // restore any hidden scrollbars
+    SUBMODAL._doc_body.style.overflow = "";
     SUBMODAL.restoreTabIndexes();
     if (SUBMODAL._pop_mask == null) {
       return;
@@ -252,30 +258,23 @@ var SUBMODAL = {
       if (height == null) {
         height = SUBMODAL._pop_container.offsetHeight;
       }
-
-      var theBody = document.getElementsByTagName("BODY")[0];
-
       SUBMODAL.setMaskSize();   
       var titleBarHeight = parseInt(document.getElementById("popupTitleBar").offsetHeight, 10);
-
       var fullHeight = getViewportHeight();
       var fullWidth = getViewportWidth();
-
       SUBMODAL._pop_container.style.top = (((fullHeight - (height+titleBarHeight)) / 2)) + "px";
       SUBMODAL._pop_container.style.left =  (((fullWidth - width) / 2)) + "px";
-      //alert(fullWidth + " " + width + " " + SUBMODAL._pop_container.style.left);
     }
   },
   
   // Sets the size of our popup mask
   setMaskSize: function() {
-    var theBody = document.getElementsByTagName("BODY")[0];
     var fullHeight = getViewportHeight();
     // Determine what's bigger, scrollHeight or fullHeight / width
-    if (fullHeight > theBody.scrollHeight) {
+    if (fullHeight > SUBMODAL._doc_body.scrollHeight) {
       popHeight = fullHeight;
     } else {
-      popHeight = theBody.scrollHeight;
+      popHeight = SUBMODAL._doc_body.scrollHeight;
     }
     SUBMODAL._pop_mask.style.height = popHeight + "px";
     SUBMODAL._pop_mask.style.width = "100%";
