@@ -149,7 +149,7 @@ class StoreController < ApplicationController
     @default_image = @images[0]
     @variations = @product.variations.find(
       :all, 
-      :order => 'name ASC',
+      :order => '-variation_rank DESC',
       :conditions => 'quantity > 0'
     )
   end

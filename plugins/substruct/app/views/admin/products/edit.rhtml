@@ -1,8 +1,21 @@
 <%= form_tag({:action => 'save', :id => @product}, :multipart => true) %>
 <div id="left">
   <h1><%= @title %></h1>
+  <p>
+    <%=
+      link_to(
+        'View on the site',
+        {
+          :controller => '/store',
+          :action => 'show',
+          :id => @product.code
+        },
+        :target => 'ss_store'
+      )
+    %>
+  </p>
   <ul class="navigation secondary">
-    <li><a href="/admin/products/list/">Back to Product List</a></li>
+    <li><a href="/admin/products/list/">&laquo; Back to Product List</a></li>
   </ul>
 
     <%= render :partial => 'form' %>
