@@ -17,11 +17,6 @@ class Admin::ProductsController < Admin::BaseController
       :per_page => 30
     )
   end
-  
-  # Shows all tags in system and lets user list products by tag.
-  def list_tags
-    
-  end
 
 	# Lists products by tag
   def list_by_tags
@@ -42,7 +37,7 @@ class Admin::ProductsController < Admin::BaseController
 			return
     end
 
-    @title = "Product List For Tag - '#{@tag.name}'"
+    @title = "Tag - #{@tag.name}"
 
     conditions = nil
 
