@@ -92,24 +92,13 @@ class VariationTest < ActiveSupport::TestCase
 
 
   # Test if an invalid variation really will NOT be created.
-  def test_should_not_create_invalid_variation
+  def test_unique_code
     @v = Variation.new
     @v.product = items(:the_stuff)
-    assert !@v.valid?
-    assert @v.errors.invalid?(:code)
-
-    # TODO: A variation cannot be considered to having a valid name just because it is associated with a product.
-#    assert @v.errors.invalid?(:name)
-
-    # A variation must have a code and a name.
-    assert_equal "can't be blank", @v.errors.on(:code)
-
-#    # TODO: If the name wasn't specified it should say it.
-#    assert_equal "can't be blank", @v.errors.on(:name)
 
     # Choosing an already taken variation code.
     @v.code = "STUFF"
-    assert !@v.valid?
+    assert !@v.valid?, @v.inspect
     assert @v.errors.invalid?(:code)
     # A variation must have an unique code.
     assert_equal "has already been taken", @v.errors.on(:code)
@@ -152,6 +141,21 @@ class VariationTest < ActiveSupport::TestCase
     @v.price = @v.product.price
     assert @v.save
     assert_nil @v.read_attribute('price')
+  end
+  
+  def test_clean_code_variation
+    # Load a product.
+    a_product = items(:the_stuff)
+
+    # Create a variation.
+    v = a_product.variations.new(
+      :name => 'XXL',
+      :price => 100.00,
+      :quantity => 10
+    )
+
+    assert v.save
+    assert_equal "STUFF-XXL", v.code
   end
 
 end

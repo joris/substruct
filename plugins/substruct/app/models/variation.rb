@@ -25,6 +25,21 @@ class Variation < Item
     return true
   end
   
+  # Override of item.rb
+  def clean_code
+    if self.code.blank? && self.product && !self.product.code.blank?
+      self.code = "#{self.product.code}-#{self.short_name}"
+    elsif self.code.blank?
+      self.code = self.name.clone
+    end
+    self.code.upcase!
+    self.code = self.code.gsub(/[^[:alnum:]]/,'-').gsub(/-{2,}/,'-')
+    self.code = self.code.gsub(/^[-]/,'').gsub(/[-]$/,'')
+    self.code.strip!
+
+    return true
+	end
+  
   #############################################################################
   # CLASS METHODS
   #############################################################################

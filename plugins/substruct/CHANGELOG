@@ -1,6 +1,21 @@
 Substruct Version Changelog and Update Notes
 ===============================================================================
 
+- in progress - VERSION 1.3.x
+---------------------------------------
+
+Added:
+  1. Lightbox.js for image previews
+
+Updated:
+  1. Changed product code length to 100 chars
+
+Upgrade steps:
+  1. rake gems:build
+  2. rake db:migrate:plugin NAME=substruct
+
+
+
 VERSION 1.3 - 08/25/2010
 ---------------------------------------
 Upgraded to Rails 2.3.8, which has been long overdue.

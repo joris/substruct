@@ -18,6 +18,19 @@ class Item < ActiveRecord::Base
     self.date_available = Date.today if !self.date_available
   end
 
+  # Inserts code from product name if not entered.
+  # Makes code safe for URL usage.
+  before_validation :clean_code
+  def clean_code
+    self.code = self.name.clone if self.code.blank?
+    self.code.upcase!
+    self.code = self.code.gsub(/[^[:alnum:]]/,'-').gsub(/-{2,}/,'-')
+    self.code = self.code.gsub(/^[-]/,'').gsub(/[-]$/,'')
+    self.code.strip!
+
+    return true
+	end
+
   #############################################################################
   # CLASS METHODS
   #############################################################################

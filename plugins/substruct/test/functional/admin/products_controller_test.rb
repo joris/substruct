@@ -483,7 +483,7 @@ class Admin::ProductsControllerTest < ActionController::TestCase
     assert_equal a_product.variations.count, 3
     assert_equal a_product.images.count, 3
     a_green_variation.reload
-    assert_equal a_green_variation.code, "YELLOW_LIGHTSABER"
+    assert_equal a_green_variation.code, "YELLOW-LIGHTSABER"
   end
 
 
