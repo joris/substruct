@@ -110,7 +110,7 @@ class Admin::ContentNodesController < Admin::BaseController
 
     if @content_node.save
       flash[:notice] = 'ContentNode was successfully created.'
-      redirect_to :action => 'list', :type => @content_node.type
+      redirect_to :action => 'list', :key => @content_node.type
     else
       render :action => 'new'
     end
