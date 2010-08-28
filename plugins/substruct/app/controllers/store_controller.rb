@@ -4,7 +4,7 @@ class StoreController < ApplicationController
   include Pagination
   include ActiveMerchant::Billing::Integrations
 
-  PER_PAGE = 10
+  @@per_page = 10
 
   before_filter :prep_store_vars
   
@@ -48,7 +48,7 @@ class StoreController < ApplicationController
           :order => 'name ASC',
           :conditions => Product::CONDITIONS_AVAILABLE,
           :page => params[:page],
-          :per_page => PER_PAGE
+          :per_page => @@per_page
         )
         render :action => 'index.rhtml' and return
       end
@@ -114,8 +114,8 @@ class StoreController < ApplicationController
     # Paginate products so we don't have a ton of ugly SQL
     # and conditions in the controller    
     list = Product.find_by_tags(tag_ids_array, true)
-    pager = Paginator.new(list, list.size, PER_PAGE, params[:page])
-    @products = returning WillPaginate::Collection.new(params[:page] || 1, PER_PAGE, list.size) do |p|
+    pager = Paginator.new(list, list.size, @@per_page, params[:page])
+    @products = returning WillPaginate::Collection.new(params[:page] || 1, @@per_page, list.size) do |p|
       p.replace list[pager.current.offset, pager.items_per_page]
     end
     
