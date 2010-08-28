@@ -61,7 +61,7 @@ var S_FILE_SELECT = {
 
     var image_src = S_FILE_SELECT.selected['container'].getAttribute('src_original'); 
 	  var image_width = $F('image_width');
-	  var image_height = $F('image_width');
+	  var image_height = $F('image_height');
 	  var image_alt = $F('image_alt');
 	  
 	  var args = {};
