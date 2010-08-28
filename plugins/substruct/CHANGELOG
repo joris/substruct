@@ -5,12 +5,16 @@ Substruct Version Changelog and Update Notes
 ---------------------------------------
 
 Added:
-  1. Lightbox.js for image previews
+  1. Lightbox.js for image previews on admin side and store.
+  2. Can now drag / drop sort variations.
+     - Allows you to choose what order they appear when viewing a 
+       product on the store.
 
 Updated:
   1. Changed product code length to 100 chars
 
 Upgrade steps:
+  0. Upgrade your /vendor directory with the one that ships with Substruct.
   1. rake gems:build
   2. rake db:migrate:plugin NAME=substruct
 

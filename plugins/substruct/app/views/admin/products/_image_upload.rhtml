@@ -5,10 +5,10 @@
 <h1>Images</h1>
 <div class="padLeft">
 	<% if @product.images.length > 0 then %>
-		<p>
+		<p class="info">
 			Drag and drop images to set their order on the item page.
 			<br/>
-			<span class="hlt">The image listed first will be the default.</span>
+			<strong>The image listed first will be the default.</strong>
 		</p>
 		<p class="info">
 			If you don't see an image it means the path is broken or doesn't exist any longer.
@@ -18,7 +18,7 @@
 			<% for @p_image in @product.images.find(:all) %>
 				<!-- product image for reordering -->
 				<li id="image_<%= @p_image.id %>">
-					<div class="float">
+					<div class="float" style="width:75px;text-align:center;">
             <% if @p_image.public_filename(:thumb) then %>
               <%= image_tag @p_image.public_filename(:thumb) %>
 						<% end %>

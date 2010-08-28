@@ -16,7 +16,7 @@ class Product < Item
     :through => :product_downloads, :order => "-product_downloads.rank DESC",
     :dependent => :destroy
   has_many :variations, 
-    :dependent => :destroy, :order => 'name ASC'
+    :dependent => :destroy, :order => '-variation_rank DESC'
   
   # Join with related items...
   has_and_belongs_to_many :related_products,
