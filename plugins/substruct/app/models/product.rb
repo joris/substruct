@@ -42,19 +42,6 @@ class Product < Item
   # CALLBACKS
   #############################################################################
   
-  before_validation :clean_code
-  # Inserts code from product name if not entered.
-  # Makes code safe for URL usage.
-  def clean_code
-    self.code = self.name.clone if self.code.blank?
-    self.code.upcase!
-    self.code = self.code.gsub(/[^[:alnum:]]/,'-').gsub(/-{2,}/,'-')
-    self.code = self.code.gsub(/^[-]/,'').gsub(/[-]$/,'')
-    self.code.strip!
-
-    return true
-	end
-
 	#############################################################################
 	# CLASS METHODS
 	#############################################################################

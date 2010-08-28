@@ -66,7 +66,7 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
   end
 
   create_table "items", :force => true do |t|
-    t.string   "code",               :limit => 20,  :default => "",    :null => false
+    t.string   "code",               :limit => 100, :default => "",    :null => false
     t.string   "name",               :limit => 100, :default => "",    :null => false
     t.text     "description"
     t.float    "price",                             :default => 0.0,   :null => false
