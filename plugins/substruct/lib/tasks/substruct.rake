@@ -83,21 +83,10 @@ namespace :substruct do
         db:create
         db:schema:load
         substruct:db:load_authority_data
+        substruct:db:init_migration_versions
         tmp:create
       ).each { |t| Rake::Task[t].execute task_args}
-      
-      
-      # We have to set the proper plugin schema migration,
-      # because loading from bootstrap doesn't do it.
-      #
-      # Grab current schema version from the migration scripts.
-      schema_files = Dir.glob(File.join(RAILS_ROOT, 'vendor/plugins/substruct/db/migrate', '*'))
-      schema_version = File.basename(schema_files.sort.last).to_i
-      ActiveRecord::Base.connection.execute(%Q\
-        INSERT INTO schema_migrations
-        VALUES('#{schema_version}-substruct');
-      \)
-      
+            
       puts '=' * 80
       puts
       puts "Thanks for trying Substruct #{Substruct::Version::STRING}"
@@ -115,6 +104,29 @@ namespace :substruct do
       puts 
 
     end # bootstrap
+    
+    desc %q\
+    Ensures the schema_migrations table is set up properly so
+    we can run migrations against substruct.
+    \
+    task :init_migration_versions => :environment do
+      # First remove any references to substruct so we don't have dupes.
+      puts "Removing older migration entries"
+      ActiveRecord::Base.connection.execute(%Q\
+        DELETE from schema_migrations
+        WHERE version LIKE "%-substruct"
+      \)
+      # Grab current schema version from the migration scripts.
+      puts "Initializing migration version numbers"
+      schema_files = Dir.glob(File.join(RAILS_ROOT, 'vendor/plugins/substruct/db/migrate', '*'))
+      schema_version = File.basename(schema_files.sort.last).to_i
+      (1..schema_version).each do |v|
+        ActiveRecord::Base.connection.execute(%Q\
+          INSERT INTO schema_migrations
+          VALUES('#{v}-substruct');
+        \)
+      end
+    end
     
     desc %q\
     Dump authority data to YML files.
