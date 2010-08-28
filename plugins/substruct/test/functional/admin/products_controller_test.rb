@@ -27,17 +27,6 @@ class Admin::ProductsControllerTest < ActionController::TestCase
     assert_not_nil assigns(:tags)
   end
 
-
-  # We should get a list of tags and how many products it have associated.
-  def test_should_list_tags
-    login_as :admin
-
-    get :list_tags
-    assert_response :success
-    assert_template 'list_tags'
-  end
-
-
   # We should get a list of products that belongs to a tag.
   def test_should_list_by_tags_passing_a_key
     login_as :admin
@@ -45,7 +34,7 @@ class Admin::ProductsControllerTest < ActionController::TestCase
     # Call it first without a key, it will use the first by name.
     get :list_by_tags
     assert_response :success
-    assert_equal assigns(:title), "Product List For Tag - '#{Tag.find_alpha[0].name}'"
+    assert_equal assigns(:title), "Tag - #{Tag.find_alpha[0].name}"
     assert assigns(:products)
     assert_template 'list'
 
@@ -53,14 +42,14 @@ class Admin::ProductsControllerTest < ActionController::TestCase
     a_tag = tags(:weapons)
     get :list_by_tags, :key => a_tag.id
     assert_response :success
-    assert_equal assigns(:title), "Product List For Tag - '#{a_tag.name}'"
+    assert_equal assigns(:title), "Tag - #{a_tag.name}"
     assert assigns(:products)
     assert_template 'list'
 
     # Now call it again without a key, it should remember.
     get :list_by_tags
     assert_response :success
-    assert_equal assigns(:title), "Product List For Tag - '#{a_tag.name}'"
+    assert_equal assigns(:title), "Tag - #{a_tag.name}"
     assert assigns(:products)
     assert_template 'list'
 
