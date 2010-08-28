@@ -151,7 +151,7 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
     )
     
     assert_response :redirect
-    assert_redirected_to :action => :list, :type => node_type
+    assert_redirected_to :action => :list, :key => node_type
     
     # Verify that the blog post really is there.
     some_content = ContentNode.find_by_name('prophecies')
