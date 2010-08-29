@@ -17,15 +17,13 @@
   <%= 
     javascript_include_tag(
       'mce_init', 'substruct', 'subModal', 
-      :plugin => 'substruct', 
-      :cache => 'substruct_cache'
+      :plugin => 'substruct'
     )
   %>
 	<%= 
 	  stylesheet_link_tag(
 	    'admin', 'subModal', 'lightbox', 
-	    :plugin => 'substruct', 
-	    :cache => 'substruct_admin'
+	    :plugin => 'substruct'
 	  )
 	%>
 	<%= yield :header %>
