@@ -12,6 +12,8 @@ Added:
 
 Updated:
   1. Changed product code length to 100 chars
+  2. Orders are no longer written to the database for status CART unless 
+     something was actually added to the shopping cart.
 
 Upgrade steps:
   0. Upgrade your /vendor directory with the one that ships with Substruct.

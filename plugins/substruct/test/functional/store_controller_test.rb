@@ -132,11 +132,11 @@ class StoreControllerTest < ActionController::TestCase
   # Test the display_product.
   def test_should_display_product
     # TODO: If this method is not used anymore, get rid of it.
-    a_product = items(:lightsaber)
+    @product = items(:lightsaber)
     another_product = items(:uranium_portion)
     
     # Get the result of one product that have images.
-    get :display_product, :id => a_product.id
+    get :display_product, :id => @product.id
     # Get the result of one product that don't have images.
     get :display_product, :id => another_product.id
   end
@@ -144,14 +144,14 @@ class StoreControllerTest < ActionController::TestCase
   
   # Test the show action.
   def test_show
-    a_product = items(:lightsaber)
+    @product = items(:lightsaber)
     
     # TODO: A code is being passed to a hash parameter called id.
-    get :show, :id => a_product.code
+    get :show, :id => @product.code
     assert_response :success
     assert_template 'show'
     assert_not_nil assigns(:product)
-    assert_equal a_product.name, assigns(:title)
+    assert_equal @product.name, assigns(:title)
     assert_equal 3, assigns(:variations).size
   end
 
@@ -197,8 +197,8 @@ class StoreControllerTest < ActionController::TestCase
   # TODO: This action don't work passing variations. 
   # TODO: If this action is not used anymore, get rid of it. 
   def test_add_to_cart_success
-    a_product = items(:holy_grenade)
-    post :add_to_cart, :id => a_product.id
+    @product = items(:holy_grenade)
+    post :add_to_cart, :id => @product.id
     assert_redirected_to :action => :checkout
     cart = assigns(:order)
     assert_equal 1, cart.items.length
@@ -206,10 +206,10 @@ class StoreControllerTest < ActionController::TestCase
   
   def test_add_to_cart_fail
     # Setup
-    a_product = items(:holy_grenade)
-    a_product.destroy
+    @product = items(:holy_grenade)
+    @product.destroy
     # Exercise
-    post :add_to_cart, :id => a_product.id
+    post :add_to_cart, :id => @product.id
     # Verify
     assert_redirected_to :action => :index
     assert !flash[:notice].blank?
@@ -220,8 +220,8 @@ class StoreControllerTest < ActionController::TestCase
   def test_should_add_to_cart_ajax
     # TODO: This method isn't respecting the inventory control option.
     # Try adding a product.
-    a_product = items(:towel)
-    xhr(:post, :add_to_cart_ajax, :id => a_product.id)
+    @product = items(:towel)
+    xhr(:post, :add_to_cart_ajax, :id => @product.id)
     # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
@@ -234,8 +234,8 @@ class StoreControllerTest < ActionController::TestCase
     assert_equal 2, cart.items.length
 
     # Try adding another product (that should not be available).
-    a_product = items(:holy_grenade)
-    xhr(:post, :add_to_cart_ajax, :id => a_product.id, :quantity => "2")
+    @product = items(:holy_grenade)
+    xhr(:post, :add_to_cart_ajax, :id => @product.id, :quantity => "2")
     assert_response 400
     # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
@@ -243,8 +243,8 @@ class StoreControllerTest < ActionController::TestCase
     assert_equal 2, cart.items.length
     
     # Try adding a product with a non-numerical quantity
-    a_product = items(:towel)
-    xhr(:post, :add_to_cart_ajax, :id => a_product.id, :quantity => "a")
+    @product = items(:towel)
+    xhr(:post, :add_to_cart_ajax, :id => @product.id, :quantity => "a")
     cart = assigns(:order)
     assert_equal 2, cart.items.length
   end
@@ -271,22 +271,22 @@ class StoreControllerTest < ActionController::TestCase
   # Test the remove from cart ajax action.
   def test_should_remove_from_cart_ajax
     # Try adding a product.
-    a_product = items(:towel)
-    xhr(:post, :add_to_cart_ajax, :id => a_product.id)
+    @product = items(:towel)
+    xhr(:post, :add_to_cart_ajax, :id => @product.id)
     # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
 
     # Try removing a product.
-    xhr(:post, :remove_from_cart_ajax, :id => a_product.id)
+    xhr(:post, :remove_from_cart_ajax, :id => @product.id)
     # Here nothing is rendered directly, but a window.location.reload() javascript function is executed.
     cart = assigns(:order)
     assert_equal 0, cart.items.length
     
     # Try removing an invalid product.
     # Make sure this id don't exist.
-    a_product.destroy
-    xhr(:post, :remove_from_cart_ajax, :id => a_product.id)
+    @product.destroy
+    xhr(:post, :remove_from_cart_ajax, :id => @product.id)
     # Here a text is rendered.
   end
 
@@ -294,8 +294,8 @@ class StoreControllerTest < ActionController::TestCase
   # Test the empty cart ajax action.
   def test_should_empty_cart_ajax
     # Try adding a product.
-    a_product = items(:towel)
-    xhr(:post, :add_to_cart_ajax, :id => a_product.id)
+    @product = items(:towel)
+    xhr(:post, :add_to_cart_ajax, :id => @product.id)
     # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
@@ -311,8 +311,8 @@ class StoreControllerTest < ActionController::TestCase
   # Test the empty cart action.
   def test_should_empty_cart
     # Try adding a product.
-    a_product = items(:towel)
-    xhr(:post, :add_to_cart_ajax, :id => a_product.id)
+    @product = items(:towel)
+    xhr(:post, :add_to_cart_ajax, :id => @product.id)
     # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
@@ -345,8 +345,8 @@ class StoreControllerTest < ActionController::TestCase
   
   def test_checkout_error_layout
     # Add a product to the cart.
-    a_product = items(:towel)
-    xhr(:post, :add_to_cart_ajax, :id => a_product.id)
+    @product = items(:towel)
+    xhr(:post, :add_to_cart_ajax, :id => @product.id)
     # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
@@ -448,8 +448,8 @@ class StoreControllerTest < ActionController::TestCase
     assert Preference.save_settings({ "cc_processor" => "PayPal IPN" })
 
     # Add a product to the cart.
-    a_product = items(:towel)
-    xhr(:post, :add_to_cart_ajax, :id => a_product.id)
+    @product = items(:towel)
+    xhr(:post, :add_to_cart_ajax, :id => @product.id)
     # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
@@ -486,8 +486,8 @@ class StoreControllerTest < ActionController::TestCase
     login_as_customer :uncle_scrooge
     
     # Add a product to the cart.
-    a_product = items(:towel)
-    xhr(:post, :add_to_cart_ajax, :id => a_product.id)
+    @product = items(:towel)
+    xhr(:post, :add_to_cart_ajax, :id => @product.id)
     # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
@@ -540,8 +540,8 @@ class StoreControllerTest < ActionController::TestCase
   # Test the checkout action.
   def test_should_checkout_and_break
     # Add a product to the cart.
-    a_product = items(:towel)
-    xhr(:post, :add_to_cart_ajax, :id => a_product.id)
+    @product = items(:towel)
+    xhr(:post, :add_to_cart_ajax, :id => @product.id)
     # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
     cart = assigns(:order)
     assert_equal 1, cart.items.length
@@ -605,13 +605,13 @@ class StoreControllerTest < ActionController::TestCase
   # Test the checkout action.
   def test_should_checkout_with_unavailable_products
     # Add full quantity of an item to the cart.
-    a_product = items(:towel)
-    xhr(:post, :add_to_cart_ajax, :id => a_product.id, :quantity => a_product.quantity)
+    @product = items(:towel)
+    xhr(:post, :add_to_cart_ajax, :id => @product.id, :quantity => @product.quantity)
     assert_response :success
     assert_equal 1, assigns(:order).items.length
 
     # Emulate another customer purchasing items before we checkout
-    a_product.update_attribute(:quantity, 1)
+    @product.update_attribute(:quantity, 1)
 
     get :checkout
     assert_response :success
