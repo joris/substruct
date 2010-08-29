@@ -157,15 +157,18 @@ class StoreController < ApplicationController
   # Shows shopping cart in pop-up window.
   #
   def show_cart
-    sanitize!
     render :layout => 'modal' and return
   end
 
 
   before_filter :get_product_from_params, :only => [:add_to_cart, :add_to_cart_ajax]
   def add_to_cart
-    sanitize!
-
+    # Saves order in case it's new
+    if @order.new_record?
+      @order.save! 
+      session[:order_id] = @order.id
+    end
+    
     logger.info "QUANTITY: #{@quantity}"
     logger.info "PRODUCT QUANTITY: #{@product.quantity}"
     logger.info "Quantity too much? #{(@quantity.to_i > @product.quantity.to_i)}"
@@ -368,14 +371,12 @@ class StoreController < ApplicationController
     # Prepares store variables necessary for ordering, etc.
     def prep_store_vars
       # Find or initialize order.
-      @order ||= Order.find(
+      @order = Order.find(
         :first,
         :conditions => ["id = ?", session[:order_id]]
       )
-      unless @order
-        @order = Order.create!
-        session[:order_id] = @order.id
-      end
+      @order ||= Order.new
+      sanitize!
       # Ensure affiliate code is set properly
       @order.affiliate_code = cookies[:affiliate]
     end
@@ -408,6 +409,7 @@ class StoreController < ApplicationController
       if destroy_order then
         @order.destroy
         session[:order_id] = nil
+        @order = Order.new
       end
     end
 
@@ -495,17 +497,11 @@ class StoreController < ApplicationController
     
     end
       
-    # When is a cart not a cart?
-    #
-    # When it was cleared without an open browser session.
-    # That's why we sanitize dirty carts.
+    # This removes old orders
     def sanitize! 
-      if session[:order_id]
-         order = Order.find(session[:order_id])
-         if order.order_status_code_id != 1 && order.order_status_code_id != 3
-           clear_cart_and_order(false)
-         end
-      end
+       if @order && @order.order_status_code_id != 1 && @order.order_status_code_id != 3
+         clear_cart_and_order(false)
+       end
     end
 
 end

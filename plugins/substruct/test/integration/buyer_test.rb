@@ -201,7 +201,7 @@ class BuyerTest < ActionController::IntegrationTest
     a_cart = nil
     [:holy_grenade, :uranium_portion].each do |sym|
       post '/store/add_to_cart_ajax', :id => items(sym).id
-      # Here nothing is rendered directly, but a SUBMODAL.show() javascript function is executed.
+      assert_response :redirect
       a_cart = assigns(:order)
     end
     assert_equal a_cart.items.length, 2
@@ -220,6 +220,29 @@ class BuyerTest < ActionController::IntegrationTest
     # ...It should update the order object.
     order = Order.find(:first)
     assert_equal order.order_line_items.count, 1, "Order items not updated after one was deleted from the cart."    
+  end
+  
+  def test_cart_only_written_to_db_when_product_added
+    lightsaber = items(:lightsaber)
+    
+    assert_no_difference "Order.count" do
+      get "/store"
+      assert_response :success
+      
+      get "/store/show", :id => lightsaber.code
+      assert_response :success
+      
+      assert_equal assigns(:product), lightsaber
+      assert assigns(:order).new_record?
+    end
+    
+    # Add to cart action saves order to database
+    assert_difference "Order.count" do
+      xhr :post, '/store/add_to_cart', :id => lightsaber.id
+      assert_response :success
+      
+      assert !assigns(:order).new_record?
+    end
   end
 
 
