@@ -60,6 +60,9 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
     assert_equal @inexpensive_item.price, assigns(:order).line_items_total
   end
   
+  # Ensures customers can't add expensive items to their 
+  # cart, apply a promo, then remove one and have the promo with a minimum
+  # value still apply.
   def test_double_promo_bug
     @promo.update_attribute(:minimum_cart_value, @expensive_item.price-1)
     
@@ -82,7 +85,7 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
   end
   
   private
-    # Check out with a promo code.
+    # Submit the 'checkout' action with a promo code, unsuccessfully
     def perform_unsuccessful_checkout
       post(
         '/store/checkout', 
@@ -107,13 +110,37 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
       assert !flash.now[:notice].blank?
     end
   
-    # Check out with a promo code.
+    # Submit the 'checkout' action successfully, but with a fake CC# 
+    # and valid promo code.
+    def perform_successful_checkout_bad_card
+      post(
+        '/store/checkout', 
+        {
+          :order_account => {
+            :cc_number => "1111111111111111",
+            :expiration_year => 4.years.from_now.year,
+            :expiration_month => "1"
+          },
+          :shipping_address => @customer.billing_address.attributes,
+          :billing_address => @customer.billing_address.attributes,
+          :order_user => {
+            :email_address => @customer.email_address
+          },
+          :order => {
+            :promotion_code => @promo.code
+          }
+        }
+      )
+      assert_redirected_to :action => 'select_shipping_method'
+    end
+  
+    # Submit the 'checkout' action successfully, but with a bad CC#.
     def perform_successful_checkout
       post(
         '/store/checkout', 
         {
           :order_account => {
-            :cc_number => "4007000000027",
+            :cc_number => "1111111111111111",
             :expiration_year => 4.years.from_now.year,
             :expiration_month => "1"
           },

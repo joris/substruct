@@ -298,19 +298,28 @@ class OrderTest < ActiveSupport::TestCase
   # ensures we remove them all when removing a promotion.
   def test_remove_promotion_multiple_items
     setup_new_order_with_items()
-    promo = promotions(:fixed_rebate)
-    @o.promotion_code = promo.code
-    assert @o.save
-    assert_kind_of OrderLineItem, @o.promotion_line_item
-    # Add dupe line item.
-    dupe_item = @o.promotion_line_item.clone
-    @o.order_line_items << dupe_item
-    assert_equal 2, @o.order_line_items.count(
-      :conditions => ["name = ?", @o.promotion.description]
-    )
-    # Remove
-    @o.remove_promotion()
-    assert_nil @o.promotion_line_item
+    editable_order_codes = (1..5)
+    editable_order_codes.each do |status_id|
+      o_status = OrderStatusCode.find(status_id)
+      assert_kind_of OrderStatusCode, o_status
+      assert o_status.is_editable?
+      
+      @o.order_status_code = o_status
+      
+      promo = promotions(:fixed_rebate)
+      @o.promotion_code = promo.code
+      assert @o.save
+      assert_kind_of OrderLineItem, @o.promotion_line_item
+      # Add dupe line item.
+      dupe_item = @o.promotion_line_item.clone
+      @o.order_line_items << dupe_item
+      assert_equal 2, @o.order_line_items.count(
+        :conditions => ["name = ?", @o.promotion.description]
+      )
+      # Remove
+      @o.remove_promotion()
+      assert_nil @o.promotion_line_item
+    end
   end
   
   def test_should_promotion_be_applied_expired
