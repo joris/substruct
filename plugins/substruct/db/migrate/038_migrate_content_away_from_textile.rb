@@ -2,6 +2,7 @@
 # See this for info
 # http://code.google.com/p/substruct/issues/detail?id=205&q=milestone%3Dv1.3#makechanges
 require 'substruct_deprecated'
+require 'redcloth'
 class MigrateContentAwayFromTextile < ActiveRecord::Migration
   extend Substruct
   
