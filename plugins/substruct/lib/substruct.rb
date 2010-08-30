@@ -30,6 +30,71 @@ module Substruct
   mattr_accessor :override_ssl_production_mode
   self.override_ssl_production_mode = false
 
+
+  # Allows us to specify custom routing if a developer needs fine control.
+  # To do so, emove vendor/../substruct/config/routes.rb
+  # and just call Substruct.route(map) from config/routes.rb AFTER
+  # custom routes have been applied.
+  # This allows for overriding the default mapping for /home
+  def self.route(map)
+    # Default / home mapping
+    map.connect '',
+      :controller => 'content_nodes',
+      :action     => 'show_by_name',
+      :name       => 'home'
+    map.connect '/',
+      :controller => 'content_nodes',
+      :action     => 'show_by_name',
+      :name       => 'home'
+
+    # Default administration mapping
+    map.connect 'admin',
+      :controller => 'admin/orders',
+      :action     => 'index'
+
+    map.connect '/admin/customers/:action.:format', :controller => 'admin/customers'
+
+    map.connect '/blog',
+      :controller => 'content_nodes',
+      :action     => 'index'
+
+    map.connect '/blog/section/:section_name',
+      :controller => 'content_nodes',
+      :action     => 'list_by_section'
+
+    # Static route blog content through our content_node controller
+    map.connect '/blog/:name',
+      :controller => 'content_nodes',
+      :action     => 'show_by_name'
+
+    map.connect 'blog/:action.:format',
+      :controller => 'content_nodes'
+
+    map.connect '/contact',
+      :controller => 'questions',
+      :action     => 'ask'
+
+    # Shorter url to show store items by tags
+    map.connect '/store/s/*tags',
+      :controller => 'store',
+      :action     => 'show_by_tags'
+
+    map.connect '/store/show_by_tags/*tags',
+      :controller => 'store',
+      :action     => 'show_by_tags'
+
+
+    # Install the default route as the lowest priority.
+    map.connect ':controller/:action/:id.:format'
+    map.connect ':controller/:action.:format'
+    map.connect ':controller/:action/:id'
+
+    # For things like /about_us, etc
+    map.connect ':name',
+      :controller => 'content_nodes',
+      :action     => 'show_by_name'
+  end
+
 	# For alternating row colors...
 	def alternate(str1 = "odd", str2 = "even")
 		 @alternate_odd_even_state = true if @alternate_odd_even_state.nil?
