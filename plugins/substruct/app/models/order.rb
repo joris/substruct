@@ -83,9 +83,8 @@ class Order < ActiveRecord::Base
   # Ensures that customers can't apply discounts, then remove items
   # and still have those discounts applied.
   def cleanup_promotion
-    # Only applies when order is in certain states, like CART.
-    cart_status = OrderStatusCode.find_by_name('CART')
-    return true unless self.order_status_code == cart_status
+    # Only applies when order is editable.
+    return true unless self.order_status_code.is_editable?
 
     if self.promotion && !self.should_promotion_be_applied?(self.promotion)
       self.remove_promotion
@@ -158,7 +157,6 @@ class Order < ActiveRecord::Base
     Order.destroy_all(%Q\
       order_status_code_id = 1 
       AND DATE(created_on) < CURRENT_DATE 
-      AND product_cost = 0
     \)
   end
 
