@@ -11,9 +11,13 @@ Added:
        product on the store.
 
 Updated:
-  1. Changed product code length to 100 chars
-  2. Orders are no longer written to the database for status CART unless 
+  1. Substruct automatically reloads all classes in development environment
+  2. Changed product code length to 100 chars
+
+Fixed:
+  1. Orders are no longer written to the database for status CART unless 
      something was actually added to the shopping cart.
+  2. Edge case promotion application bug squashed.
 
 Upgrade steps:
   0. Upgrade your /vendor directory with the one that ships with Substruct.
