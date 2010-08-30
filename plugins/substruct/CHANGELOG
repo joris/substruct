@@ -1,7 +1,7 @@
 Substruct Version Changelog and Update Notes
 ===============================================================================
 
-- in progress - VERSION 1.3.x
+VERSION 1.3.1 - 08/30/2010
 ---------------------------------------
 
 Added:
@@ -13,11 +13,14 @@ Added:
 Updated:
   1. Substruct automatically reloads all classes in development environment
   2. Changed product code length to 100 chars
+  3. Easier to override Substruct default routes with app custom ones.
 
 Fixed:
   1. Orders are no longer written to the database for status CART unless 
      something was actually added to the shopping cart.
   2. Edge case promotion application bug squashed.
+  3. Substruct migration versions not being properly applied after 
+     db:bootstrap.
 
 Upgrade steps:
   0. Upgrade your /vendor directory with the one that ships with Substruct.
