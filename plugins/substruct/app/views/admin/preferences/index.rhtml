@@ -30,28 +30,29 @@
             ) 
           %>
         </p>
+        
+        <input name="prefs[store_show_confirmation]" type="hidden" value="0" />
         <p>
           <label>
             <%= check_box_tag('prefs[store_show_confirmation]', 1, (@prefs['store_show_confirmation'].is_true?)) %>
             Show order confirmation page?
           </label>
-          <input name="prefs[store_show_confirmation]" type="hidden" value="0" />
           <span class="info">REQUIRED for PayPal IPN usage</span>
         </p>
         <p>
+          <input name="prefs[store_use_inventory_control]" type="hidden" value="0" />
           <label>
             <%= check_box_tag('prefs[store_use_inventory_control]', 1, (@prefs['store_use_inventory_control'].is_true?)) %>
             Use inventory control?
           </label>
-          <input name="prefs[store_use_inventory_control]" type="hidden" value="0" />
           <span class="info">If set, items that are out of stock can't be added to your customer's cart.</span>
         </p>
         <p>
+          <input name="prefs[store_require_login]" type="hidden" value="0" />
           <label>
             <%= check_box_tag('prefs[store_require_login]', 1, (@prefs['store_require_login'].is_true?)) %>
             Require login for returning customers?
           </label>
-          <input name="prefs[store_require_login]" type="hidden" value="0" />
           <span class="info">
             If set, customers who have ordered previously will be prompted for their e-mail and password or previous order number upon checkout.
             <br/>
@@ -66,12 +67,12 @@
 
       <div class="padLeft">
         <p>
+          <input name="prefs[store_test_transactions]" type="hidden" value="0" />
           <label>
             <%= check_box_tag('prefs[store_test_transactions]', 1, (@prefs['store_test_transactions'].is_true?)) %>
             Store is in test mode
           </label>
           <span class="info">When in test mode, no real orders will be processed.  They will be processed in 'test mode' by the selected CC Processor.</span>
-          <input name="prefs[store_test_transactions]" type="hidden" value="0" />
         </p>
         <p>
           <%= make_label('Processor', true) %>
@@ -90,13 +91,13 @@
           <span class="info">With paypal your password, with authorize.net, your transaction key.</span>
         </p>
         <p>
+          <input name="prefs[cc_clear_after_order]" type="hidden" value="0" />
           <label>
             <%= check_box_tag('prefs[cc_clear_after_order]', 1, (@prefs['cc_clear_after_order'].is_true?)) %>
             Clear all but last 4 digits of CC# after processing order?
             <br/>
             <span class="info">If set, after a successful order all but the last 4 digits of CC# will be cleared.  Doesn't make a difference if you use paypal IPN, as no credit card numbers are entered on site.</span>
           </label>
-          <input name="prefs[cc_clear_after_order]" type="hidden" value="0" />
         </p>
       </div>
     </div>
@@ -129,11 +130,11 @@
     <div class="padLeft">
       <div class="floatHalf">
         <p>
+          <input name="prefs[use_smtp_tls_patch]" type="hidden" value="0" />
           <label>
             <%= check_box_tag('prefs[use_smtp_tls_patch]', 1, (@prefs['use_smtp_tls_patch'].is_true?)) %>
             Use SMTP TLS monkey patch?
           </label>
-          <input name="prefs[use_smtp_tls_patch]" type="hidden" value="0" />
           <span class="info">If set, a patch will be applied to Ruby's Net::SMTP class adding TLS support. <b>Necessary for Gmail servers!</b></span>
         </p>
         <p>
