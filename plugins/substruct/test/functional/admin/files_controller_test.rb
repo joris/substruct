@@ -64,7 +64,7 @@ class Admin::FilesControllerTest < ActionController::TestCase
   def test_image_library
     get :image_library
     assert_response :success
-    assert_layout 'modal'
+    assert_layout 'admin_modal'
   end
   
   def test_cant_get_upload
