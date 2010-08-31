@@ -7,7 +7,7 @@
 # not use config files for.
 #
 
-class Preference < ActiveRecord::Base
+class Preference < ActiveRecord::Base  
   # Types can hold strings, booleans, or pointers to
   # other records (like country)
   CC_PROCESSORS = ['Authorize.net', 'PayPal IPN']
@@ -73,9 +73,8 @@ class Preference < ActiveRecord::Base
   # Determines if a preference is "true" or not.
   # This is the ghetto, bootleg way to determine booleans.
   def is_true?
-    if self.value == '1' || self.value == 'true'
-      return true
-    end
-    return false
+    [true, "true", 1, "1", "T", "t"].include?(
+      self.value.class == String ? self.value.downcase : self.value
+    )
   end
 end
