@@ -26,13 +26,13 @@
     <h1>Order #<%= @order.order_number %></h1>
 
     <h2>Billing Info</h2>
-    <%= render(:partial => 'address_table', :locals => {:address => @order.billing_address}) %>
+    <%= render(:partial => '/store/address_table', :locals => {:address => @order.billing_address}) %>
 
     <h2>Shipping Info</h2>
-    <%= render(:partial => 'address_table', :locals => {:address => @order.shipping_address}) %>
+    <%= render(:partial => '/store/address_table', :locals => {:address => @order.shipping_address}) %>
 
     <h2>Order Items</h2>
-    <%= render(:partial => 'cart_contents', :locals => {:cart => @order}) %>
+    <%= render(:partial => '/store/cart_contents', :locals => {:cart => @order}) %>
 
     <h2>Shipping And Totals</h2>
     <table cellpadding="0" cellspacing="0" class="list">

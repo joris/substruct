@@ -206,7 +206,7 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     # Call the show form.
     get :show, :id => an_order.id
     assert_response :success
-    assert_template 'edit' if an_order.order_status_code.is_editable?
+    assert_template 'edit' if an_order.is_editable?
 
     old_email_address = an_order.order_user.email_address
     
@@ -278,7 +278,7 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     # Call the show form.
     get :show, :id => an_order.id
     assert_response :success
-    assert_template 'edit' if an_order.order_status_code.is_editable?
+    assert_template 'edit' if an_order.is_editable?
 
     # Stub the Order.order_user method (called by update_order_from_post from inside a module) to raise an exception.
     Order.any_instance.expects(:order_user).raises('An error!')
@@ -343,7 +343,25 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     # We should have received a mail about that.
     assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
   end
-
+  
+  def test_view_receipt_success
+    complete_order = orders(:santa_next_christmas_order)
+    assert complete_order.is_complete?
+    
+    get :show_receipt, :id => complete_order
+    assert_response :success
+    assert_layout "receipt"
+    assert_template "store/finish_order.rhtml"
+  end
+  
+  def test_view_receipt_failure
+    incomplete_order = orders(:an_order_on_cart)
+    assert !incomplete_order.is_complete?
+    
+    get :show_receipt, :id => incomplete_order
+    assert_redirected_to :action => 'show', :id => incomplete_order
+    assert !flash[:notice].blank?
+  end
 
   # Test if we can remove an order.
   def test_remove_order

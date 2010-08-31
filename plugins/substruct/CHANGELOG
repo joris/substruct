@@ -9,6 +9,9 @@ Added:
   2. Can now drag / drop sort variations.
      - Allows you to choose what order they appear when viewing a 
        product on the store.
+  3. Order receipt view for admin side.
+     Allows easy access to receipts that customers see.
+     Great for printing out and including in a shipment.
 
 Updated:
   1. Substruct automatically reloads all classes in development environment
