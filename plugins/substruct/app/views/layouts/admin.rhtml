@@ -9,7 +9,11 @@
 			h controller.controller_name
 		end
 		-%> : Substruct ADMIN</title>
-	<% # Have to load javascripts in this order for TinyMCE to work properly :/ %>
+	<% 
+	  # Have to load javascripts in this order for TinyMCE to work properly.
+	  # Do not use the cache option, as it seems to fuck things up 
+	  # when deployed.
+	%>
 	<%= javascript_include_tag 'prototype' %>
 	<%= javascript_include_tag 'tiny_mce/tiny_mce', :plugin => 'substruct' %>
 	<%= javascript_include_tag 'effects', 'dragdrop', 'controls' %>
