@@ -20,7 +20,7 @@ class Admin::FilesController < Admin::BaseController
     @title = "Insert image"
     # Only interested in images
     get_files(params.merge({:key => 'Image'}))
-    render :layout => 'modal'
+    render :layout => 'admin_modal'
   end
   
   # Removes a file via AJAX
