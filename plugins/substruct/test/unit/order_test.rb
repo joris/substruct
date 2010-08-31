@@ -302,9 +302,9 @@ class OrderTest < ActiveSupport::TestCase
     editable_order_codes.each do |status_id|
       o_status = OrderStatusCode.find(status_id)
       assert_kind_of OrderStatusCode, o_status
-      assert o_status.is_editable?
-      
+
       @o.order_status_code = o_status
+      assert @o.is_editable?
       
       promo = promotions(:fixed_rebate)
       @o.promotion_code = promo.code
@@ -1308,15 +1308,58 @@ class OrderTest < ActiveSupport::TestCase
   end
   
   def test_is_payable_to_affiliate
-    @order.expects(:order_status_code_id).times(8).returns(1,2,3,4,5,6,7,8)
-    assert !@order.is_payable_to_affiliate?
-    assert !@order.is_payable_to_affiliate?
-    assert !@order.is_payable_to_affiliate?
-    assert !@order.is_payable_to_affiliate?
-    assert !@order.is_payable_to_affiliate?
-    assert @order.is_payable_to_affiliate?
-    assert @order.is_payable_to_affiliate?
-    assert !@order.is_payable_to_affiliate?
+    payable_statuses = [
+      order_status_codes(:ordered_paid_shipped),
+      order_status_codes(:sent_to_fulfillment)
+    ]
+    OrderStatusCode.find(:all).each do |stat|
+      @order.order_status_code = stat
+      
+      assert_equal(
+        payable_statuses.include?(stat),
+        @order.is_payable_to_affiliate?,
+        "Fail for #{stat.inspect}"
+      )
+    end
+  end
+  
+  def test_is_complete
+    complete_statuses = [
+      order_status_codes(:ordered_paid_to_ship), 
+      order_status_codes(:ordered_paid_shipped), 
+      order_status_codes(:sent_to_fulfillment), 
+      order_status_codes(:cancelled), 
+      order_status_codes(:returned)
+    ]
+    OrderStatusCode.find(:all).each do |stat|
+      @order.order_status_code = stat
+      
+      assert_equal(
+        complete_statuses.include?(stat),
+        @order.is_complete?,
+        "Fail for #{stat.inspect}"
+      )
+    end
+  end
+
+  # Test if the right status codes will be shown as editable.
+  def test_is_editable_success
+    editable_statuses = [
+      order_status_codes(:cart), 
+      order_status_codes(:to_charge), 
+      order_status_codes(:on_hold_payment_failed),
+      order_status_codes(:on_hold_awaiting_payment), 
+      order_status_codes(:ordered_paid_to_ship)
+    ]
+    OrderStatusCode.find(:all).each do |stat|
+      @order.order_status_code = stat
+      
+      assert_equal(
+        editable_statuses.include?(stat),
+        @order.is_editable?,
+        "Fail for #{stat.inspect}"
+      )
+    end
   end
 
   # Test if will return the tax cost for the total in the cart.

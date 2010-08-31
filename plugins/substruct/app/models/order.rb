@@ -84,7 +84,7 @@ class Order < ActiveRecord::Base
   # and still have those discounts applied.
   def cleanup_promotion
     # Only applies when order is editable.
-    return true unless self.order_status_code.is_editable?
+    return true unless self.is_editable?
 
     if self.promotion && !self.should_promotion_be_applied?(self.promotion)
       self.remove_promotion
@@ -588,6 +588,21 @@ class Order < ActiveRecord::Base
   def is_payable_to_affiliate?
     code_id = self.order_status_code_id
     return (code_id == 6 || code_id == 7)
+  end
+  
+  # An order is complete if it has been paid for at any point.
+  def is_complete?
+    return (self.order_status_code_id >= 5)
+  end
+  
+  # Defines if we can edit this order or not based on the status code
+  def is_editable?
+    case self.order_status_code_id
+      when 1..5
+        return true
+    else
+      return false
+    end
   end
   
   # The tax of items if applied.

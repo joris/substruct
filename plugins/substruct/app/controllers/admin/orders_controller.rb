@@ -2,6 +2,11 @@ class Admin::OrdersController < Admin::BaseController
   layout 'admin'
   include OrderHelper
   include Pagination
+
+  before_filter :get_order, :only => [
+    :show, :destroy, :update, :return_order, :resend_receipt,
+    :show_receipt,
+  ]
   
   @@list_options = [
     "Ready To Ship",
@@ -174,7 +179,6 @@ class Admin::OrdersController < Admin::BaseController
   #
   #
   def show
-    @order = Order.find(params[:id])
     order_time = @order.created_on.strftime("%m/%d/%y %I:%M %p")
     @title = "Order #{@order.order_number} - #{order_time}"
     @order_user = @order.order_user || OrderUser.new
@@ -200,7 +204,7 @@ class Admin::OrdersController < Admin::BaseController
     )
     # If this order is "finished" send them to the view page instead of the edit one...
 		# Orders on the show page can still do things like add notes.
-    if (@order.order_status_code.is_editable?) then
+    if (@order.is_editable?) then
       render :action => 'edit' and return
     else
       render :action => 'show' and return
@@ -211,8 +215,6 @@ class Admin::OrdersController < Admin::BaseController
   #
   #
   def update
-		@order = Order.find(params[:id])
-
     begin
   		update_order_from_post
       flash[:notice] = 'Order was successfully updated.'
@@ -240,7 +242,6 @@ class Admin::OrdersController < Admin::BaseController
 	# Marks an order as returned.
 	# Useful for closed orders.
 	def return_order
-		@order = Order.find(params[:id])
 		@order.order_status_code_id = 9
 		@order.save
 		flash[:notice] = "Order has been marked as returned."
@@ -249,16 +250,23 @@ class Admin::OrdersController < Admin::BaseController
 
   # Resends the order receipt to the customer
   def resend_receipt
-    @order = Order.find(params[:id])
    	#@order.cleanup_successful
     # Send success message
     @order.deliver_receipt
     redirect_to :action => 'show', :id => @order.id
   end
+  
+  def show_receipt
+    unless @order.is_complete?
+      flash[:notice] = "You can only view receipts for completed orders"
+      redirect_to :action => 'show', :id => @order and return false
+    end
+    render :template => '/store/finish_order', :layout => 'receipt'
+  end
 
   # Deletes an order
   def destroy
-    Order.find(params[:id]).destroy
+    @order.destroy
     redirect_to :action => 'list'
   end
   
@@ -293,6 +301,16 @@ class Admin::OrdersController < Admin::BaseController
   
   # PRIVATE METHODS ===========================================================
   private
+  
+    def get_order
+      @order = Order.find(params[:id])
+      unless @order
+        flash[:notice] = "Order not found."
+        redirect_to :action => 'index' and return false
+      end
+    end
+        
+  
     # Sets up search term and stores session variables.
     #
     # Used from all 3 search methods.
