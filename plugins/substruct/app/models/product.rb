@@ -133,25 +133,23 @@ class Product < Item
   
   # Is the item active on the site? Is it listed in the store?
   def is_published?
-	  !self.is_discontinued? && self.quantity > 0 && Time.now >= self.date_available
+	  !self.is_discontinued? && (Time.now >= Time.parse(self.date_available.to_s))
 	end
 	
 	# Is this product new?
-	#
 	def is_new?
-	  @cached_is_new ||=
-	    begin
-	      self.date_available >= 2.weeks.ago
-      end
+	  weeks_new = Preference.get_value('product_is_new_week_range')
+	  weeks_new ||= 1
+	  Time.parse(self.date_available.to_s) >= (weeks_new.to_i).weeks.ago
+  end
+  
+  def in_stock?
+    self.quantity > 0
   end
   
   # Is this product on sale?
-  #
   def is_on_sale?
-	  @cached_on_sale ||=
-	    begin
-	      !self.tags.find_by_name('On Sale').nil?
-      end
+	  !self.tags.find_by_name('On Sale').nil?
 	end
 	
   substruct_deprecate :related_product_ids= => :related_product_suggestion_names=

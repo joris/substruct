@@ -77,3 +77,7 @@ affiliate_paid_order_delay:
 affiliate_revenue_percentage:
   name: affiliate_revenue_percentage
   value: 5
+
+product_is_new_week_range:
+  name: product_is_new_week_range
+  value: 2

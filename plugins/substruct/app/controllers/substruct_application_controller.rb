@@ -19,7 +19,7 @@ module SubstructApplicationController
   	if (@cname == 'content_nodes' && @aname == 'show_by_name' && params[:name] == 'home') then
   		@cname = 'main'
   	end
-  	@store_name = Preference.find_by_name('store_name').value rescue 'Substruct'
+  	@store_name = Preference.get_value('store_name') || 'Substruct'
   	# Is this a blog post?
   	@blog_post = false
   	if (@cname == 'content_nodes' && @content_node) then

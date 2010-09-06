@@ -5,7 +5,7 @@ class OrdersMailer < ActionMailer::Base
     setup_defaults()
     @subject  = "Inquiry from the site"
     @body     = {:from => addy_from, :email_text => email_text}
-    @recipients = Preference.find_by_name('mail_copy_to').value.split(',')
+    @recipients = Preference.get_value('mail_copy_to').split(',')
     @from = addy_from
   end
 
@@ -17,7 +17,7 @@ class OrdersMailer < ActionMailer::Base
   end
 
   def reset_password(customer)
-    @subject = "Password reset for #{Preference.find_by_name('store_name').value}"
+    @subject = "Password reset for #{Preference.get_value('store_name')}"
     @body       = {:customer => customer}
     @recipients = customer.email_address
     setup_defaults
@@ -26,12 +26,12 @@ class OrdersMailer < ActionMailer::Base
   def failed(order)
     @subject = "An order has failed on the site"
     @body       = {:order => order}
-    @recipients = Preference.find_by_name('mail_copy_to').value.split(',')
+    @recipients = Preference.get_value('mail_copy_to').split(',')
     setup_defaults    
   end
   
   def testing array_to
-    @subject = "Test from #{Preference.find_by_name('store_name').value}"
+    @subject = "Test from #{Preference.get_value('store_name')}"
     #@body       = {:order => order}
     @recipients = array_to
     setup_defaults
@@ -41,9 +41,9 @@ class OrdersMailer < ActionMailer::Base
   private
   def setup_defaults
   
-    Preference.find_by_name('mail_username').value
-    @bcc        = Preference.find_by_name('mail_copy_to').value.split(',')
-    @from       = Preference.find_by_name('mail_username').value
+    Preference.get_value('mail_username')
+    @bcc        = Preference.get_value('mail_copy_to').split(',')
+    @from       = Preference.get_value('mail_username')
     @sent_on    = Time.now
     @headers    = {}
   end

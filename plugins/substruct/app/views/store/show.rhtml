@@ -52,7 +52,7 @@
 	
 	<% 
 		# ITEM IS OUT OF STOCK
-		if (Preference.find_by_name('store_use_inventory_control').is_true? && 0 >= @product.quantity )
+		if (Preference.get_value_is_true?('store_use_inventory_control') && 0 >= @product.quantity )
 	%>
 		<br/>
 		<h3 id="out_of_stock">Item is out of stock</h3>

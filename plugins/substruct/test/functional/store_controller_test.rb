@@ -174,7 +174,7 @@ class StoreControllerTest < ActionController::TestCase
     assert Preference.find_by_name('store_use_inventory_control').update_attribute('value', 1)
     get :show, :id => @product.code
     assert_response :success
-    assert_select "h3#out_of_stock"
+    assert_select "h1#out_of_stock"
   end
     
   def test_inventory_control_disabled

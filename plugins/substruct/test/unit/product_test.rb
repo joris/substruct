@@ -19,64 +19,64 @@ class ProductTest < ActiveSupport::TestCase
 
   # Test if a valid product can be created with success.
   def test_should_create_product
-    a_product = Product.new
+    p = Product.new
     
-    a_product.code = "SHRUBBERY"
-    a_product.name = "Shrubbery"
-    a_product.description = "A shrubbery. One that looks nice, and is not too expensive. Perfect for a knight who say Ni."
-    a_product.price = 90.50
-    a_product.date_available = "2007-12-01 00:00"
-    a_product.quantity = 38
-    a_product.size_width = 24
-    a_product.size_height = 24
-    a_product.size_depth = 12
-    a_product.weight = 21.52
+    p.code = "SHRUBBERY"
+    p.name = "Shrubbery"
+    p.description = "A shrubbery. One that looks nice, and is not too expensive. Perfect for a knight who say Ni."
+    p.price = 90.50
+    p.date_available = "2007-12-01 00:00"
+    p.quantity = 38
+    p.size_width = 24
+    p.size_height = 24
+    p.size_depth = 12
+    p.weight = 21.52
   
-    assert a_product.save
+    assert p.save
   end
 
 
   # Test if a product can be found with success.
   def test_should_find_product
-    a_product_id = items(:chinchilla_coat).id
+    p_id = items(:chinchilla_coat).id
     assert_nothing_raised {
-      Product.find(a_product_id)
+      Product.find(p_id)
     }
   end
 
 
   # Test if a product can be updated with success.
   def test_should_update_product
-    a_product = items(:chinchilla_coat)
-    assert a_product.update_attributes(:description => 'Coat of 21 chichillas.')
+    p = items(:chinchilla_coat)
+    assert p.update_attributes(:description => 'Coat of 21 chichillas.')
   end
 
 
   # Test if a product can be destroyed with success.
   def test_should_destroy_product
-    a_product = items(:chinchilla_coat)
-    a_product.destroy
+    p = items(:chinchilla_coat)
+    p.destroy
     assert_raise(ActiveRecord::RecordNotFound) {
-      Product.find(a_product.id)
+      Product.find(p.id)
     }
   end
 
 
   # Test if an invalid product really will NOT be created.
   def test_should_not_create_invalid_product
-    a_product = Item.new
-    assert !a_product.valid?
-    assert a_product.errors.invalid?(:code)
-    assert a_product.errors.invalid?(:name)
+    p = Item.new
+    assert !p.valid?
+    assert p.errors.invalid?(:code)
+    assert p.errors.invalid?(:name)
     # A product must have a code and a name.
-    assert_equal "can't be blank", a_product.errors.on(:code)
-    assert_equal "can't be blank", a_product.errors.on(:name)
-    a_product.code = "URANIUM"
-    assert !a_product.valid?
-    assert a_product.errors.invalid?(:code)
+    assert_equal "can't be blank", p.errors.on(:code)
+    assert_equal "can't be blank", p.errors.on(:name)
+    p.code = "URANIUM"
+    assert !p.valid?
+    assert p.errors.invalid?(:code)
     # A product must have an unique code.
-    assert_equal "has already been taken", a_product.errors.on(:code)
-    assert !a_product.save
+    assert_equal "has already been taken", p.errors.on(:code)
+    assert !p.save
   end
 
 
@@ -248,15 +248,70 @@ class ProductTest < ActiveSupport::TestCase
 
 
   # Show if the product is new or on sale.
-  def test_should_show_if_is_new_or_on_sale
-    a_product = items(:towel)
-    assert a_product.is_on_sale?
-    a_product = items(:the_stuff)
-    assert !a_product.is_on_sale?
-    a_product = items(:lightsaber)
-    assert a_product.is_new?
-    a_product = items(:holy_grenade)
-    assert !a_product.is_new?
+  def test_is_on_sale
+    p = items(:towel)
+    assert_kind_of Tag, p.tags.find_by_name('On Sale')
+    assert(
+      p.is_on_sale?, 
+      "Product was not on sale when it should have been"
+    )
+    
+    p.tags.destroy_all
+    assert(
+      !p.reload.is_on_sale?, 
+      "Without the sale tag it shouldn't have been marked on sale"
+    )
+  end
+    
+  def test_is_new
+    p = items(:lightsaber)
+
+    assert Preference.save_settings({
+      "product_is_new_week_range" => 2
+    })
+
+    p.date_available = Date.today
+    assert p.is_new?
+    
+    p.date_available = Date.today - (2.weeks + 1.day)
+    assert !p.is_new?
+    
+    assert Preference.save_settings({
+      "product_is_new_week_range" => 3
+    })
+    assert p.is_new?
+  end
+  
+  # Ensure nothing is thrown if the pref doesn't exist.
+  def test_is_new_no_date_preference
+    p = items(:lightsaber)
+    Preference.destroy_all("name = 'product_is_new_week_range'")
+    assert p.is_new?
+  end
+  
+  def test_is_out_of_stock
+    p = items(:lightsaber)
+    p.expects(:quantity).times(3).returns(1, 0, -1)
+    
+    assert p.in_stock?
+    assert !p.in_stock?
+    assert !p.in_stock?
+  end
+  
+  def test_is_published
+    p = items(:lightsaber)
+    
+    assert p.is_published?
+    
+    p.date_available = Date.today + 1.week
+    assert !p.is_published?
+    
+    p.date_available = Date.today
+    p.is_discontinued = true
+    assert !p.is_published?
+    
+    p.is_discontinued = false
+    assert p.is_published?
   end
 
   def test_clean_code

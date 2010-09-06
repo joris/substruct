@@ -87,12 +87,12 @@ class Affiliate < ActiveRecord::Base
   # Defines how long to wait before paying affiliates 
   # after an order has been processed.
   def self.get_paid_order_delay
-    Preference.find_by_name('affiliate_paid_order_delay').value.to_i
+    Preference.get_value('affiliate_paid_order_delay').to_i
   end
   # Defines what percentage of an order total to pay 
   # affiliate.
   def self.get_revenue_percentage
-    Preference.find_by_name('affiliate_revenue_percentage').value.to_f
+    Preference.get_value('affiliate_revenue_percentage').to_f
   end
   
   # INSTANCE METHODS ==========================================================

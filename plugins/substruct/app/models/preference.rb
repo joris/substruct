@@ -18,7 +18,7 @@ class Preference < ActiveRecord::Base
   # Can throw an error if these items aren't set.
   # Make sure to wrap any block that calls this
   def self.init_mail_settings
-    if Preference.find_by_name('use_smtp_tls_patch').is_true?
+    if Preference.get_value_is_true?('use_smtp_tls_patch')
       require "smtp_tls"
     else
       # Remove the Net::SMTP::Revision constant.
@@ -38,17 +38,17 @@ class Preference < ActiveRecord::Base
     end
     
     # SET MAIL SERVER SETTINGS FROM PREFERENCES
-    mail_host = find_by_name('mail_host').value
+    mail_host = get_value('mail_host')
     mail_server_settings = {
       :address => mail_host,
       :domain => mail_host,
-      :port => find_by_name('mail_port').value,
+      :port => get_value('mail_port'),
     }
-    mail_auth_type = find_by_name('mail_auth_type').value
+    mail_auth_type = get_value('mail_auth_type')
     if mail_auth_type != 'none'
       mail_server_settings[:authentication] = mail_auth_type.to_sym
-      mail_server_settings[:user_name] = find_by_name('mail_username').value
-      mail_server_settings[:password] = find_by_name('mail_password').value
+      mail_server_settings[:user_name] = get_value('mail_username')
+      mail_server_settings[:password] = get_value('mail_password')
     end
     ActionMailer::Base.smtp_settings = mail_server_settings
   end
@@ -68,6 +68,26 @@ class Preference < ActiveRecord::Base
   # LTODO it is a rails bug not accept symbols here? (it doesn't--only strings)
   def self.save_setting(hash)
     self.save_settings hash
+  end
+  
+  # Safe way to get values for preferences.
+  def self.get_value(key)
+    pref = Preference.find_by_name(key)
+    if pref
+      return pref.value
+    else
+      return nil
+    end
+  end
+  
+  # Safe way to get true/false value of preference key.
+  def self.get_value_is_true?(key)
+    pref = Preference.find_by_name(key)
+    if pref
+      return pref.is_true?
+    else
+      return false
+    end
   end
   
   # Determines if a preference is "true" or not.

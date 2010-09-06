@@ -108,8 +108,8 @@ class Admin::PreferencesController < Admin::BaseController
   
   # Send a test email
   def send_test_email
-    OrdersMailer.deliver_testing Preference.find_by_name('mail_copy_to').value.split(',') # that should send it.
-    message= "Email sent to #{Preference.find_by_name('mail_copy_to').value.split(',')}"
+    OrdersMailer.deliver_testing Preference.get_value('mail_copy_to').split(',') # that should send it.
+    message= "Email sent to #{Preference.get_value('mail_copy_to').split(',')}"
     message += " also consider running in production mode or turning on ActionMailer::Base.raise_delivery_errors" unless ActionMailer::Base.raise_delivery_errors
     flash[:notice] = message
     redirect_to :action => :index

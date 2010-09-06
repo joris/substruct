@@ -673,7 +673,10 @@ class OrderTest < ActiveSupport::TestCase
   # Test an order to see if a flat shipping price will be returned.
   # TODO: Should this method really be here?
   def test_get_flat_shipping_price
-    assert_equal @order.get_flat_shipping_price, Preference.find_by_name('store_handling_fee').value.to_f
+    assert_equal(
+      @order.get_flat_shipping_price, 
+      Preference.get_value('store_handling_fee').to_f
+    )
   end
   
   # Test an order to see if the correct shipping prices will be returned.
@@ -723,14 +726,20 @@ class OrderTest < ActiveSupport::TestCase
   # Test an order to see if the cc processor will be returned.
   def test_get_cc_processor
     # TODO: Should this method really be here?
-    assert_equal Order.get_cc_processor, Preference.find_by_name('cc_processor').value.to_s
+    assert_equal(
+      Order.get_cc_processor, 
+      Preference.get_value('cc_processor').to_s
+    )
   end
 
 
   # Test an order to see if the cc login will be returned.
   def test_get_cc_login
     # TODO: Should this method really be here?
-    assert_equal Order.get_cc_login, Preference.find_by_name('cc_login').value.to_s
+    assert_equal(
+      Order.get_cc_login, 
+      Preference.get_value('cc_login').to_s
+    )
   end
 
 
@@ -858,9 +867,9 @@ class OrderTest < ActiveSupport::TestCase
     assert @o.save
 
     # Make sure inventory control is enabled.
-    assert Preference.find_by_name('store_use_inventory_control').is_true?
+    assert Preference.get_value_is_true?('store_use_inventory_control')
     # Make sure cc number obfuscation is enabled.
-    assert Preference.find_by_name('cc_clear_after_order').is_true?
+    assert Preference.get_value_is_true?('cc_clear_after_order')
     
     initial_quantity = @li.item.quantity
     notes_before = @o.notes.clone

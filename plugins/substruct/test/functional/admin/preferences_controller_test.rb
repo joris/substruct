@@ -41,7 +41,7 @@ class Admin::PreferencesControllerTest < ActionController::TestCase
     assert_redirected_to :action => :index
     
     # Make sure a preference was really changed.
-    assert_equal Preference.find_by_name("store_name").value, "My Store"
+    assert_equal Preference.get_value("store_name"), "My Store"
     
     # Erase a mail preference and try to save another, the system should bother about
     # that.

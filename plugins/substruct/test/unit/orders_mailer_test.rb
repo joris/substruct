@@ -92,8 +92,10 @@ class OrdersMailerTest < ActionMailer::TestCase
     
     assert_equal response_mail.subject, 'An order has failed on the site'
     assert_match /Order #: #{an_order.order_number}/, response_mail.body
-    assert_equal response_mail.to.to_a, Preference.find_by_name('mail_copy_to').value.split(',')
-    
+    assert_equal(
+      response_mail.to.to_a, 
+      Preference.get_value('mail_copy_to').split(',')
+    )
   end
 
 
@@ -106,7 +108,10 @@ class OrdersMailerTest < ActionMailer::TestCase
     
     response_mail = OrdersMailer.create_reset_password(an_order_user)
 
-    assert_equal response_mail.subject, "Password reset for #{Preference.find_by_name('store_name').value}"
+    assert_equal(
+      response_mail.subject, 
+      "Password reset for #{Preference.get_value('store_name')}"
+    )
     assert_match /Your password has been reset/, response_mail.body
     assert_equal response_mail.to.to_a, [an_order_user.email_address]
 
@@ -117,11 +122,11 @@ class OrdersMailerTest < ActionMailer::TestCase
   def test_test_email
     Preference.save_setting 'mail_username' => 'fred@fred.com'
     @expected.from    = 'fred@fred.com'
-    @expected.to      = Preference.find_by_name('mail_copy_to').value.split(',')
-    @expected.subject = "Test from #{Preference.find_by_name('store_name').value}"
+    @expected.to      = Preference.get_value('mail_copy_to').split(',')
+    @expected.subject = "Test from #{Preference.get_value('store_name')}"
     @expected.body    = "This is a test email! Apparently it worked, if you receive this email."
     @expected.date    = Time.now
-    assert_equal @expected.encoded, OrdersMailer.create_testing(Preference.find_by_name('mail_copy_to').value.split(',')).encoded
+    assert_equal @expected.encoded, OrdersMailer.create_testing(Preference.get_value('mail_copy_to').split(',')).encoded
   end
 
 end

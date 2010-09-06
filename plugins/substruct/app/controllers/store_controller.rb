@@ -21,7 +21,7 @@ class StoreController < ApplicationController
     ]
   
 
-  if Preference.find_by_name('store_test_transactions').is_true?
+  if Preference.get_value_is_true?('store_test_transactions')
     ActiveMerchant::Billing::Base.integration_mode = :test 
   else
     ActiveMerchant::Billing::Base.integration_mode = :production
@@ -174,7 +174,7 @@ class StoreController < ApplicationController
     logger.info "Quantity too much? #{(@quantity.to_i > @product.quantity.to_i)}"
     
     # Checks quantity against available.
-    if (Preference.find_by_name('store_use_inventory_control').is_true? && @quantity > @product.quantity.to_i)
+    if (Preference.get_value_is_true?('store_use_inventory_control') && @quantity > @product.quantity.to_i)
       logger.info "There's an error adding to the cart..."
       respond_to do |format|
         format.html { render(:file => "#{RAILS_ROOT}/public/404.html", :status => 404) and return}
@@ -284,7 +284,7 @@ class StoreController < ApplicationController
       @order.save
     end
     
-    if Preference.find_by_name('store_show_confirmation').is_true?
+    if Preference.get_value_is_true?('store_show_confirmation')
       action_after_shipping = 'confirm_order'
     else
       action_after_shipping = 'finish_order'
@@ -447,7 +447,7 @@ class StoreController < ApplicationController
       
       # Add cart items to order. Check inventory level first...
       # Now controlled by a preference in the Admin UI
-      if Preference.find_by_name('store_use_inventory_control').is_true?
+      if Preference.get_value_is_true?('store_use_inventory_control')
         removed_items = @order.check_inventory()
         logger.info "REMOVED ITEMS: #{removed_items.inspect}"
         # If any items were removed, flash and alert.

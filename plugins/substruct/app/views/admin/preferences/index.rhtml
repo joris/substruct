@@ -59,6 +59,15 @@
             After login, their address information will be auto-filled in the checkout form.
           </span>
         </p>
+        
+        <p>
+          <%= make_label('Show products as "New" for', true) %>
+          <%= text_field_tag('prefs[product_is_new_week_range]', @prefs['product_is_new_week_range'].value, :class => 'textInput', :size => 4) %> weeks
+          <br/>
+          <span class="info">
+            Time from date available that products will be marked as "new".
+          </span>
+        </p>
       </div>
     </div>
     
@@ -82,22 +91,21 @@
           <%= make_label('Login', true) %>
           <%= text_field_tag('prefs[cc_login]', @prefs['cc_login'].value, :class => 'textInput')%>
           <br>
-          <span class="info">When using PayPal, this is your PayPal email address.  With authorize.net, your API Login ID.</span>
+          <span class="info">Authorize.net API Login ID OR PayPal email address</span>
         </p>
         <p>
           <%= make_label('Password') %>
           <%= password_field_tag('prefs[cc_pass]', @prefs['cc_pass'].value, :class => 'textInput')%>
           <br/>
-          <span class="info">With paypal your password, with authorize.net, your transaction key.</span>
+          <span class="info">Authorize.net transaction key. NOT REQUIRED FOR PAYPAL IPN</span>
         </p>
         <p>
           <input name="prefs[cc_clear_after_order]" type="hidden" value="0" />
           <label>
             <%= check_box_tag('prefs[cc_clear_after_order]', 1, (@prefs['cc_clear_after_order'].is_true?)) %>
             Clear all but last 4 digits of CC# after processing order?
-            <br/>
-            <span class="info">If set, after a successful order all but the last 4 digits of CC# will be cleared.  Doesn't make a difference if you use paypal IPN, as no credit card numbers are entered on site.</span>
           </label>
+          <span class="info">If set, after a successful order all but the last 4 digits of CC# will be cleared.  Doesn't make a difference if you use paypal IPN, as no credit card numbers are entered on site.</span>
         </p>
       </div>
     </div>

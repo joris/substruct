@@ -306,12 +306,12 @@ class Order < ActiveRecord::Base
   
   # Check to see which cc processor is used
   def self.get_cc_processor
-    Preference.find_by_name('cc_processor').value
+    Preference.get_value('cc_processor')
   end
 
   # Get the login info for the cc processor (if any)
   def self.get_cc_login
-    Preference.find_by_name('cc_login').value
+    Preference.get_value('cc_login')
   end
 
   # INSTANCE METHODS ==========================================================
@@ -704,7 +704,7 @@ class Order < ActiveRecord::Base
   #
   # A lot of people will want this overridden in their app
   def get_flat_shipping_price
-    return Preference.find_by_name('store_handling_fee').value.to_f
+    return Preference.get_value('store_handling_fee').to_f
   end
 
   # Gets all LIVE shipping prices for an order.
@@ -716,7 +716,7 @@ class Order < ActiveRecord::Base
     address = self.shipping_address
     
     # Compare the country with the store home country.
-    if address.country_id == Preference.find_by_name('store_home_country').value.to_i then
+    if address.country_id == Preference.get_value('store_home_country').to_i then
       shipping_types = OrderShippingType.get_domestic
     else 
       shipping_types = OrderShippingType.get_foreign
@@ -767,10 +767,10 @@ class Order < ActiveRecord::Base
       :last_name  => ba.last_name
     )
     gateway = ActiveMerchant::Billing::AuthorizeNetGateway.new(
-      :login      => Preference.find_by_name('cc_login').value,
-      :password   => Preference.find_by_name('cc_pass').value,
+      :login      => Preference.get_value('cc_login'),
+      :password   => Preference.get_value('cc_pass'),
       :ssl_strict => true,
-      :test       => Preference.find_by_name('store_test_transactions').is_true?
+      :test       => Preference.get_value_is_true?('store_test_transactions')
     )
     address = {
       :address1 => ba.address,
@@ -840,7 +840,7 @@ class Order < ActiveRecord::Base
       \
     end
 
-    if details[:business] != Preference.find_by_name('cc_login').value
+    if details[:business] != Preference.get_value('cc_login')
       passed = false
       logger.error %Q\
         >>>The business address passed back from PayPal is not 
@@ -933,7 +933,7 @@ class Order < ActiveRecord::Base
   def cleanup_successful
     # Decrement inventory for items...
     # Also driven by the inventory control preference from the admin  UI
-    if Preference.find_by_name('store_use_inventory_control').is_true?
+    if Preference.get_value_is_true?('store_use_inventory_control')
       self.order_line_items.each do |oli|
         begin
           oli.item.update_attribute('quantity', oli.item.quantity-oli.quantity)
@@ -948,7 +948,7 @@ class Order < ActiveRecord::Base
     new_order_code = OrderStatusCode.find_by_name("ORDERED - PAID - TO SHIP")
     self.order_status_code = new_order_code if new_order_code
     self.new_notes="Order completed."
-    if Preference.find_by_name('cc_clear_after_order').is_true?
+    if Preference.get_value_is_true?('cc_clear_after_order')
       self.account.clear_personal_information
     end
     self.save
