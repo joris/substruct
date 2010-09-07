@@ -12,6 +12,8 @@ Changed:
      - Was going to implement a preference for this, but seems stupid.
        Allows store owners to show items that are "out of stock" instead of
        product disappearing from the store all together.
+  2. No longer validating addresses and excluding PO Boxes.
+     Doesn't make sense for everyone, so we removed it.
 
 Updated:
   1. Removed all the stupid Preference.find_by_name calls and replaced
