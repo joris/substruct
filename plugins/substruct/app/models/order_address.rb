@@ -20,19 +20,7 @@ class OrderAddress < ActiveRecord::Base
 
   US_STATES = %\AK AR AZ CT FL HI IL KY MD MN MT NE NM OH PA SC TX VI WI AL CA DC GA IA IN LA ME  	MO NC NH NV OK PR SD UT VT WV CO DE GU ID KS MA MI MS ND NJ NY OR RI TN VA WA WY\.split( /\W+/ )
 
-  #Makes sure validation address doesn't allow PO Box or variants
   def validate
-    invalid_strings = [
-      'PO BOX', 'P.O. BOX', 'P.O BOX', 'PO. BOX', 'POBOX',
-      'P.OBOX', 'P.O.BOX', 'PO.BOX', 'P.BOX', 'PBOX', 'AFO',
-      'A.F.O.', 'APO', 'A.P.O.'
-    ]
-    cap_address = self.address.upcase()
-    invalid_strings.each do |string|
-      if cap_address.include?(string) then
-        errors.add(:address, "Sorry, we don't ship to P.O. boxes")
-      end
-    end
     if self.country && self.country.name == "United States of America"
       unless zip.blank?
         unless zip =~ /^\d{5}/
