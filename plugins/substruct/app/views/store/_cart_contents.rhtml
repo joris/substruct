@@ -36,7 +36,8 @@
 		</tr>
 	<% end %>
   <tr class="footer">
-    <td class="numeric">Total</td>
-    <td class="numeric"><%= sub_number_to_currency(cart.total) %></td>
+    <td class="numeric" colspan="2" style="font-weight:bold;line-height:2em;">
+      <%= sub_number_to_currency(cart.total) %>
+    </td>
   </tr>
 </table>
