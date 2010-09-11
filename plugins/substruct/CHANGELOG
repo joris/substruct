@@ -6,6 +6,12 @@ Added:
   1. Preferences for store display.
      - Product "new" date range in weeks.
        This controls the date range of the "is_new?" method on products.
+  2. Enhanced emails for order receipts
+     - Receipts now go out as HTML and plain text in a multipart email.
+       Had to do this because clients can type in HTML into the TinyMCE
+       editor.
+     - HTML renders great in Apple mail, but needs work on inline styles
+       for proper Gmail/Outlook rendering. (Issue 216)
        
 Changed:
   1. Products now show in store until marked discontinued.
