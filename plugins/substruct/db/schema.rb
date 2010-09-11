@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
     t.integer  "product_id",                        :default => 0,     :null => false
     t.boolean  "is_discontinued",                   :default => false, :null => false
     t.integer  "variation_quantity",                :default => 0,     :null => false
+    t.integer  "variation_rank",     :limit => 3
   end
 
   add_index "items", ["date_available", "is_discontinued", "quantity", "variation_quantity", "type"], :name => "tag_view"
