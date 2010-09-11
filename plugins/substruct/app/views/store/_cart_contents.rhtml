@@ -29,7 +29,7 @@
 			<td class="numeric"><%= sub_number_to_currency(cart.tax_cost) %></td>
 		</tr>
 	<% end %>
-	<% if cart.shipping_cost > 0 %>
+	<% if cart.shipping_cost > 0 || cart.order_shipping_type %>
 		<tr class="<%= alternate %>">
 			<td>Shipping - <%= cart.order_shipping_type.name %></td>
 			<td class="numeric"><%= sub_number_to_currency(cart.shipping_cost) %></td>
