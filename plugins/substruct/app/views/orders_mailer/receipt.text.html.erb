@@ -1,124 +1,145 @@
-<table width="580" border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td class="header" height="77">
-      <!-- store name as header -->
-      <h1><%= Preference.get_value('store_name') || 'Substruct' %></h1>
-    </td>
-  </tr>
-  <tr>
-    <td>
-    
-      <table width="580" border="0" cellspacing="20" cellpadding="0">
-        <tr>
-          <td width="580" align="left" valign="top" class="mainbar">
-            
-            <h2>
-              Thank you for your order 
-              <br/>
-              <span style="color: #666;padding:10px;font-size:0.8em;">Order <%= @order.order_number %></span>
-              <br/>
-              <span style="color: #666;padding:10px;font-size:0.8em;"><%= number_to_currency(@order.total) %></span>
-            </h2>
-            
-            <table width="100%">
-              <tr>
-                <td width="50%">
-                  <h3>Account Information</h3>
-                  <table cellpadding="0" cellspacing="0" class="list">
-                  	<colgroup>
-                  		<col style="width:35%;"/>
-                  		<col />
-                  	</colgroup>
-                    <tr>
-                      <th>Email</th>
-                      <td><%= @order.order_user.email_address %></td>
-                    </tr>
-                    <% if @order.account.cc_number.length > 16 || @order.account.cc_number == 'XXXXXXXXX0000'  %>
-                      <tr>
-                        <th>Payment method</th>
-                        <td>No credit card number on file</td>
-                      </tr>
-                      <% elsif @order.account.order_account_type_id == OrderAccount::TYPES['Credit Card']  %>
-                        <tr>
-                          <th>CC Number</th>
-                          <td><%= @order.account.cc_number_last_four %></td>
-                        </tr>
-                        <tr>
-                          <th>CC Exp Month</th>
-                          <td><%= @order.account.expiration_month %></td>
-                        </tr>
-                        <tr>
-                          <th>CC Exp Year</th>
-                          <td><%= @order.account.expiration_year %></td>
-                        </tr>
-                      <% else %>
-                        <tr>
-                          <th>Bank Name</th>
-                          <td><%= @order.account.bank_name %></td>
-                        </tr>
-                        <tr>
-                          <th>Account Number</th>
-                          <td><%= @order.account.account_number %></td>
-                        </tr>
-                        <tr>
-                          <th>Routing Number</th>
-                          <td><%= @order.account.routing_number %></td>
-                        </tr>
-                      <% end %>
-                  </table>
-                  <br/>
-                </td>
-                <td>
-                  &nbsp;
-                </td>
-              </tr>
-              <tr>
-                <td width="50%">
-                  <h3>Billing Address</h3>
-                  <%= 
-                    render(
-                      :partial => '/store/address_table', 
-                      :locals => {
-                        :address => @order.billing_address
-                      }
-                    ) 
-                  %>
-                </td>
-                <td width="50%">
-                  <h3>Shipping Address</h3>
-                  <%= 
-                    render(
-                      :partial => '/store/address_table', 
-                      :locals => {
-                        :address => @order.shipping_address
-                      }
-                    ) 
-                  %>
-                </td>
-              </tr>
-            </table>
-            
-            <br/>
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <style type="text/css" media="screen">
+      body {
+      	margin: 0;
+      	padding: 0;
+      }
 
-            <h3>Order Details</h3>
-            <%= 
-              render(
-                :partial => '/store/cart_contents', 
-                :locals => {:cart => @order}
-              ) 
-            %>
-                            
-            <p class="top">&nbsp;</p>
-            <!-- custom message from snippet goes here -->
-            <%= @email_text %>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" valign="top" class="footer">
-      <!-- can place footer content here -->
-    </td>
-  </tr>
-</table>
+      td.header {
+      	height: 80px;
+      	border-bottom: 1px solid #ddd;
+      }
+
+      td.header h1 {
+      	font-family: 'Trebuchet MS', sans-serif;
+      	font-size: 44px;
+      	padding-left: 10px;
+      	font-weight: bold;
+      	color: #000000;
+      	display: inline;
+      }
+
+      table.sidebar td {
+      	border-bottom: 1px solid #ddd;
+      	padding: 20px 0 20px 0;
+      }
+  
+      table.list {
+        width: 100%;
+      }
+  
+      table.list th {
+        text-transform: uppercase;
+        background-color: #efefef;
+        color: #666;
+        text-align: left;
+        padding: 4px;
+      }
+      table.list th.numeric {
+        text-align:right;
+      }
+      table.list td {
+        padding: 4px;
+      }
+  
+      table.list tr.footer td {
+        background-color: #efefef;
+        color: #666;
+      }
+
+      td h3 {
+      	font-family: 'Trebuchet MS', sans-serif;
+      	color: #666;
+      }
+
+      h4.meta {
+      	font-family: 'Trebuchet MS', sans-serif;
+      	font-size: 12px;
+      	font-weight: normal;
+      	color: #999999;
+      	margin: 0;
+      	padding: 0;
+      	text-transform: uppercase;
+      }
+
+      td.mainbar h2 {
+      	font-family: 'Trebuchet MS', sans-serif;
+      	font-size: 18px;
+      	font-weight: normal;
+      	color: #000000;
+      	margin: 20px 0 8px 0;
+      	padding: 0;
+      }
+
+      td.mainbar h2 a {
+      	font-family: 'Trebuchet MS', sans-serif;
+      	font-size: 18px;
+      	font-weight: normal;
+      	color: #000000;
+      	text-decoration: none;
+      }
+
+      td.mainbar p {
+      	font-family: 'Trebuchet MS', sans-serif;
+      	font-size: 13px;
+      	font-weight: normal;
+      	color: #333333;
+      	margin: 0 0 20px 0;
+      	padding: 0;
+      }
+
+      td.mainbar p.top {
+      	padding: 0 0 6px 0;
+      	border-bottom: 1px solid #ddd;
+      }
+
+      td.mainbar p.top a {
+      	font-family: 'Trebuchet MS', sans-serif;
+      	font-size: 10px;
+      	font-weight: normal;
+      	color: #cc0000;
+      }
+
+      td.mainbar ul {
+      	font-family: 'Trebuchet MS', sans-serif;
+      	font-size: 13px;
+      	font-weight: normal;
+      	color: #333333;
+      }
+
+      td.footer {
+      	font-family: 'Trebuchet MS', sans-serif;
+      	font-size: 11px;
+      	font-weight: normal;
+      	color: #333333;
+      	padding: 10px 0 10px 0;
+      }
+
+      td.footer span {
+      	font-weight: bold;
+      }
+  
+      span.order_price {
+        color: #999;
+        font-size: 0.8em;
+      }
+  
+      .numeric {
+        text-align: right;
+      }
+   </style>
+
+</head>
+<body>
+  <a name="top" id="top"></a>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+     <tr>
+        <td align="center">
+          <%= render :partial => 'order_html' %>
+        </td>
+     </tr>
+  </table>
+</body>
+</html>
