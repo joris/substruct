@@ -69,7 +69,7 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
     t.string   "code",               :limit => 100, :default => "",    :null => false
     t.string   "name",               :limit => 100, :default => "",    :null => false
     t.text     "description"
-    t.float    "price",                             :default => 0.0,   :null => false
+    t.float    "price",                             :default => 0.0
     t.datetime "date_available",                                       :null => false
     t.integer  "quantity",                          :default => 0,     :null => false
     t.float    "size_width",                        :default => 0.0,   :null => false

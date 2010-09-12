@@ -11,7 +11,7 @@ class VariationTest < ActiveSupport::TestCase
 
 
   # Test if the fixtures are of the proper type.
-  def test_item_should_be_of_proper_type
+  def test_item_be_of_proper_type
     assert_kind_of Variation, items(:red_lightsaber)
     assert_kind_of Variation, items(:blue_lightsaber)
     assert_kind_of Variation, items(:green_lightsaber)
@@ -20,10 +20,14 @@ class VariationTest < ActiveSupport::TestCase
     assert_kind_of Variation, items(:small_stuff)
   end
 
+  def test_can_save_with_nil_price
+    v = Variation.new(:name => 'Small', :price => nil)
+    assert v.save!, "Variation should save with nil price"
+  end
 
   # Test if an orphaned variation will NOT be saved.
   # Don't assign the variation to anything and try to save it.
-  def test_should_can_save_orphan
+  def test_can_save_orphan
     @v = Variation.new
     @v.code = "BIG_STUFF"
     @v.name = "Big"
@@ -35,11 +39,11 @@ class VariationTest < ActiveSupport::TestCase
 
 
   # Test if a valid variation can be assigned and saved with success.
-  def test_should_assign_and_save_variation
+  def test_assign_and_save_variation
     # Load a product.
-    a_product = items(:the_stuff)
+    p = items(:the_stuff)
     assert_nothing_raised {
-      Product.find(a_product.id)
+      Product.find(p.id)
     }
 
     # Create a variation.
@@ -50,7 +54,7 @@ class VariationTest < ActiveSupport::TestCase
     @v.quantity = 500
 
     # Assign the variation to its respective product and save the variation.  
-    assert a_product.variations << @v
+    assert p.variations << @v
     assert @v.save
     
     # Verify if a default date is beeing assigned to date_available.
@@ -59,7 +63,7 @@ class VariationTest < ActiveSupport::TestCase
 
 
   # Test if a variation can be found with success.
-  def test_should_find_variation
+  def test_find_variation
     @v_id = items(:small_stuff).id
     assert_nothing_raised {
       Variation.find(@v_id)
@@ -68,20 +72,20 @@ class VariationTest < ActiveSupport::TestCase
 
 
   # Test if a variation can be updated and if the product will be updated too.
-  def test_should_update_variation_and_product
+  def test_update_variation_and_product
     
     assert @v.update_attributes(:name => 'Very Small')
     
     # Load the variation's product.
-    a_product = @v.product
-    variation_quantity = a_product.variation_quantity
+    p = @v.product
+    variation_quantity = p.variation_quantity
     assert @v.update_attributes(:quantity => @v.quantity + 2)
-    assert_equal a_product.variation_quantity, variation_quantity + 2 
+    assert_equal p.variation_quantity, variation_quantity + 2 
   end
 
 
   # Test if a variation can be destroyed and if its product will know about that.
-  def test_should_destroy_variation
+  def test_destroy_variation
     variations_counter = @v.product.variations.count
     @v.destroy
     assert_raise(ActiveRecord::RecordNotFound) {
@@ -109,13 +113,13 @@ class VariationTest < ActiveSupport::TestCase
 
   # Test if the variation images points to product images as variations can't
   # have their own images.
-  def test_should_point_its_images_to_product_images
+  def test_point_its_images_to_product_images
     assert_equal @v.images, @v.product.images
   end
 
 
   # Test if the variation name is concatenated with the product name.
-  def test_should_concatenate_product_name
+  def test_concatenate_product_name
     assert_equal @v.name, "#{@v.product.name} - #{@v.short_name}" 
   end
 
@@ -145,10 +149,10 @@ class VariationTest < ActiveSupport::TestCase
   
   def test_clean_code_variation
     # Load a product.
-    a_product = items(:the_stuff)
+    p = items(:the_stuff)
 
     # Create a variation.
-    v = a_product.variations.new(
+    v = p.variations.new(
       :name => 'XXL',
       :price => 100.00,
       :quantity => 10

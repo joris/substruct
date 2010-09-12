@@ -41,7 +41,6 @@ class Item < ActiveRecord::Base
   #############################################################################
 
   # Name output for product suggestion JS
-  # 
   def suggestion_name
     "#{self.code}: #{self.name}"
   end
