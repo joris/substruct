@@ -18,32 +18,19 @@ class Preference < ActiveRecord::Base
   # Can throw an error if these items aren't set.
   # Make sure to wrap any block that calls this
   def self.init_mail_settings
+    mail_server_settings = {}
+    
     if Preference.get_value_is_true?('use_smtp_tls_patch')
-      require "smtp_tls"
-    else
-      # Remove the Net::SMTP::Revision constant.
-      Net::SMTP.class_eval do
-        remove_const :Revision.to_s if const_defined? :Revision.to_s
-      end
-      # Remove the Net::SMTPSession constant.
-      Net.class_eval do
-        remove_const :SMTPSession.to_s if const_defined? :SMTPSession.to_s
-      end
-      # Remove the SMTP constant.
-      Object.class_eval do
-        remove_const :SMTP.to_s if const_defined? :SMTP.to_s
-      end
-      # Reload the net/smtp.rb class.
-      require "net/smtp"
+      mail_server_settings[:tls] = true
     end
     
     # SET MAIL SERVER SETTINGS FROM PREFERENCES
     mail_host = get_value('mail_host')
-    mail_server_settings = {
-      :address => mail_host,
-      :domain => mail_host,
-      :port => get_value('mail_port'),
-    }
+    
+    mail_server_settings[:address] = mail_host
+    mail_server_settings[:domain] = mail_host
+    mail_server_settings[:port] = get_value('mail_port')
+
     mail_auth_type = get_value('mail_auth_type')
     if mail_auth_type != 'none'
       mail_server_settings[:authentication] = mail_auth_type.to_sym
