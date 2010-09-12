@@ -19,7 +19,7 @@ Rails::Initializer.run do |config|
   config.load_paths += %W( #{RAILS_ROOT}/vendor/plugins/substruct )
   config.action_controller.session_store = :active_record_store
   
-  config.gem 'RedCloth'
+  config.gem 'RedCloth', :lib => 'redcloth'
   config.gem 'fastercsv'
   config.gem 'mime-types', :lib => 'mime/types'
   config.gem 'mini_magick', :version => '1.3.3'
