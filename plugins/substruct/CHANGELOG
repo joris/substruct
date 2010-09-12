@@ -10,8 +10,9 @@ Added:
      - Receipts now go out as HTML and plain text in a multipart email.
        Had to do this because clients can type in HTML into the TinyMCE
        editor.
-     - HTML renders great in Apple mail, but needs work on inline styles
-       for proper Gmail/Outlook rendering. (Issue 216)
+     - HTML requires the 'sundawg_premailer' gem and assorted support
+       gems to properly render inline css styles for mail clients
+       like Gmail / Outlook.
        
 Changed:
   1. Products now show in store until marked discontinued.
@@ -27,8 +28,12 @@ Updated:
 
 Upgrade steps:
   0. Upgrade your /vendor directory with the one that ships with Substruct.
+  1. Compare your environment.rb file with the one in vendor/plugins/substruct/config
+     - Note the gems that have been added. You might want to add this to your own
+       environment.rb file.
   1. rake gems:build
   2. rake db:migrate:plugin NAME=substruct
+  
 
 
 VERSION 1.3.1 - 08/30/2010

@@ -15,9 +15,11 @@
             <h2>
               Thank you for your order 
               <br/>
-              <span style="color: #666;padding:10px;font-size:0.8em;">Order <%= @order.order_number %></span>
-              <br/>
-              <span style="color: #666;padding:10px;font-size:0.8em;"><%= number_to_currency(@order.total) %></span>
+              <span class="details">
+                Order <%= @order.order_number %>
+                <span style="color:#ddd;padding:10px 0px;font-weight:bold;">/</span>
+                <%= number_to_currency(@order.total) %>
+              </span>
             </h2>
             
             <table width="100%">

@@ -27,7 +27,7 @@ class OrdersMailer < ActionMailer::Base
       p.transfer_encoding = "base64"
     end
     part "text/html" do |p|
-      p.body = render_message(
+      p.body = render_inline_css(
         "receipt.text.html", 
         @body
       )
@@ -40,7 +40,6 @@ class OrdersMailer < ActionMailer::Base
     recipients   Preference.get_value('mail_copy_to').split(',')
     subject      "An order has failed on the site"
     body         :order => order
-
   end
 
   def reset_password(customer)
@@ -64,6 +63,15 @@ class OrdersMailer < ActionMailer::Base
       @from       = Preference.get_value('mail_username')
       @sent_on    = Time.now
       @headers    = {}
+    end
+
+  protected
+
+    def render_inline_css(template, params)
+      Premailer.new(
+        render_message(template, params), 
+        :in_memory => true
+      ).to_inline_css
     end
   
 end

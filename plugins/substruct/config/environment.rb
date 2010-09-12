@@ -24,4 +24,13 @@ Rails::Initializer.run do |config|
   config.gem 'mime-types', :lib => 'mime/types'
   config.gem 'mini_magick', :version => '1.3.3'
   config.gem 'ezcrypto'
+  
+  # All of these gems are just so we can attach inline-css styles
+  # to the order receipt HTML email! :(
+  config.gem 'css_parser'
+  config.gem 'text-hyphen', :lib => 'text/hyphen'
+  config.gem 'text-reform', :lib => 'text/reform'
+  config.gem 'htmlentities'
+  # http://github.com/SunDawg/premailer
+  config.gem 'sundawg_premailer', :lib => 'premailer'
 end
