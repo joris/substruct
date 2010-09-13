@@ -18,6 +18,9 @@ Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here
   config.load_paths += %W( #{RAILS_ROOT}/vendor/plugins/substruct )
   config.action_controller.session_store = :active_record_store
+
+  # It seems Rack 1.1.0 SPECIFICALLY is required by Rails 2.3.8
+  config.gem "rack", :version => '1.1.0'
   
   config.gem 'RedCloth', :lib => 'redcloth'
   config.gem 'fastercsv'
