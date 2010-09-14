@@ -9,11 +9,25 @@
       <div class="padLeft">
         <p>
           <%= make_label('Store Name', true) %>
-          <%= text_field_tag('prefs[store_name]', @prefs['store_name'].value, :class => 'textInput')%>
+          <%= 
+            text_field_tag(
+              'prefs[store_name]', 
+              @prefs['store_name'].value, 
+              :class => 'textInput', 
+              :size => 35
+            )
+          %>
         </p>
         <p>
           <%= make_label('Handling Fee', true) %>
-          <%= text_field_tag('prefs[store_handling_fee]', @prefs['store_handling_fee'].value, :class => 'textInput')%>
+          <%= 
+            text_field_tag(
+              'prefs[store_handling_fee]', 
+              @prefs['store_handling_fee'].value, 
+              :class => 'textInput',
+              :size => 35
+            )
+          %>
           <br/>
           <span class="info">This charge will be added to all orders, and will be combined together with shipping on checkouts.</span>
         </p>
@@ -89,13 +103,27 @@
         </p>
         <p>
           <%= make_label('Login', true) %>
-          <%= text_field_tag('prefs[cc_login]', @prefs['cc_login'].value, :class => 'textInput')%>
+          <%= 
+            text_field_tag(
+              'prefs[cc_login]', 
+              @prefs['cc_login'].value, 
+              :class => 'textInput',
+              :size => 35
+            )
+          %>
           <br>
           <span class="info">Authorize.net API Login ID OR PayPal email address</span>
         </p>
         <p>
           <%= make_label('Password') %>
-          <%= password_field_tag('prefs[cc_pass]', @prefs['cc_pass'].value, :class => 'textInput')%>
+          <%= 
+            password_field_tag(
+              'prefs[cc_pass]', 
+              @prefs['cc_pass'].value, 
+              :class => 'textInput',
+              :size => 35
+            )
+          %>
           <br/>
           <span class="info">Authorize.net transaction key. NOT REQUIRED FOR PAYPAL IPN</span>
         </p>
@@ -151,25 +179,61 @@
         </p>
         <p>
           <%= make_label('SMTP Mail Host', true) %>
-          <%= text_field_tag('prefs[mail_host]', @prefs['mail_host'].value, :class => 'textInput')%>
+          <%= 
+            text_field_tag(
+              'prefs[mail_host]', 
+              @prefs['mail_host'].value, 
+              :class => 'textInput',
+              :size => 35
+            )
+          %>
         </p>
         <p>
           <%= make_label('SMTP Port', true) %>
-          <%= text_field_tag('prefs[mail_port]', @prefs['mail_port'].value, :class => 'textInput')%>
+          <%= 
+            text_field_tag(
+              'prefs[mail_port]', 
+              @prefs['mail_port'].value, 
+              :class => 'textInput',
+              :size => 35
+            )
+          %>
         </p>
       </div>
       <div class="floatHalf">
         <p>
           <%= make_label('SMTP Username / Send E-mails as', true) %>
-          <%= text_field_tag('prefs[mail_username]', @prefs['mail_username'].value, :class => 'textInput')%>
+          <%= 
+            text_field_tag(
+              'prefs[mail_username]', 
+              @prefs['mail_username'].value, 
+              :class => 'textInput',
+              :size => 35
+            )
+          %>
         </p>
         <p>
           <%= make_label('SMTP Password') %>
-          <%= password_field_tag('prefs[mail_password]', @prefs['mail_password'].value, :class => 'textInput')%>
+          <%= 
+            password_field_tag(
+              'prefs[mail_password]', 
+              @prefs['mail_password'].value, 
+              :class => 'textInput',
+              :size => 35
+            )
+          %>
         </p>
         <p>
           <%= make_label('Copy all mails to', true) %>
-          <%= text_field_tag('prefs[mail_copy_to]', @prefs['mail_copy_to'].value, :class => 'textInput', :size => 40, :maxlength => 256)%>
+          <%= 
+            text_field_tag(
+              'prefs[mail_copy_to]', 
+              @prefs['mail_copy_to'].value, 
+              :class => 'textInput', 
+              :size => 35, 
+              :maxlength => 256
+            )
+          %>
           <br/>
           <span class="info">
             Sends a copy of all outgoing mails to this address.
