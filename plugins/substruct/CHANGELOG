@@ -27,10 +27,12 @@ Updated:
      with a more robust Preference.get_value method.
 
 Fixed:
-  1. Some critical edge-case bugs, specifically...
-     - PayPal IPN purchases were not showing receipts
-     - It was possible to empty a completed order and remove items,
-       only leaving shipping cost.
+  * PayPal IPN purchases were not showing receipts.
+  * It was possible to empty a completed order and remove items,
+    only leaving shipping cost.
+  * Emptying a cart allowed shipping costs to remain.
+  * Carts weren't showing shipping costs, but showing it in the total.
+      
 
 Upgrade steps:
   0. Upgrade your /vendor directory with the one that ships with Substruct.

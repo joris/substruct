@@ -1162,6 +1162,19 @@ class OrderTest < ActiveSupport::TestCase
     assert order.empty?
   end
   
+  # Removing items from the cart should blow away any shipping or
+  # tax costs
+  def test_empty_removes_shipping_cost
+    order = orders(:santa_next_christmas_order)
+    order.stubs(:is_complete?).returns(false)
+    order.update_attribute(:shipping_cost, 10)
+    # exercise
+    order.empty!
+    # verify
+    assert order.reload.empty?
+    assert_equal 0, order.shipping_cost
+  end
+  
   def test_cant_empty_completed_order
     order = orders(:santa_next_christmas_order)
     order.stubs(:is_complete?).returns(true)

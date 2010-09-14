@@ -23,10 +23,9 @@
 		<tr>
 			<th>&nbsp;</th>
 			<th class="first">Item</th>
-			<th class="numeric">Price Each</th>
+			<th class="numeric">Each</th>
 			<th class="numeric">Quantity</th>
 			<th class="numeric">Total Price</th>
-
 		</tr>
 		<% @order.items.each do |item| %>
 			<tr id="cart_item_<%= item.product_id %>" class="<%= alternate() %>">
@@ -66,6 +65,22 @@
 				<td class="money numeric"><%= sub_number_to_currency(item.quantity*item.unit_price) %></td>
 			</tr>
 		<% end %>
+		<!-- tax cost -->
+		<% if @order.tax_cost > 0 %>
+  		<tr class="<%= alternate %>">
+  		  <td>&nbsp;</td>
+  			<td colspan="3">Tax (<%= @order.tax %>%)</td>
+  			<td class="numeric"><%= sub_number_to_currency(@order.tax_cost) %></td>
+  		</tr>
+  	<% end %>
+  	<!-- shipping cost -->
+  	<% if @order.shipping_cost > 0 || @order.order_shipping_type %>
+  		<tr class="<%= alternate %>">
+  		  <td>&nbsp;</td>
+  			<td colspan="3">Shipping - <%= @order.order_shipping_type.name %></td>
+  			<td class="numeric"><%= sub_number_to_currency(@order.shipping_cost) %></td>
+  		</tr>
+  	<% end %>
 		<tr class="footer">
 			<td style="padding:5px;">
 				<%= 

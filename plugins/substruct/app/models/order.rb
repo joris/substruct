@@ -524,6 +524,7 @@ class Order < ActiveRecord::Base
   def empty!
     return if self.is_complete?
     self.order_line_items.destroy_all
+    self.update_attribute(:shipping_cost, 0)
   end
   
   # Used to determine if a customer has passed the checkout stage
