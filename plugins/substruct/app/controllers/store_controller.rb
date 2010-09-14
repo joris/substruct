@@ -6,11 +6,15 @@ class StoreController < ApplicationController
 
   @@per_page = 10
 
-  before_filter :prep_store_vars
+  # Prep store vars sanitizes cart. 
+  # Don't want to do that on the finish order screen.
+  before_filter :prep_store_vars, :except => [:finish_order]
+  before_filter :get_order, :only => [:finish_order]
   
   before_filter :redirect_if_order_empty,
     :only => [
-      :checkout, :select_shipping_method, :view_shipping_method, :set_shipping_method,
+      :checkout, :select_shipping_method, 
+      :view_shipping_method, :set_shipping_method,
       :confirm_order, :finish_order
     ]
 
@@ -313,35 +317,42 @@ class StoreController < ApplicationController
   # Submits order info to Authorize.net
   def finish_order
     @title = "Thanks for your order!"
-    cc_processor = Order.get_cc_processor
-    order_success = @order.run_transaction
-    if order_success == true
-      @payment_message = "Card processed successfully"
-      clean_order_success()
-    elsif cc_processor == Preference::CC_PROCESSORS[1]
-      case order_success
-        when 4
-          @payment_message = %q\
-            Your order has been processed at PayPal but we
-            have not heard back from them yet.  Your order
-            will be ready to ship as soon as we receive 
-            confirmation of your payment.
-          \
-          clean_order_success()
-        when 5
-          @payment_message = "Transaction processed successfully"
-          clean_order_success()
-        else
-          error_message = "Something went wrong and your transaction failed.<br/>"
-          error_message << "Please try again or contact us."
-          redirect_to_checkout(error_message) and return
-        end
-    else      
-      # Redirect to checkout and allow them to enter info again.
-      error_message = "Sorry, but your transaction didn't go through.<br/>"
-      error_message << "#{order_success}<br/>"
-      error_message << "Please try again or contact us."
-      redirect_to_checkout(error_message) and return
+    # Only charge the card if order hasn't been paid for.
+    # Prevent multiple charges and ensures customer can reload 
+    # receipt page as much as they want.
+    if @order.is_complete?
+      @payment_message = "Order processed successfully"
+    else
+      cc_processor = Order.get_cc_processor
+      order_success = @order.run_transaction
+      if order_success == true
+        @payment_message = "Card processed successfully"
+        clean_order_success()
+      elsif cc_processor == Preference::CC_PROCESSORS[1]
+        case order_success
+          when 4
+            @payment_message = %q\
+              Your order has been processed at PayPal but we
+              have not heard back from them yet.  Your order
+              will be ready to ship as soon as we receive 
+              confirmation of your payment.
+            \
+            clean_order_success()
+          when 5
+            @payment_message = "Transaction processed successfully"
+            clean_order_success()
+          else
+            error_message = "Something went wrong and your transaction failed.<br/>"
+            error_message << "Please try again or contact us."
+            redirect_to_checkout(error_message) and return
+          end
+      else      
+        # Redirect to checkout and allow them to enter info again.
+        error_message = "Sorry, but your transaction didn't go through.<br/>"
+        error_message << "#{order_success}<br/>"
+        error_message << "Please try again or contact us."
+        redirect_to_checkout(error_message) and return
+      end
     end
     render :layout => 'receipt' and return
   end
@@ -370,15 +381,24 @@ class StoreController < ApplicationController
   
     # Prepares store variables necessary for ordering, etc.
     def prep_store_vars
-      # Find or initialize order.
+      get_order()
+      
+      if !@order || @order.is_complete?
+        @order = Order.new
+        session[:order_id] = nil
+      end
+
+      sanitize!
+      
+      # Ensure affiliate code is set properly
+      @order.affiliate_code = cookies[:affiliate]
+    end
+    
+    def get_order
       @order = Order.find(
         :first,
         :conditions => ["id = ?", session[:order_id]]
       )
-      @order ||= Order.new
-      sanitize!
-      # Ensure affiliate code is set properly
-      @order.affiliate_code = cookies[:affiliate]
     end
 
     # Sets order, but sends the customer back to the
@@ -390,8 +410,7 @@ class StoreController < ApplicationController
     def redirect_if_order_empty
       # If there's no order redirect to index
       if @order == nil || @order.empty?
-        redir_string = "There are no items in your order.\n\n"
-        redir_string << "Please add some items to your order before trying to access this page."
+        redir_string = "There are no items in your order."
         redirect_to_index(redir_string) and return false
       end
     end
@@ -399,7 +418,6 @@ class StoreController < ApplicationController
     # Cleans the cart out of memory and auto-logs a customer in.
     def clean_order_success
       log_customer_in(@order.customer)
-      session[:order_id] = nil
     end
 
     # Clears the cart and possibly destroys the order
@@ -467,10 +485,6 @@ class StoreController < ApplicationController
         end
       end
 
-      # @order.order_line_items.clear
-      # @items.each do |line_item|
-      #   @order.order_line_items << OrderLineItem.new(line_item.attributes)
-      # end
       @order.save
       add_tax()
       # Save the order id to the session so we can find it later
@@ -497,7 +511,7 @@ class StoreController < ApplicationController
     
     end
       
-    # This removes old orders
+    # Ensures cart is clean unless we're on the finish_order screen.
     def sanitize! 
        if @order && @order.order_status_code_id != 1 && @order.order_status_code_id != 3
          clear_cart_and_order(false)

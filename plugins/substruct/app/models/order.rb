@@ -520,8 +520,9 @@ class Order < ActiveRecord::Base
     self.order_line_items.size == 0
   end
 
-  # Removes all items from order
+  # Removes all items from order unless it's been placed.
   def empty!
+    return if self.is_complete?
     self.order_line_items.destroy_all
   end
   

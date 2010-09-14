@@ -130,7 +130,7 @@ class StoreControllerTest < ActionController::TestCase
 
 
   # Test the display_product.
-  def test_should_display_product
+  def test_display_product
     # TODO: If this method is not used anymore, get rid of it.
     @product = items(:lightsaber)
     another_product = items(:uranium_portion)
@@ -217,7 +217,7 @@ class StoreControllerTest < ActionController::TestCase
 
 
   # Test the add to cart ajax action.
-  def test_should_add_to_cart_ajax
+  def test_add_to_cart_ajax
     # TODO: This method isn't respecting the inventory control option.
     # Try adding a product.
     @product = items(:towel)
@@ -269,7 +269,7 @@ class StoreControllerTest < ActionController::TestCase
   
   
   # Test the remove from cart ajax action.
-  def test_should_remove_from_cart_ajax
+  def test_remove_from_cart_ajax
     # Try adding a product.
     @product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => @product.id)
@@ -292,7 +292,7 @@ class StoreControllerTest < ActionController::TestCase
 
 
   # Test the empty cart ajax action.
-  def test_should_empty_cart_ajax
+  def test_empty_cart_ajax
     # Try adding a product.
     @product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => @product.id)
@@ -309,7 +309,7 @@ class StoreControllerTest < ActionController::TestCase
 
 
   # Test the empty cart action.
-  def test_should_empty_cart
+  def test_empty_cart
     # Try adding a product.
     @product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => @product.id)
@@ -326,7 +326,7 @@ class StoreControllerTest < ActionController::TestCase
 
 
   # Test the empty cart action.
-  def test_should_empty_cart_after_checkout
+  def test_empty_cart_after_checkout
     test_checkout_success()
     
     an_order_id = session[:order_id]
@@ -443,7 +443,7 @@ class StoreControllerTest < ActionController::TestCase
   
   
   # Test the checkout action.
-  def test_should_checkout_using_paypal
+  def test_checkout_using_paypal
     # Now we say that we will use paypal ipn.
     assert Preference.save_settings({ "cc_processor" => "PayPal IPN" })
 
@@ -482,7 +482,7 @@ class StoreControllerTest < ActionController::TestCase
   
   
   # Test the checkout action.
-  def test_should_checkout_when_logged_as_customer
+  def test_checkout_when_logged_as_customer
     login_as_customer :uncle_scrooge
     
     # Add a product to the cart.
@@ -538,7 +538,7 @@ class StoreControllerTest < ActionController::TestCase
   
   
   # Test the checkout action.
-  def test_should_checkout_and_break
+  def test_checkout_and_break
     # Add a product to the cart.
     @product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => @product.id)
@@ -603,7 +603,7 @@ class StoreControllerTest < ActionController::TestCase
   
   
   # Test the checkout action.
-  def test_should_checkout_with_unavailable_products
+  def test_checkout_with_unavailable_products
     # Add full quantity of an item to the cart.
     @product = items(:towel)
     xhr(:post, :add_to_cart_ajax, :id => @product.id, :quantity => @product.quantity)
@@ -646,7 +646,7 @@ class StoreControllerTest < ActionController::TestCase
   end
   
   # Test the select shipping method action.
-  def test_should_select_shipping_method
+  def test_select_shipping_method
     test_checkout_success()
 
     get :select_shipping_method
@@ -658,14 +658,14 @@ class StoreControllerTest < ActionController::TestCase
   
   
   # Test the select shipping method action.
-  def test_should_select_shipping_method_without_an_order
+  def test_select_shipping_method_without_an_order
     get :select_shipping_method
     assert_redirected_to :action => :index
   end  
   
 
   # Test the view shipping method action.
-  def test_should_view_shipping_method
+  def test_view_shipping_method
     # TODO: If this action is not used anymore, get rid of it. 
     get :view_shipping_method
     assert_response 302
@@ -673,9 +673,9 @@ class StoreControllerTest < ActionController::TestCase
   
   
   # Test the set shipping method action.
-  def test_should_set_shipping_method_with_confirmation
+  def test_set_shipping_method_with_confirmation
     # Execute an earlier test as this one deppends on it.
-    test_should_select_shipping_method
+    test_select_shipping_method
 
     # Post to it when the show confirmation preference is true.
     assert Preference.save_settings({ "store_show_confirmation" => "1" })
@@ -685,9 +685,9 @@ class StoreControllerTest < ActionController::TestCase
 
 
   # Test the set shipping method action.
-  def test_should_set_shipping_method_without_confirmation
+  def test_set_shipping_method_without_confirmation
     # Execute an earlier test as this one deppends on it.
-    test_should_select_shipping_method
+    test_select_shipping_method
 
     # Post to it when the show confirmation preference is false.
     assert Preference.save_settings({ "store_show_confirmation" => "0" })
@@ -695,31 +695,22 @@ class StoreControllerTest < ActionController::TestCase
     assert_redirected_to :action => :finish_order
   end
 
-  # Test the confirm order action.
-  def test_should_confirm_order
-    # Execute an earlier test as this one deppends on it.
-    #    test_should_select_shipping_method
-
-    # TODO: The code have an unreachable part, the order_shipping_type_id will never be nil because
-    # the database schema don't let it.
-    #   assert_equal assigns(:order).order_shipping_type_id, nil
-    
-    # Get the confirm order action when the shipping is nil.
- #   get :confirm_order
- #   assert_redirected_to :action => :select_shipping_method
-  end
-
-
   # Test the finish order action.
-  def test_should_finish_order_with_authorize
-    # Execute an earlier test as this one deppends on it.
-    test_should_set_shipping_method_without_confirmation
+  def test_finish_order_with_authorize
+    # Execute an earlier test as this one depends on it.
+    test_set_shipping_method_without_confirmation
    
     order = Order.find(session[:order_id])
 
     # Now we say that we will use authorize. Mock the method.
     assert Preference.save_settings({ "cc_processor" => "Authorize.net" })
-    Order.any_instance.expects(:run_transaction_authorize).once.returns(true)
+    
+    gateway = mock()
+    response = mock()
+    response.expects(:success?).returns(true)
+    response.expects(:authorization).returns(1234)
+    gateway.expects(:purchase).returns(response)
+    ActiveMerchant::Billing::AuthorizeNetGateway.expects(:new).once.returns(gateway)
     
     # Save initial quantity
     oli = assigns(:order).order_line_items.first
@@ -730,18 +721,42 @@ class StoreControllerTest < ActionController::TestCase
     assert_response :success
     assert_select "p", :text => /Card processed successfully/
     
-    # Ensure items still in order
-    assert !order.empty?, "Order items were emptied when they shouldn't be."
+    assert(
+      !order.reload.empty?, 
+      "Order items were emptied when they shouldn't be."
+    )
     
-    # Ensure customer has been logged in, so they may download their files
-    assert_not_nil session[:customer], "Customer was not logged in after successful purchase."
+    assert_not_nil(
+      session[:customer], 
+      "Customer was not logged in after successful purchase."
+    )
+  end
+  
+  # Ensure customer can reload the finish order page 
+  # and nothing bad happens.
+  def test_can_reload_finish_order_page
+    test_finish_order_with_authorize
+    
+    order = Order.last
+    assert !order.empty?
+    
+    post :finish_order
+    assert_response :success
+    assert_template 'finish_order'
+    
+    assert !order.reload.empty?
+    
+    get :finish_order
+    assert_response :success
+    assert_template 'finish_order'
+    
+    assert !order.reload.empty?
   end
 
-
   # Test the finish order action.
-  def test_should_finish_order_with_authorize_with_error
-    # Execute an earlier test as this one deppends on it.
-    test_should_set_shipping_method_without_confirmation
+  def test_finish_order_with_authorize_with_error
+    # Execute an earlier test as this one depends on it.
+    test_set_shipping_method_without_confirmation
    
     # Now we say that we will use authorize. Mock the method.
     assert Preference.save_settings({ "cc_processor" => "Authorize.net" })
@@ -761,10 +776,11 @@ class StoreControllerTest < ActionController::TestCase
     assert_equal initial_quantity, an_order_line_item.item.quantity
   end
   
+  
   # Test the finish order action.
-  def test_should_finish_order_with_paypal
-    # Execute an earlier test as this one deppends on it.
-    test_should_set_shipping_method_without_confirmation
+  def test_finish_order_with_paypal
+    # Execute an earlier test as this one depends on it.
+    test_set_shipping_method_without_confirmation
    
     order = Order.find(session[:order_id])
 
@@ -781,17 +797,22 @@ class StoreControllerTest < ActionController::TestCase
     assert_response :success
     assert_select "p", :text => /Transaction processed successfully/
     
-    # Ensure items still in order
-    assert !order.empty?, "Order items were emptied when they shouldn't be."
+    assert(
+      !order.reload.empty?, 
+      "Order items were emptied when they shouldn't be."
+    )
     
-    assert_not_nil session[:customer], "Customer was not logged in after successful purchase."
+    assert_not_nil(
+      session[:customer], 
+      "Customer was not logged in after successful purchase."
+    )
   end
 
 
   # Test the finish order action.
-  def test_should_finish_order_with_paypal_without_ipn_confirmation
+  def test_finish_order_with_paypal_without_ipn_confirmation
     # Execute an earlier test as this one deppends on it.
-    test_should_set_shipping_method_without_confirmation
+    test_set_shipping_method_without_confirmation
    
     # Now we say that we will use paypal ipn. Mock the method.
     assert Preference.save_settings({ "cc_processor" => "PayPal IPN" })
@@ -813,9 +834,9 @@ class StoreControllerTest < ActionController::TestCase
   
   
   # Test the finish order action.
-  def test_should_finish_order_with_paypal_with_error
+  def test_finish_order_with_paypal_with_error
     # Execute an earlier test as this one deppends on it.
-    test_should_set_shipping_method_without_confirmation
+    test_set_shipping_method_without_confirmation
    
     # Now we say that we will use paypal ipn. Mock the method.
     assert Preference.save_settings({ "cc_processor" => "PayPal IPN" })

@@ -1156,11 +1156,18 @@ class OrderTest < ActiveSupport::TestCase
   
   def test_empty
     order = orders(:santa_next_christmas_order)
+    order.stubs(:is_complete?).returns(false)
     assert !order.empty?
-    assert order.order_line_items.size > 0
     order.empty!
     assert order.empty?
-    assert_equal order.order_line_items.size, 0
+  end
+  
+  def test_cant_empty_completed_order
+    order = orders(:santa_next_christmas_order)
+    order.stubs(:is_complete?).returns(true)
+    assert !order.empty?
+    order.empty!
+    assert !order.empty?
   end
   
   # When created the cart should be empty.
