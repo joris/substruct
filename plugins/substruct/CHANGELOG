@@ -26,6 +26,12 @@ Updated:
   1. Removed all the stupid Preference.find_by_name calls and replaced
      with a more robust Preference.get_value method.
 
+Fixed:
+  1. Some critical edge-case bugs, specifically...
+     - PayPal IPN purchases were not showing receipts
+     - It was possible to empty a completed order and remove items,
+       only leaving shipping cost.
+
 Upgrade steps:
   0. Upgrade your /vendor directory with the one that ships with Substruct.
   1. Compare your environment.rb file with the one in vendor/plugins/substruct/config
