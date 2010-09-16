@@ -32,7 +32,8 @@ Fixed:
     only leaving shipping cost.
   * Emptying a cart allowed shipping costs to remain.
   * Carts weren't showing shipping costs, but showing it in the total.
-      
+  * Bug with promotion items being improperly applied smashed.
+    - http://code.google.com/p/substruct/issues/detail?id=222
 
 Upgrade steps:
   0. Upgrade your /vendor directory with the one that ships with Substruct.
