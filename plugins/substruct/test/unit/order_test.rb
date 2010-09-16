@@ -119,8 +119,9 @@ class OrderTest < ActiveSupport::TestCase
   # PROMOTIONS ----------------------------------------------------------------
   
   # Test if the line item that represents a promotion is returned if present.
-  # FIXME: This method doesn't find the promotion line item if the promotion has an associated item (get 1 free promotions).
-  def test_promotion_line_item
+  # FIXME: This method doesn't find the promotion line item 
+  # if the promotion has an associated item (get 1 free promotions).
+  def test_promotion_setter
     # Setup
     promo = promotions(:percent_rebate)
     setup_new_order_with_items()
@@ -1185,12 +1186,12 @@ class OrderTest < ActiveSupport::TestCase
   
   # When created the cart should be empty.
   def test_when_created_be_empty
-    a_cart = Order.new
+    o = Order.new
     
-    assert_equal a_cart.items.size, 0
-    assert_equal a_cart.tax, 0.0
-    assert_equal a_cart.total, 0.0
-    assert_equal a_cart.shipping_cost, 0.0
+    assert_equal o.items.size, 0
+    assert_equal o.tax, 0.0
+    assert_equal o.total, 0.0
+    assert_equal o.shipping_cost, 0.0
   end
 
   def test_new_notes_setter
@@ -1231,33 +1232,38 @@ class OrderTest < ActiveSupport::TestCase
 
   # Test if a product can be added to the cart.
   def test_add_product
-    a_cart = Order.new
-    a_cart.add_product(items(:red_lightsaber), 1)
-    a_cart.add_product(items(:red_lightsaber), 3)
-    assert_equal 1, a_cart.items.length, "Cart added multiple order line items for the same product. #{a_cart.items.inspect}"
-    assert a_cart.save
-    a_cart.reload()
-    assert_equal 1, a_cart.items.length
-    assert_equal 4, a_cart.items[0].quantity
+    o = Order.new
+    o.expects(:reapply_promotion).times(2)
+    o.add_product(items(:red_lightsaber), 1)
+    o.add_product(items(:red_lightsaber), 3)
+    assert_equal(
+      1, o.items.length, 
+      "Cart added multiple order line items for the same product. #{o.items.inspect}"
+    )
+    assert o.save
+    o.reload()
+    assert_equal 1, o.items.length
+    assert_equal 4, o.items[0].quantity
   end
   
   # Test if a add_product properly handles negative quantities
   def test_add_product_with_negative_quantity
-    a_cart = Order.new
-    a_cart.add_product(items(:blue_lightsaber), 2)
-    a_cart.add_product(items(:blue_lightsaber), -1)
-    a_cart.reload
+    o = Order.new
+    o.add_product(items(:blue_lightsaber), 2)
+    o.add_product(items(:blue_lightsaber), -1)
+    
+    o.reload
     # Calling add_product with a negative quantity should remove that many units
-    assert_equal 1, a_cart.items[0].quantity
-    a_cart.add_product(items(:blue_lightsaber), -3)    
-#    a_cart.reload
-    assert a_cart.empty?
+    assert_equal 1, o.items[0].quantity
+    o.add_product(items(:blue_lightsaber), -3)    
+    assert o.empty?, o.items.inspect
   end
 
   # Test if a product can be removed from the cart.
   def test_remove_product
     o = Order.new
-    o.expects(:cleanup_promotion).times(4)
+    o.expects(:reapply_promotion).times(5)
+    
     o.add_product(items(:red_lightsaber), 2)
     o.add_product(items(:blue_lightsaber), 2)
     assert_equal o.items.length, 2
@@ -1282,30 +1288,30 @@ class OrderTest < ActiveSupport::TestCase
   # Test if what is in the cart is really available in the inventory.
   def test_check_inventory
     # Create a cart and add some products.
-    a_cart = Order.new
-    a_cart.add_product(items(:red_lightsaber), 2)
-    a_cart.add_product(items(:blue_lightsaber), 4)
-    assert_equal a_cart.items.length, 2
+    o = Order.new
+    o.add_product(items(:red_lightsaber), 2)
+    o.add_product(items(:blue_lightsaber), 4)
+    assert_equal o.items.length, 2
     
     an_out_of_stock_product = items(:red_lightsaber)
     assert an_out_of_stock_product.update_attributes(:quantity => 1)
     
     # Assert that the product that was out of stock was removed.
-    removed_products = a_cart.check_inventory
+    removed_products = o.check_inventory
     assert_equal removed_products, [an_out_of_stock_product.name]
 
     # Should last the right quantity of the rest.
-    assert_equal a_cart.items.length, 1
+    assert_equal o.items.length, 1
   end
   
   def test_check_inventory_with_promotion
     # Create cart, add item & promotion
-    a_cart = Order.new
-    a_cart.add_product(items(:red_lightsaber), 2)
-    a_cart.promotion_code = "FIXED_REBATE"
-    assert a_cart.save
+    o = Order.new
+    o.add_product(items(:red_lightsaber), 2)
+    o.promotion_code = "FIXED_REBATE"
+    assert o.save
     assert_nothing_raised do
-      a_cart.check_inventory
+      o.check_inventory
     end
   end
   
@@ -1313,17 +1319,17 @@ class OrderTest < ActiveSupport::TestCase
   # Test if will return the total price of products in the cart.
   def test_return_total_price
     # Create a cart and add some products.
-    a_cart = Order.new
-    a_cart.add_product(items(:red_lightsaber), 2)
-    a_cart.add_product(items(:blue_lightsaber), 4)
-    assert_equal a_cart.items.length, 2
+    o = Order.new
+    o.add_product(items(:red_lightsaber), 2)
+    o.add_product(items(:blue_lightsaber), 4)
+    assert_equal o.items.length, 2
 
     total = 0.0
-    for item in a_cart.items
+    for item in o.items
       total += (item.quantity * item.unit_price)
     end
 
-    assert_equal total, a_cart.total
+    assert_equal total, o.total
   end
   
   def test_affiliate_earnings
@@ -1394,22 +1400,22 @@ class OrderTest < ActiveSupport::TestCase
   # Test if will return the tax cost for the total in the cart.
   def test_return_tax_cost
     # Create a cart and add some products.
-    a_cart = Order.new
-    a_cart.add_product(items(:red_lightsaber), 2)
-    a_cart.add_product(items(:blue_lightsaber), 4)
+    o = Order.new
+    o.add_product(items(:red_lightsaber), 2)
+    o.add_product(items(:blue_lightsaber), 4)
     
     # By default tax is zero.
-    assert_equal a_cart.tax_cost, a_cart.total * a_cart.tax
+    assert_equal o.tax_cost, o.total * o.tax
   end
 
   # Test if will return the line items total.
   def test_return_line_items_total
     # Create a cart and add some products.
-    a_cart = Order.new
-    a_cart.add_product(items(:red_lightsaber), 2)
-    a_cart.add_product(items(:blue_lightsaber), 4)
+    o = Order.new
+    o.add_product(items(:red_lightsaber), 2)
+    o.add_product(items(:blue_lightsaber), 4)
     
-    assert_equal a_cart.line_items_total, a_cart.total
+    assert_equal o.line_items_total, o.total
   end
 
   def test_has_downloads

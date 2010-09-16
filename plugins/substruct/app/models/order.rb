@@ -1,6 +1,8 @@
 class Order < ActiveRecord::Base  
   # Associations
-  has_many :order_line_items, :dependent => :destroy
+  has_many :order_line_items, 
+    :dependent => :destroy,
+    :order => 'id ASC'
   alias items order_line_items
   
   # billing_address defined as a method!
@@ -85,7 +87,7 @@ class Order < ActiveRecord::Base
   def cleanup_promotion
     # Only applies when order is editable.
     return true unless self.is_editable?
-
+  
     if self.promotion && !self.should_promotion_be_applied?(self.promotion)
       self.remove_promotion
     end
@@ -316,6 +318,14 @@ class Order < ActiveRecord::Base
 
   # INSTANCE METHODS ==========================================================
 
+  def reapply_promotion
+    return true unless self.promotion && self.is_editable?
+    code_to_apply = self.promotion.code
+    self.remove_promotion
+    self.promotion_code = code_to_apply
+    return true
+  end
+
   # Removes promotion from object in memory and stored in database.
   #
   # This is necessary because we call it before saves, along with using it
@@ -493,6 +503,7 @@ class Order < ActiveRecord::Base
       item.save
       self.order_line_items << item
     end
+    self.reapply_promotion
   end
   
   # Removes all quantities of product from our cart
@@ -511,7 +522,7 @@ class Order < ActiveRecord::Base
         self.order_line_items.delete(item)
       end
     end
-    self.cleanup_promotion
+    self.reapply_promotion
   end
   
   # Compatibility for CART.

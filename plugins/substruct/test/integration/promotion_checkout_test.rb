@@ -51,10 +51,6 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
     xml_http_request(:post, '/store/remove_from_cart_ajax', {:id => @expensive_item.id})
     assert_response :success
     
-    # HIT SHIPPING METHOD PAGE
-    get '/store/select_shipping_method'
-    assert_response :success
-    
     # VERIFY PROMO NOT APPLIED
     assert_nil assigns(:order).promotion, "Promotion still applied when it shouldn't be."
     assert_equal @inexpensive_item.price, assigns(:order).line_items_total
@@ -82,6 +78,63 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
     o = assigns(:order)
     assert o.order_line_items.delete(o.promotion_line_item)
     assert_nil o.promotion_line_item, "Found more than one promotion line item."
+  end
+  
+  # Customers were able to...
+  #  * Add expensive item to cart
+  #  * Add a percent promotion
+  #  * Drop the expensive item
+  # ...and still have the promo applied at a higher rate.
+  #
+  # Promotion should be evaluated any time line items change
+  # while order is in editable state.
+  def test_promo_reapplied_when_cart_modified
+    pct_amount = 25
+    @promo = promotions(:percent_rebate)
+    assert @promo.update_attribute(:discount_amount, pct_amount)
+    
+    # Add expensive item
+    xml_http_request(:post, '/store/add_to_cart_ajax', {:id => @expensive_item.id})
+    assert_response :success
+    
+    # Attempt checkout, apply promo
+    perform_successful_checkout
+    
+    # Ensure promo is applied
+    assert_equal @promo, assigns(:order).promotion
+    expected_promo_value = -(@expensive_item.price * (pct_amount.to_f/100))
+    assert_equal(
+      expected_promo_value,
+      assigns(:order).promotion_line_item.total
+    )
+    
+    # Add inexpensive item
+    xml_http_request(:post, '/store/add_to_cart_ajax', {:id => @inexpensive_item.id})
+    assert_response :success
+    
+    # Ensure promo still applied, but with proper value
+    assert_equal @promo, assigns(:order).promotion
+    expected_promo_value = -(
+      (@inexpensive_item.price + @expensive_item.price) * (pct_amount.to_f/100)
+    )
+    assert_equal(
+      expected_promo_value,
+      assigns(:order).promotion_line_item.total
+    )
+    
+    # Remove expensive item
+    xml_http_request(:post, '/store/remove_from_cart_ajax', :id => @expensive_item.id)
+    assert_response :success
+    
+    # Ensure promo still applied, but with proper value
+    assert_equal @promo, assigns(:order).promotion
+    expected_promo_value = -(
+      (@inexpensive_item.price) * (pct_amount.to_f/100)
+    )
+    assert_equal(
+      expected_promo_value,
+      assigns(:order).promotion_line_item.total
+    )
   end
   
   private
