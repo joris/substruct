@@ -95,13 +95,13 @@ Run this command from inside the substruct directory you extracted previously
     rake db:create
     rake substruct:db:bootstrap
 
-### 6. Boot Rails Engines:
+### 6. Boot Rails Engines
 
-Add the following line to your environment.rb file, above the line that contains the Rials Initializer:
+Add the following line to your environment.rb file, above the line that contains the Rails Initializer:
 
     require File.join(File.dirname(__FILE__), '../vendor/plugins/engines/boot')
 
-### 7. Boot Rails Engines:
+### 7. Include SubstructApplicationController
 
 Include SubstructApplicationController in your ApplicationController and add before_filters:
 
